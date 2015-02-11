@@ -1,0 +1,132 @@
+var http = require('http');
+var util = require('util');
+var fs 	 = require('fs');
+var mysql = require('mysql');
+var async = require('async');
+
+// THINGS TO INSTALL:
+// npm install express
+// npm install body-parser
+// npm install lazy
+// npm install socket.io
+// npm install mysql
+// npm install async	// Not needed yet
+// npm install forever
+
+// 'forever' module:
+// usage: forever [start | stop | stopall | list] [options] SCRIPT [script options]
+// options:
+//   start          start SCRIPT as a daemon
+//   stop           stop the daemon SCRIPT
+//   stopall        stop all running forever scripts
+//   list           list all running forever scripts
+
+// settings variables
+// if this is changed.. changes have to be made
+// to the hangman image
+var noGuessesAllowed	 	= 10;
+
+var DEBUG					= true;
+var SERVER_LISTEN_PORT		= 3000;
+var SERVER_LISTEN_PORT_TWO 	= 3001;
+
+var unixWordsFilePath 		= "words";	// for my pc
+// var unixWordsFilePath 		= "/usr/share/dict/words";
+var wordsFilePath			= 'hangmanWordList.txt';
+
+var saveDataMethod 			= 'file';	// user data saved to: database ('db') or 'file'
+var userDataFolderPath		= "userData/";
+// game variables
+var wordListLength			= 0;
+
+var connection = '';
+
+// Connect to MySQL Database 
+// --------------
+function connectToDB(callback){
+	connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : '',
+	  database : 'shoohangman'
+	});
+
+	connection.connect(function(err) {
+	  if (err) {
+	    console.error('error connecting: ' + err.stack);
+	    return;
+	  }
+	  console.log('connected as id ' + connection.threadId);
+	  callback();
+	});
+}
+
+function closeConnDB(){
+	connection.end();
+}
+
+// Express server setup
+//--------------------
+// var express = require('express');
+// app = express();
+// var bodyParser = require('body-parser');
+
+// app.use(express.static(__dirname + '/public'));
+// app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser.json());
+
+// // Socket.io
+// //----------------------
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
+
+// io.on('connection', function (socket) {
+//   socket.emit('news', { hello: 'world' });
+//   socket.on('my other event', function (data) {
+//     console.log(data);
+//   });
+// });
+
+function init(){
+	var express = require('express');
+	// var app = express();
+	var app = express();
+	// app.use(express.static(__dirname + '/public'));
+
+	app.use(express.static(process.cwd() + '/public'));
+
+	app.get('/hey/:idd?/:other?', function (req, res) {
+		console.log("hey/id?");
+		console.log('id: ' + req.params.idd)
+		console.log('other: ' + req.params.other)
+		res.send('Hello World dude')
+	})
+
+	app.delete('/', function (req, res) {
+		console.log("this is a PUT request");
+	});
+
+	app.post('/', function (req, res) {
+		console.log("this is a POST request");
+	});
+
+	app.listen(3000);
+
+	// app.use(function (req, res, next) {
+	// 	console.log("syp");
+	// });
+
+	// var server = app.listen(3000, function () {
+
+	//   var host = server.address().address;
+	//   var port = server.address().port;
+
+	//   console.log('Example app listening at http://%s:%s', host, port)
+	// })
+}
+
+init();
+
+exports.egg = {"hello": 5};
+
+var abc = require("./two.js");

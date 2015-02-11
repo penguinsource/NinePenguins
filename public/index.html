@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+
+<html lang='en' ng-app='nineApp'>
+
+<head>
+<meta name="description" content="Specializing in English and Japanese Pokémon Goods!">
+<meta name="keywords" content="nine, men, morris, board, game">
+<meta name="author" content="Nine Penguins">
+<meta http-equiv="pragma" content="no-cache">
+<title>Nine Men's Morris</title>
+<!-- <LINK REL="SHORTCUT ICON" HREF="http://pokemonpacific.com/images/pikachuTop.png" /> -->
+
+<!-- 3rd party CSS Libraries -->
+<link rel="stylesheet" type='text/css' href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Pacifico'>
+<!-- <link rel='stylesheet' href="css/googleapisOpenSans.css" type="text/CSS"> -->
+
+ <!-- My CSS Stylesheets -->
+<link rel='stylesheet' href="/css/basic_v1.0.css" type="text/CSS">
+
+<!-- website base href and base url set in this file -->
+<script src="/config/setup.js"></script>
+
+<!-- 3rd party Libraries -->
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-route.min.js"></script>
+<script src="/js/angular-cookies.min.js"></script>
+<script src="//angular-ui.github.io/ui-router/release/angular-ui-router.js"></script>
+<script src="/angularApp/app.js"></script>
+</head>
+
+<body ng-controller="basicController as basicCtrl">
+	<p>Hello to the World, sir !</p>
+
+	<div ng-class='circle'></div>
+
+	<button ng-click='sendPost()'>	Send POST Request	</button>
+	<button ng-click='sendGet()'>	Send GET Request	</button>
+
+	
+
+<!-- 	<div class='gameBoard'>
+		<div class='circle'></div>
+		<div class='bridgeLevelTopH'></div>
+		<div class='circle'></div>
+		<div class='bridgeLevelTopH'></div>
+		<div class='circle'></div>
+		<br>
+			<div class='leftWallLevelTop'>
+				<div class='bridgeLevelTopV'></div>
+				<div class='circle'></div>
+				<div class='bridgeLevelTopV'></div>
+				<div class='circle'></div>
+			</div>
+			<div class='boardLevelMiddle'>
+				<div class='circle'></div>
+				<div class='bridgeLevelMiddleH'></div>
+				<div class='circle'></div>
+				<div class='bridgeLevelMiddleH'></div>
+				<div class='circle'></div>
+				<div class='leftWallLevelTop'>
+
+				</div>
+
+
+			</div>
+			<div class='leftWallLevelTop'>
+				<div class='bridgeLevelTopV'></div>
+				<div class='circle'></div>
+				<div class='bridgeLevelTopV'></div>
+				<div class='circle'></div>
+			</div>
+	</div> -->
+
+	<div class="board">
+		<!-- <div class='circle2'></div> -->
+		<!-- <div class='circle3'></div> -->
+
+		<button ng-repeat="pin in basicCtrl.pinList"
+				class="action-button shadow animate blue p{{$index}}pos pinFreePlace"
+				draggable='true' 
+				ng-class='basicCtrl.p{{$index}}.pclass'
+				ng-mouseover='basicCtrl.mouseOverEvent( pin )'
+				ng-mouseout ='basicCtrl.mouseOutEvent( pin )'
+				ng-click='basicCtrl.clickEvent()'>
+		</button>
+
+
+		<!-- <button class="action-button shadow animate blue p0pos" 
+				draggable='true' 
+				ng-class='basicCtrl.p0.pclass'
+				ng-mouseover='basicCtrl.mouseOverEvent(basicCtrl.p0)'
+				ng-mouseout ='basicCtrl.mouseOutEvent(basicCtrl.p0)'
+				ng-click='basicCtrl.clickEvent()'></button>
+
+		<button class="action-button shadow animate blue p1pos" 
+				draggable='true' 
+				ng-class='basicCtrl.p1.pclass'
+				ng-mouseover='basicCtrl.mouseOverEvent(basicCtrl.p1)'
+				ng-mouseout ='basicCtrl.mouseOutEvent(basicCtrl.p1)'
+				ng-click='basicCtrl.clickEvent()'></button>
+
+		<button class="action-button shadow animate blue p2pos" 
+				draggable='true' 
+				ng-class='basicCtrl.p2.pclass'
+				ng-mouseover='basicCtrl.mouseOverEvent(basicCtrl.p2)'
+				ng-mouseout ='basicCtrl.mouseOutEvent(basicCtrl.p2)'
+				ng-click='basicCtrl.clickEvent()'></button> -->
+	</div>
+
+	<div class='gameBoard'>
+
+		<div class='boardRow'>
+			<div class='circle'><div class='circleWall'></div></div>
+			<div class='bridgeLevelTopH'></div>
+			<div class='circle'></div>
+			<div class='bridgeLevelTopH'></div>
+			<div class='circle'><div class='circleWall'></div></div>
+		</div>
+
+		<div class='boardRow'>
+			<div class='leftVerticalWall'></div>
+			<div class='marginLeft1 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft2 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft2 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft1 bgColor'></div>
+			<div class='rightVerticalWall'></div>
+		</div>
+		
+		<div class='boardRow'>
+			<div class='leftVerticalWall'></div>
+			<div class='marginLeft3 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft4 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft4 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft3 bgColor'></div>
+			<div class='rightVerticalWall'></div>
+		</div>
+
+		<div class='boardRow'>
+			<div class='circle'><div class='circleWall'></div></div>
+			<div class='marginLeft5 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft5 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft6 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft5 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft5 bgColor'></div>
+			<div class='circle'><div class='circleWall'></div></div>
+		</div>
+
+		<div class='boardRow'>
+			<div class='leftVerticalWall'></div>
+			<div class='marginLeft3 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft4 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft4 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft3 bgColor'></div>
+			<div class='rightVerticalWall'></div>
+		</div>
+
+		<div class='boardRow'>
+			<div class='leftVerticalWall'></div>
+			<div class='marginLeft1 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft2 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft2 bgColor'></div>
+			<div class='circle'></div>
+			<div class='marginLeft1 bgColor'></div>
+			<div class='rightVerticalWall'></div>
+		</div>
+
+		<div class='boardRow'>
+			<div class='circle'></div>
+			<div class='bridgeLevelTopH'></div>
+			<div class='circle'></div>
+			<div class='bridgeLevelTopH'></div>
+			<div class='circle'></div>
+		</div>
+
+	</div>
+
+</body>
+
+</html>
