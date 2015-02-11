@@ -295,16 +295,27 @@ a:visited{
 
 */
 
-.player1 {
-	background-color: rgb(221, 186, 236);
-	border-bottom: 10px solid rgb(224, 224, 224);
-	text-shadow: 0px -2px gray;
+.player1pin {
+	background-color: rgb(67, 186, 225);
+	border-bottom: 5px solid rgb(28, 141, 148);
+}
+
+.player1pin:hover {
+	
+}
+
+.player2pin {
+
 }
 
 .pinFreePlace {
-	background-color: white;
-	border-bottom: 5px solid white;
-	visibility: none;
+	background-color: rgb(67, 186, 225);
+	border-bottom: 5px solid rgb(28, 141, 148);
+	opacity: 0;
+}
+
+.pinFreePlace:hover {
+	opacity: 1;
 }
 
 .pinAvailablePlaceHover {
@@ -326,87 +337,87 @@ a:visited{
 	top: 23px;
 }
 .p3pos {
-	left: 22px;
-	top: 23px;
+	left: 514px;
+	top: 268px;
 }
 .p4pos {
-	left: 22px;
-	top: 23px;
+	left: 514px;
+	top: 512px;
 }
 .p5pos {
-	left: 22px;
-	top: 23px;
+	left: 268px;
+	top: 512px;
 }
 .p6pos {
 	left: 22px;
-	top: 23px;
+	top: 512px;
 }
 .p7pos {
 	left: 22px;
-	top: 23px;
+	top: 268px;
 }
 .p8pos {
-	left: 22px;
-	top: 23px;
+	left: 98px;
+	top: 99px;
 }
 .p9pos {
-	left: 22px;
-	top: 23px;
+	left: 268px;
+	top: 99px;
 }
 .p10pos {
-	left: 22px;
-	top: 23px;
+	left: 438px;
+	top: 99px;
 }
 .p11pos {
-	left: 22px;
-	top: 23px;
+	left: 438px;
+	top: 268px;
 }
 .p12pos {
-	left: 22px;
-	top: 23px;
+	left: 438px;
+	top: 437px;
 }
 .p13pos {
-	left: 22px;
-	top: 23px;
+	left: 268px;
+	top: 437px;
 }
 .p14pos {
-	left: 22px;
-	top: 23px;
+	left: 98px;
+	top: 437px;
 }
 .p15pos {
-	left: 22px;
-	top: 23px;
+	left: 98px;
+	top: 268px;
 }
 .p16pos {
-	left: 22px;
-	top: 23px;
+	left: 164px;
+	top: 166px;
 }
 .p17pos {
-	left: 22px;
-	top: 23px;
+	left: 268px;
+	top: 166px;
 }
 .p18pos {
-	left: 22px;
-	top: 23px;
+	left: 370px;
+	top: 166px;
 }
 .p19pos {
-	left: 22px;
-	top: 23px;
+	left: 370px;
+	top: 268px;
 }
 
 .p20pos {
-	left: 22px;
-	top: 23px;
+	left: 370px;
+	top: 372px;
 }
 .p21pos {
-	left: 22px;
-	top: 23px;
+	left: 268px;
+	top: 372px;
 }
 .p22pos {
-	left: 22px;
-	top: 23px;
+	left: 164px;
+	top: 372px;
 }
 .p23pos {
-	left: 22px;
-	top: 23px;
+	left: 164px;
+	top: 268px;
 }

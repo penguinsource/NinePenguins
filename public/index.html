@@ -73,18 +73,14 @@
 	</div> -->
 
 	<div class="board">
-		<!-- <div class='circle2'></div> -->
-		<!-- <div class='circle3'></div> -->
-
 		<button ng-repeat="pin in basicCtrl.pinList"
 				class="action-button shadow animate blue p{{$index}}pos pinFreePlace"
 				draggable='true' 
 				ng-class='basicCtrl.p{{$index}}.pclass'
 				ng-mouseover='basicCtrl.mouseOverEvent( pin )'
 				ng-mouseout ='basicCtrl.mouseOutEvent( pin )'
-				ng-click='basicCtrl.clickEvent()'>
+				ng-click='basicCtrl.clickEvent( pin, $index )'>
 		</button>
-
 
 		<!-- <button class="action-button shadow animate blue p0pos" 
 				draggable='true' 
@@ -92,20 +88,7 @@
 				ng-mouseover='basicCtrl.mouseOverEvent(basicCtrl.p0)'
 				ng-mouseout ='basicCtrl.mouseOutEvent(basicCtrl.p0)'
 				ng-click='basicCtrl.clickEvent()'></button>
-
-		<button class="action-button shadow animate blue p1pos" 
-				draggable='true' 
-				ng-class='basicCtrl.p1.pclass'
-				ng-mouseover='basicCtrl.mouseOverEvent(basicCtrl.p1)'
-				ng-mouseout ='basicCtrl.mouseOutEvent(basicCtrl.p1)'
-				ng-click='basicCtrl.clickEvent()'></button>
-
-		<button class="action-button shadow animate blue p2pos" 
-				draggable='true' 
-				ng-class='basicCtrl.p2.pclass'
-				ng-mouseover='basicCtrl.mouseOverEvent(basicCtrl.p2)'
-				ng-mouseout ='basicCtrl.mouseOutEvent(basicCtrl.p2)'
-				ng-click='basicCtrl.clickEvent()'></button> -->
+		-->
 	</div>
 
 	<div class='gameBoard'>

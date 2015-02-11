@@ -88,17 +88,9 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router'], function($ht
 	});
 
 nineApp.controller('basicController', function($scope, $http){
-	console.log("Hello Controller !");
+	console.log("basicController !");
 	var self = this;
 	self.currentGameState = "place";	// 'place' or 'move'
-
-	self.board = [];
-	for (var i = 0; i < 7; i++){
-		self.board[i] = [];
-		for (var k = 0; k < 7; k++){
-			self.board[i][k] = null;
-		}
-	}
 
 	//     0    1    2    3    4    5    6
 	
@@ -117,82 +109,92 @@ nineApp.controller('basicController', function($scope, $http){
 	// 6  p6              p5             p4
 
 	// sample position object: { "player": "none", "neighbours": [ [0,3], [] }
-	self.p1 = {};
 	// self.p0 = "player1";
-	self.p0 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	self.p1 = {"control": "free", "neighbours": [ [0, 0], [3, 1], [6, 0] ], "pclass": "" };
-	self.p2 = {"control": "free", "neighbours": [ [3, 0], [6, 3] ], "pclass": "" };
-	// self.p3 = {"control": "free", "neighbours": [ [6, 0], [5, 3], [6, 6] ], "pclass": "" };
-	// self.p4 = {"control": "free", "neighbours": [ [6, 3], [3, 6] ], "pclass": "" };
-	// self.p5 = {"control": "free", "neighbours": [ [0, 6], [3, 5], [6, 6] ], "pclass": "" };
-	// self.p6 = {"control": "free", "neighbours": [ [0, 3], [3, 6] ], "pclass": "" };
-	// self.p7 = {"control": "free", "neighbours": [ [0, 6], [0, 0], [1, 3] ], "pclass": "" };
-	// self.p8 = {"control": "free", "neighbours": [ [3, 1], [1, 3] ], "pclass": "" };
-	// self.p9 = {"control": "free", "neighbours": [ [3, 0], [1, 1], [5, 1], [3, 2] ], "pclass": "" };
-	// self.p10 = {"control": "free", "neighbours": [ [3, 1], [5, 3] ], "pclass": "" };
-	// self.p11 = {"control": "free", "neighbours": [ [5, 1], [5, 5], [6, 3], [4, 3] ], "pclass": "" };
-	// self.p12 = {"control": "free", "neighbours": [ [5, 3], [3, 5] ], "pclass": "" };
-
-	// self.p13 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p14 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p15 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p16 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p17 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p18 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p19 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p20 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p21 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p22 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-	// self.p23 = {"control": "free", "neighbours": [ [3, 0], [0, 3] ], "pclass": "" };
-
-	// self.p1 = {"control": "free", "neighbours": [ self.p0, self.p2 ] };
-	// console.log("BLAH:");
-	// console.log(self.p0);
-	// console.log(self.p1);
-
-	self.board[0][0] = self.p0;
-	self.board[3][0] = self.p1;
-	self.board[6][0] = self.p2;
-	self.board[6][3] = self.p3;
-	self.board[6][6] = self.p4;
-	self.board[3][6] = self.p5;
-	self.board[0][6] = self.p6;
-	self.board[0][3] = self.p7;
-	self.board[1][1] = self.p8;
-	self.board[3][1] = self.p9;
-	self.board[5][1] = self.p10;
-	self.board[5][3] = self.p11;
-	self.board[5][5] = self.p12;
+	self.p0 = {"control": "free", "neighbours": [ 1, 7 ], "pclass": "pinFreePlace" };
+	self.p1 = {"control": "free", "neighbours": [ 0, 2, 9 ], "pclass": "pinFreePlace" };
+	self.p2 = {"control": "free", "neighbours": [ 1, 3 ], "pclass": "pinFreePlace" };
+	self.p3 = {"control": "free", "neighbours": [ 2, 4, 11 ], "pclass": "pinFreePlace" };
+	self.p4 = {"control": "free", "neighbours": [ 3, 5 ], "pclass": "pinFreePlace" };
+	self.p5 = {"control": "free", "neighbours": [ 4, 6, 13 ], "pclass": "pinFreePlace" };
+	self.p6 = {"control": "free", "neighbours": [ 5, 7 ], "pclass": "pinFreePlace" };
+	self.p7 = {"control": "free", "neighbours": [ 0, 6, 15 ], "pclass": "pinFreePlace" };
+	self.p8 = {"control": "free", "neighbours": [ 9, 15 ], "pclass": "pinFreePlace" };
+	self.p9 = {"control": "free", "neighbours": [ 1, 8, 10, 17 ], "pclass": "pinFreePlace" };
+	self.p10 = {"control": "free", "neighbours": [ 9, 11 ], "pclass": "pinFreePlace" };
+	self.p11 = {"control": "free", "neighbours": [ 3, 10, 12, 19 ], "pclass": "pinFreePlace" };
+	self.p12 = {"control": "free", "neighbours": [ 11, 13 ], "pclass": "pinFreePlace" };
+	self.p13 = {"control": "free", "neighbours": [ 5, 12, 14, 21 ], "pclass": "pinFreePlace" };
+	self.p14 = {"control": "free", "neighbours": [ 13, 15 ], "pclass": "pinFreePlace" };
+	self.p15 = {"control": "free", "neighbours": [ 7, 8, 14, 23 ], "pclass": "pinFreePlace" };
+	self.p16 = {"control": "free", "neighbours": [ 17, 23 ], "pclass": "pinFreePlace" };
+	self.p17 = {"control": "free", "neighbours": [ 9, 16, 18 ], "pclass": "pinFreePlace" };
+	self.p18 = {"control": "free", "neighbours": [ 17, 19 ], "pclass": "pinFreePlace" };
+	self.p19 = {"control": "free", "neighbours": [ 11, 18, 20 ], "pclass": "pinFreePlace" };
+	self.p20 = {"control": "free", "neighbours": [ 19, 21 ], "pclass": "pinFreePlace" };
+	self.p21 = {"control": "free", "neighbours": [ 13, 20, 22 ], "pclass": "pinFreePlace" };
+	self.p22 = {"control": "free", "neighbours": [ 21, 23 ], "pclass": "pinFreePlace" };
+	self.p23 = {"control": "free", "neighbours": [ 15, 16, 22 ], "pclass": "pinFreePlace" };
 
 	self.pinList = [];
-	for (var i = 0; i < 3; i++){
+	for (var i = 0; i < 24; i++){
 		self.pinList.push(eval("self.p" + i));
 	}
 	
 	console.log("pinlist:");
 	console.log(self.pinList);
 
+	self.playerColor = 'player1pin';
+
+	self.isEven = function(n) {
+	  return n === parseFloat(n)? !(n%2) : void 0;
+	}
+
+	self.checkForMills = function(pinBtn, position){
+		if (self.isEven(position)){
+			console.log("its even !");
+		} else {
+			console.log("its odd !");
+		}
+	}
+
 	self.mouseOverEvent = function(pinBtn){
 		console.log("mouse over event");
 		if (self.currentGameState === 'place'){
-			pinBtn.pclass = "pinAvailablePlaceHover";
+			pinBtn.pclass = self.playerColor;
 		} else if (self.currentGameState === 'move'){
-
+			if (pinBtn.control === "free"){
+				pinBtn.pclass = self.playerColor;
+			}
 		}
 	}
 
 	self.mouseOutEvent = function(pinBtn){
 		console.log("mouse over event");
-		if (self.currentGameState === 'place'){
-			pinBtn.pclass = "";
+		if (self.currentGameState=== 'place'){
+			if (pinBtn.control === 'free'){
+				pinBtn.pclass = "pinFreePlace";
+			}
 		} else if (self.currentGameState === 'move'){
 
 		}
 	}
 
-	self.clickEvent = function(pinBtn){
+	self.clickEvent = function(pinBtn, position){
 		console.log("click event");
+		console.log(pinBtn);
+		if (self.currentGameState === 'place'){
+			if (pinBtn.control === 'free'){
+				pinBtn.control = self.playerColor;
+				pinBtn.pclass = self.playerColor;
+				self.checkForMills(pinBtn, position);
+			}
+		} else if (self.currentGameState === 'move'){
+
+		}
+		
 	}
+
+
 
 	console.log("board:");
 	console.log(self.board);
