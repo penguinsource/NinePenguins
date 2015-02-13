@@ -42,5 +42,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-node_modules/
+node_modules
 sqlDatabase.txt
+bower_components

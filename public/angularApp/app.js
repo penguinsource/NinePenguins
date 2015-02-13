@@ -91,6 +91,8 @@ nineApp.controller('basicController', function($scope, $http){
 	console.log("basicController !");
 	var self = this;
 	self.currentGameState = "place";	// 'place' or 'move'
+	console.log("my:");
+
 
 	//     0    1    2    3    4    5    6
 	
@@ -166,7 +168,7 @@ nineApp.controller('basicController', function($scope, $http){
 			console.log("other pin index is: " + otherPin.ind);
 		} else {
 			console.log("its odd !");
-			
+			// pinBtn.animate
 			// check for horizontal mill
 			var horizontalMill = true;
 			for (var i = 0; i < pinBtn.hNeighbours.length; i++){
@@ -177,7 +179,7 @@ nineApp.controller('basicController', function($scope, $http){
 			}
 			if (horizontalMill){
 				// highlight mill
-				break;
+				// break;
 			}
 			
 			// check for vertical mill
@@ -190,7 +192,7 @@ nineApp.controller('basicController', function($scope, $http){
 			}
 			if (verticalMill){
 				// highlight mill
-				break;
+				// break;
 			}
 		}
 	}
@@ -208,6 +210,7 @@ nineApp.controller('basicController', function($scope, $http){
 
 	self.mouseOutEvent = function(pinBtn){
 		console.log("mouse over event");
+		console.log(pinBtn);
 		if (self.currentGameState=== 'place'){
 			if (pinBtn.control === 'free'){
 				pinBtn.pclass = "pinFreePlace";
@@ -218,7 +221,7 @@ nineApp.controller('basicController', function($scope, $http){
 	}
 
 	self.clickEvent = function(pinBtn, position){
-		console.log("click event");
+		console.log("click event, position " + position);
 		console.log(pinBtn);
 		if (self.currentGameState === 'place'){
 			if (pinBtn.control === 'free'){
@@ -229,10 +232,27 @@ nineApp.controller('basicController', function($scope, $http){
 		} else if (self.currentGameState === 'move'){
 
 		}
+
+		console.log("socket:");
+		var io = require('socket.io')(8080);
 		
 	}
 
+	// player = playerMe
+	self.placePin = function(player, position){
 
+	}
+
+	
+	// $('form').submit(function(){
+	// socket.emit('chat message', $('#m').val());
+	// 	$('#m').val('');
+	// 	return false;
+	// });
+	// socket.on('chat message', function(msg){
+	// 	console.log("GOT MESSAGE:" + msg);
+	// 	$('#messages').append($('<li>').text(msg));
+	// });
 
 	console.log("board:");
 	console.log(self.board);
@@ -257,3 +277,4 @@ nineApp.controller('basicController', function($scope, $http){
 	    });
 	};
 });
+

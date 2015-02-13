@@ -92,6 +92,10 @@ function init(){
 	// var app = express();
 	var app = express();
 	// app.use(express.static(__dirname + '/public'));
+	// var io = require('socket.io')(http);
+
+	var server = require('http').Server(app);
+	var io = require('socket.io')(server);
 
 	app.use(express.static(process.cwd() + '/public'));
 
@@ -110,7 +114,32 @@ function init(){
 		console.log("this is a POST request");
 	});
 
-	app.listen(3000);
+	server.listen(3000);
+
+	// console.log(io);
+
+	// io.on('connection', function(socket){
+	// 	console.log("socket:");
+	// 	console.log(socket.id);
+	// 	var socketid = socket.id;
+	// 	// var address = socket.handshake.address;
+	//     // console.log("New connection from " + address.address + ":" + address.port);
+
+	//   socket.on('chat message', function(msg){
+	//     io.emit('chat message', msg);
+	//     if (io.sockets.connected[socketid]) {
+	//     	io.sockets.connected[socketid].emit('chat message', 'for your eyes only');
+	// 	}
+	//   });
+	// });
+
+	io.on('connection', function (socket) {
+		console.log(socket.id);
+		socket.emit('news', { hello: 'world' });
+		socket.on('my other event', function (data) {
+	    console.log(data);
+	  });
+	});
 
 	// app.use(function (req, res, next) {
 	// 	console.log("syp");
@@ -123,6 +152,32 @@ function init(){
 
 	//   console.log('Example app listening at http://%s:%s', host, port)
 	// })
+}
+
+function init2(){
+
+	var express = require('express');
+	// var app = express();
+	var app = express();
+	// app.use(express.static(__dirname + '/public'));
+	// var io = require('socket.io')(http);
+
+	var server = require('http').Server(app);
+	var io = require('socket.io')(server);
+
+	server.listen(3000);
+
+	// app.get('/', function (req, res) {
+	//   res.sendfile(__dirname + '/index.html');
+	// });
+	app.use(express.static(process.cwd() + '/public'));
+
+	io.on('connection', function (socket) {
+	  socket.emit('news', { hello: 'world' });
+	  socket.on('my other event', function (data) {
+	    console.log(data);
+	  });
+	});
 }
 
 init();

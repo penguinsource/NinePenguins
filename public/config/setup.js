@@ -5,11 +5,11 @@ var local = 1;
 
 if (local === 1){
 	// local
-	var website_base_url = "http://localhost/NinePenguins/";
+	var website_base_url = "";
 
 	// local
 	// <base href="/pokemonpacific/"/> // Set Base Href
-	document.write("<base href=\"/NinePenguins/\" ");
+	document.write("<base href=\"/\"> ");
 } else if (local === 2){
 	// website pokemonpacific.com
 	var website_base_url = "http://pokemonpacific.com/";
