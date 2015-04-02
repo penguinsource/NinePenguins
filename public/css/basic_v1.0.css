@@ -1,13 +1,18 @@
 
 body {
-	width: 100%;
-	height: 200px;
+	/*width: 100%;*/
+	/*height: 200px;*/
 }
 
 .board {
 	background-image: url('/images/board.png');
 	width: 595px;
 	height: 592px;
+
+	/*background-image: url('/images/board2.png');*/
+	/*width: 595px;*/
+	/*height: 594px;*/
+
 	margin: 20px;
 	padding: 20px;
 	background-repeat: no-repeat;
@@ -420,4 +425,95 @@ a:visited{
 .p23pos {
 	left: 164px;
 	top: 268px;
+}
+
+#topSection {
+	background-color: #202033;
+	padding-bottom: 30px;
+}
+
+#bottomSection {
+	background-color: #2A2943;
+	height: 500px;
+}
+
+#bodySectionWrap {
+	width: 1024px;
+	margin: 0 auto;
+}
+
+#fullHeader {
+
+}
+
+#blackHR {
+	margin: 0;
+	padding: 0;
+	color: black;
+	border-width: 2px;
+	border-color: black;
+}
+
+nav {
+	padding-top: 60px;
+	padding-left: 60px;
+	/*font-family: Arial;*/
+	font-family: "andika_basicregular";
+	font-size: 20px;
+}
+
+nav .menuItem {
+	margin-left: 20px;
+}
+
+nav a {
+	color: #FFFFFF;
+}
+
+.rightHeader {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 90px;
+}
+
+.logo {
+	margin-top: 15px;
+	display: inline-block;
+}
+
+.loginSection {
+	background-color: red;
+	height: 70px;
+}
+
+#gameButtons {
+	border: none;
+	margin-top: 90px;
+}
+
+.gameBtnRegular {
+	outline: 0;
+	border: none;
+	background-color: #2A2943;
+	color: white;
+	font-family: "andika_basicregular";
+	font-size: 23px;
+	margin-left: 15px;
+	padding: 2px 10px;
+	border-radius: 5px;
+	border-color: transparent;
+	padding-bottom: 7px;
+}
+
+@font-face {
+    font-family: 'andika_basicregular';
+    src: url('fonts/AndBasR-webfont.eot');
+    src: url('fonts/AndBasR-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/AndBasR-webfont.woff2') format('woff2'),
+         url('fonts/AndBasR-webfont.woff') format('woff'),
+         url('fonts/AndBasR-webfont.ttf') format('truetype'),
+         url('fonts/AndBasR-webfont.svg#andika_basicregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
 }

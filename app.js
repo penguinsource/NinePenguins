@@ -2,29 +2,6 @@ var http = require('http');
 var util = require('util');
 var fs 	 = require('fs');
 var mysql = require('mysql');
-var async = require('async');
-
-// THINGS TO INSTALL:
-// npm install express
-// npm install body-parser
-// npm install lazy
-// npm install socket.io
-// npm install mysql
-// npm install async	// Not needed yet
-// npm install forever
-
-// 'forever' module:
-// usage: forever [start | stop | stopall | list] [options] SCRIPT [script options]
-// options:
-//   start          start SCRIPT as a daemon
-//   stop           stop the daemon SCRIPT
-//   stopall        stop all running forever scripts
-//   list           list all running forever scripts
-
-// settings variables
-// if this is changed.. changes have to be made
-// to the hangman image
-var noGuessesAllowed	 	= 10;
 
 var DEBUG					= true;
 var SERVER_LISTEN_PORT		= 3000;
