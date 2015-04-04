@@ -19,9 +19,12 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-facebook/lib/angular-facebook.js"></script>
 
 <script src="/angularApp/app.js"></script>
 <script src="/angularApp/controllers/mainController.js"></script>
+<script src="/angularApp/controllers/gameController.js"></script>
+<script src="/angularApp/services/nineCache.js"></script>
 </head>
 
 
@@ -41,7 +44,11 @@
 				<header class='rightHeader'>
 					<section class='loginSection'>
 						login
+						<button type="button" class="btn btn-primary btn-large" data-ng-show="!logged" data-ng-disabled="!facebookReady" data-ng-click="IntentLogin()">Login with Facebook</button>
+						<button type="button" class="btn btn-danger btn-large" data-ng-show="logged" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
 					</section>
+
+
 					<nav>
 						<a class='menuItem'>Lobby</a>
 						<a class='menuItem'>Rankings</a>
@@ -52,7 +59,7 @@
 			</header>
 			
 			<section id='gameButtons'>
-				<button class='gameBtnRegular'>Start a Game</button>
+				<button class='gameBtnRegular' ui-sref='game'>Start a Game</button>
 				<button class='gameBtnRegular'>Play Quick Tutorial</button>
 			</section>
 		</section>
@@ -65,20 +72,6 @@
 			<div ui-view></div>
 		</section>
 	</section>
-
-	<button ng-click='sendPost()'>	Send POST Request	</button>
-	<button ng-click='sendGet()'>	Send GET Request	</button>
-
-	<div class="board">
-		<button ng-repeat="pin in mainCtrl.pinList"
-				class="action-button shadow animate blue p{{$index}}pos pinFreePlace"
-				draggable='true' 
-				ng-class='mainCtrl.p{{$index}}.pclass'
-				ng-mouseover='mainCtrl.mouseOverEvent( pin )'
-				ng-mouseout ='mainCtrl.mouseOutEvent( pin )'
-				ng-click='mainCtrl.clickEvent( pin, $index )'>
-		</button>
-	</div>
 
 </body>
 

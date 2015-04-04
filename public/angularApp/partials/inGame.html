@@ -1,0 +1,15 @@
+<section>
+	<button ng-click='sendPost()'>	Send POST Request	</button>
+	<button ng-click='sendGet()'>	Send GET Request	</button>
+
+	<div class="board">
+		<button ng-repeat="pin in gameCtrl.pinList"
+				class="action-button shadow animate blue p{{$index}}pos pinFreePlace"
+				draggable='true'
+				ng-class='gameCtrl.p{{$index}}.pclass'
+				ng-mouseover='gameCtrl.mouseOverEvent( pin )'
+				ng-mouseout ='gameCtrl.mouseOutEvent( pin )'
+				ng-click='gameCtrl.clickEvent( pin, $index )'>
+		</button>
+	</div>
+</section>

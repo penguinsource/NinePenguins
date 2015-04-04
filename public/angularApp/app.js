@@ -1,4 +1,4 @@
-var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router'], function($httpProvider){
+var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router', 'facebook'], function($httpProvider){
 
 	// // Fix for sending AngularJS POST data using $http (to php as far as I know)
 	// // -----------------------------------------------
@@ -47,7 +47,7 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router'], function($ht
 	//   }];
 	  // -----------------------------------------------
 })
-	.config(function($stateProvider, $urlRouterProvider){
+	.config(function($stateProvider, $urlRouterProvider, FacebookProvider){
 		// $locationProvider.html5Mode(true);
 
 		// $routeProvider
@@ -81,9 +81,11 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router'], function($ht
 			.state('home',{ 	url: "/", templateUrl: "angularApp/partials/lobby.html",
 								controller: 'mainController', controllerAs: 'mainCtrl'
 			})
-			.state('quality',{	url: "/quality", templateUrl: "angularApp/partials/topMenuCategories/qualityPage.html",
-								controller: 'mainController', controllerAs: 'mainCtrl'   })
+			.state('game',{	url: "/game", templateUrl: "angularApp/partials/inGame.html",
+								controller: 'gameController', controllerAs: 'gameCtrl'   })
 			;
+
+		FacebookProvider.init('1395028970809392');
 
 	});
 
