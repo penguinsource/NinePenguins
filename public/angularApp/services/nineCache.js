@@ -5,6 +5,7 @@ pokeApp.service('NineCache', function(){
 	var self = this;
 	self.currUser = {};
 	self.userData = {};
+	self.userStatus = {};	// 
 
 	this.setLastProductCached = function(product){
 		self.lastProductCached = product;

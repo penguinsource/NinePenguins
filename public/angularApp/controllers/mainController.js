@@ -1,6 +1,6 @@
 var nineApp = angular.module("nineApp");
 
-nineApp.controller('mainController', function($scope, $http, Facebook){
+nineApp.controller('mainController', function($scope, $http, Facebook, NineCache){
 	var self = this;
 
 	self.startAGame = function(){
@@ -79,9 +79,6 @@ nineApp.controller('mainController', function($scope, $http, Facebook){
         });
        };
        
-       /**
-        * me 
-        */
         $scope.me = function() {
           Facebook.api('/me', function(response) {
             /**
@@ -89,17 +86,19 @@ nineApp.controller('mainController', function($scope, $http, Facebook){
              */
             $scope.$apply(function() {
               $scope.user = response;
+              console.log("user datass ");
+              // console.log($scope.user);
+              NineCache.userData = $scope.user;
+              console.log(NineCache.userData);
             });
             
           });
         };
       
-      /**
-       * Logout
-       */
       $scope.logout = function() {
         Facebook.logout(function() {
           $scope.$apply(function() {
+          	console.log("user logged out !");
             $scope.user   = {};
             $scope.logged = false;
             $scope.userIsConnected = false;
@@ -110,27 +109,27 @@ nineApp.controller('mainController', function($scope, $http, Facebook){
       /**
        * Taking approach of Events :D
        */
-      $scope.$on('Facebook:statusChange', function(ev, data) {
-        console.log('Status: ', data);
-        if (data.status == 'connected') {
-          $scope.$apply(function() {
-            $scope.salutation = true;
-            $scope.byebye     = false;    
-          });
-        } else {
-          $scope.$apply(function() {
-            $scope.salutation = false;
-            $scope.byebye     = true;
+      // $scope.$on('Facebook:statusChange', function(ev, data) {
+      //   console.log('Status: ', data);
+      //   if (data.status == 'connected') {
+      //     $scope.$apply(function() {
+      //       $scope.salutation = true;
+      //       $scope.byebye     = false;    
+      //     });
+      //   } else {
+      //     $scope.$apply(function() {
+      //       $scope.salutation = false;
+      //       $scope.byebye     = true;
             
-            // Dismiss byebye message after two seconds
-            $timeout(function() {
-              $scope.byebye = false;
-            }, 2000)
-          });
-        }
+      //       // Dismiss byebye message after two seconds
+      //       $timeout(function() {
+      //         $scope.byebye = false;
+      //       }, 2000)
+      //     });
+      //   }
         
         
-      });
+      // });
 
 	}
 
