@@ -35,15 +35,6 @@ function closeConnDB(){
 	connection.end();
 }
 
-
-self.active_users = {};
-self.active_games = {};
-
-self.game_queue = [];
-
-self.active_users["billy"] = { "socketId": null, "gamesWon": 0, "gamesLost": 0, "currentGameId": "fdf4325" };
-self.active_games["fdf4325"] = {};
-
 // create object for user with id 'userid' if one doesn't exist already
 self.addUserToActiveUsers = function(userid, socketid){
 	console.log("add user to active users");
@@ -52,7 +43,8 @@ self.addUserToActiveUsers = function(userid, socketid){
 	if ( (self.active_users[userid] === undefined) || 
 		 (self.active_users[userid] === null) ){
 		
-		self.active_users[userid] = { "socketId": socketid, 
+		self.active_users[userid] = { "uid": 
+									  "socketId": socketid, 
 									  "gamesWon": 0,
 									  "gamesLost": 0,
 									  "currentGameId": null };
@@ -60,12 +52,27 @@ self.addUserToActiveUsers = function(userid, socketid){
 		// if user with 'userid' is already defined, then update their socketid
 		console.log("Updating socket id. Old socketid: " + 
 			self.active_users[userid].socketId + " to " + socketid );
-		
+
 		self.active_users[userid].socketId = socketid;
 	}
 
 	console.log("add user to active users");
 	console.log(self.active_users[userid]);
+}
+
+self.createGameObject = function(p1id, p2id, game_id){
+	console.log("Creating Game Object ..");
+}
+
+self.getUserWithId = function(userid){
+	if (self.active_users[userid]){
+		return self.active_users[userid];
+	} else {
+		console.log("ERROR ! User with id: ");
+		console.log(userid);
+		console.log("doesn't exit !");
+		return null;
+	}
 }
 
 self.addPlayerToQueue = function(data, socket){
@@ -90,10 +97,22 @@ self.addPlayerToQueue = function(data, socket){
 	// match players
 	if (self.game_queue.length > 1){
 		// remove the first 2 players from the queue
-		var p1 = self.game_queue.pop();
-		var p2 = self.game_queue.pop();
+		var p1id = self.game_queue.pop();
+		var p2id = self.game_queue.pop();
+
+		var p1 = self.getUserWithId(p1id);
+		var p2 = self.getUserWithId(p2id);
+		var game_id = "game_" + Math.random().toString(36).substring(7);
+
+		self.createGameObject(p1id, p2id, game_id);
+
+		p1.currentGameId = game_id;
+		p2.currentGameId = game_id;
+		
 		console.log("p1: " + p1);
 		console.log("p2: " + p2);
+		console.log(self.game_queue);
+		console.log("game id: " + game_id);
 		// send each a message
 	}
 }
@@ -115,6 +134,16 @@ function handleSocketRequests(io){
 	});
 }
 
+self.initDataStructures = function(){
+	self.active_users = {};
+	self.active_games = {};
+
+	self.game_queue = [];
+
+	self.active_users["billy"] = { "socketId": null, "gamesWon": 0, "gamesLost": 0, "currentGameId": "fdf4325" };
+	self.active_games["fdf4325"] = {};
+}
+
 function init(){
 
 	console.log(self.active_users['billy']);
@@ -128,6 +157,7 @@ function init(){
 	app.use(express.static(process.cwd() + '/public'));
 	server.listen(3000);
 
+	self.initDataStructures();
 	handleSocketRequests(io);
 }
 
