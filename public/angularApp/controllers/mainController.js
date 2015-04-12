@@ -1,6 +1,6 @@
 var nineApp = angular.module("nineApp");
 
-nineApp.controller('mainController', function($scope, $http, Facebook, NineCache){
+nineApp.controller('mainController', function($scope, $http, $state, Facebook, NineCache){
 	var self = this;
 
 	self.startAGame = function(){
@@ -118,7 +118,14 @@ nineApp.controller('mainController', function($scope, $http, Facebook, NineCache
 		// });
 	}
 
-
+	self.handleSocketRequests = function(){
+		NineCache.mySocket.on('gameMatched', function (data) {
+		    console.log("CHEEEEEEEEEEEEEECK IT OUT !");
+		    console.log(data);
+		    $state.go('game');
+		    // socket.emit('my other event', { my: 'data' });
+		});
+	}
 
 	self.init = function(){
 		console.log("mainController !");
@@ -136,6 +143,7 @@ nineApp.controller('mainController', function($scope, $http, Facebook, NineCache
 		console.log(NineCache.userData);
 		
 		self.connectToServer();
+		self.handleSocketRequests();
 	}
 
 	self.init();
