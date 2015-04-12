@@ -4,111 +4,81 @@ nineApp.controller('mainController', function($scope, $http, Facebook, NineCache
 	var self = this;
 
 	self.startAGame = function(){
+		console.log("FB user name: ");
+		console.log(NineCache.userData);
 
+		NineCache.mySocket.emit('addPlayerToQueue', 
+			{ userid: NineCache.userData.id });
 	}
-
-      // $scope.IntentLogin = function() {
-      //   console.log("hey");
-      //   // if(!userIsConnected) {
-      //   //   $scope.login();
-      //   // }
-      // };
 
 	self.initFacebookLogin = function(){
 
-     // Define user empty data :/
-      $scope.user = {};
+		// Watch for Facebook to be ready
+		$scope.$watch(
+			function() {
+			  return Facebook.isReady();
+			},
+			function(newVal) {
+				if (newVal){
+					$scope.facebookReady = true;
+				}
+			}
+		);
+
+		Facebook.getLoginStatus(function(response) {
+			if (response.status == 'connected') {
+				console.log('im connected ');
+				NineCache.userType = 'facebook';
+				$scope.me();
+			}
+		});
       
-      // Defining user logged status
-      $scope.logged = false;
+		$scope.IntentLogin = function() {
+			if(NineCache.userType == 'guest') {
+				$scope.login();
+			} else {
+				console.log('User is already logged in');
+				// console.log(NineCache.userData);
+			}
+		};
       
-      // And some fancy flags to display messages upon user status change
-      $scope.byebye = false;
-      $scope.salutation = false;
+		$scope.login = function() {
+			console.log("logging in");
+			Facebook.login(function(response) {
+				if (response.status == 'connected') {
+					NineCache.userType = 'facebook';
+					$scope.me();
+				}
+			});
+		};
+
+		$scope.me = function() {
+			Facebook.api('/me', function(response) {
+				// Using $scope.$apply since this happens outside angular framework.
+				$scope.$apply(function() {
+					NineCache.userData = response;
+					// console.log("FB user name: ");
+					// console.log(NineCache.userData);
+				});
+			});
+		};
       
-      /**
-       * Watch for Facebook to be ready.
-       * There's also the event that could be used
-       */
-      $scope.$watch(
-        function() {
-          return Facebook.isReady();
-        },
-        function(newVal) {
-        	if (newVal){
-        		console.log("fb is ready .");
-        		$scope.facebookReady = true;
-        	}
-        }
-      );
-      
-      var userIsConnected = false;
-      
-      Facebook.getLoginStatus(function(response) {
-        if (response.status == 'connected') {
-        	console.log('im connected ');
-        	userIsConnected = true;
-        	$scope.logged = true;
-        	$scope.me();
-        }
-      });
-      
-      /**
-       * IntentLogin
-       */
-      $scope.IntentLogin = function() {
-      	console.log("hey 22222222");
-        if(!userIsConnected) {
-        	console.log("hey 222222222333333332222");
-        	$scope.login();
-        }
-      };
-      
-      /**
-       * Login
-       */
-       $scope.login = function() {
-       	console.log("logging in");
-         Facebook.login(function(response) {
-          if (response.status == 'connected') {
-          	console.log('looogged');
-            $scope.logged = true;
-            $scope.me();
-          }
-        
-        });
-       };
-       
-        $scope.me = function() {
-          Facebook.api('/me', function(response) {
-            /**
-             * Using $scope.$apply since this happens outside angular framework.
-             */
-            $scope.$apply(function() {
-              $scope.user = response;
-              console.log("user datass ");
-              // console.log($scope.user);
-              NineCache.userData = $scope.user;
-              console.log(NineCache.userData);
-            });
-            
-          });
-        };
-      
-      $scope.logout = function() {
-        Facebook.logout(function() {
-          $scope.$apply(function() {
-          	console.log("user logged out !");
-            $scope.user   = {};
-            $scope.logged = false;
-            $scope.userIsConnected = false;
-          });
-        });
-      }
+		$scope.logout = function() {
+			Facebook.logout(function() {
+				$scope.$apply(function() {
+					console.log("user logged out !");
+					NineCache.setUserTypeToGuest();
+					$scope.userData   = {};
+				});
+			});
+		}
       
       /**
        * Taking approach of Events :D
        */
+      // And some fancy flags to display messages upon user status change
+      // $scope.byebye = false;
+      // $scope.salutation = false;
       // $scope.$on('Facebook:statusChange', function(ev, data) {
       //   console.log('Status: ', data);
       //   if (data.status == 'connected') {
@@ -133,14 +103,39 @@ nineApp.controller('mainController', function($scope, $http, Facebook, NineCache
 
 	}
 
+	self.connectToServer = function(){
+		console.log("connecting to server");
+		var mySocket = io.connect('http://50.65.103.143:3000/');
+		NineCache.mySocket = mySocket;
+
+
+
+		
+
+		// mySocket.on('news', function (data) {
+		// 	console.log(data);
+		// 	mySocket.emit('blah', { my: 'data blah' });
+		// });
+	}
+
+
+
 	self.init = function(){
 		console.log("mainController !");
 		self.currentGameState = "place";	// 'place' or 'move'
+		self.NineCache = NineCache;
+		NineCache.userData.id = "guest_" + window.Math.random().toString(36).substring(7);
+
+		console.log("Guest user name: ");
+		console.log(NineCache.userData);
 
 		// Facebook
 		self.initFacebookLogin();
 
-
+		console.log("FB user name: ");
+		console.log(NineCache.userData);
+		
+		self.connectToServer();
 	}
 
 	self.init();

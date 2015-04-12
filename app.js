@@ -3,18 +3,11 @@ var util = require('util');
 var fs 	 = require('fs');
 var mysql = require('mysql');
 
+var self = this;
+
 var DEBUG					= true;
 var SERVER_LISTEN_PORT		= 3000;
 var SERVER_LISTEN_PORT_TWO 	= 3001;
-
-var unixWordsFilePath 		= "words";	// for my pc
-// var unixWordsFilePath 		= "/usr/share/dict/words";
-var wordsFilePath			= 'hangmanWordList.txt';
-
-var saveDataMethod 			= 'file';	// user data saved to: database ('db') or 'file'
-var userDataFolderPath		= "userData/";
-// game variables
-var wordListLength			= 0;
 
 var connection = '';
 
@@ -42,123 +35,78 @@ function closeConnDB(){
 	connection.end();
 }
 
-// Express server setup
-//--------------------
-// var express = require('express');
-// app = express();
-// var bodyParser = require('body-parser');
 
-// app.use(express.static(__dirname + '/public'));
-// app.use(bodyParser.urlencoded({ extended: false }))
-// app.use(bodyParser.json());
+self.active_users = {};
+self.active_games = {};
 
-// // Socket.io
-// //----------------------
-// var server = require('http').Server(app);
-// var io = require('socket.io')(server);
+self.game_queue = [];
 
-// io.on('connection', function (socket) {
-//   socket.emit('news', { hello: 'world' });
-//   socket.on('my other event', function (data) {
-//     console.log(data);
-//   });
-// });
+self.active_users["billy"] = { "socketId": null, "gamesWon": 0, "gamesLost": 0, "currentGameId": "fdf4325" };
+self.active_games["fdf4325"] = {};
 
-function init(){
-	var express = require('express');
-	// var app = express();
-	var app = express();
-	// app.use(express.static(__dirname + '/public'));
-	// var io = require('socket.io')(http);
+self.addPlayerToQueue = function(data){
+	console.log("Adding player to queue !");
+	console.log(data);
 
-	var server = require('http').Server(app);
-	var io = require('socket.io')(server);
+	console.log("Game Queue:");
+	console.log(self.game_queue);
+	console.log(self.active_users['hahaaa']);
+	// self.game_queue.push('hello');
+	// self.game_queue.push('car');
 
-	app.use(express.static(process.cwd() + '/public'));
+	// check if the player is already in the game queue
+	if (self.game_queue.indexOf(data.userid) === -1){
+		self.game_queue.push(data.userid);
+	}
 
-	app.get('/hey/:idd?/:other?', function (req, res) {
-		console.log("hey/id?");
-		console.log('id: ' + req.params.idd)
-		console.log('other: ' + req.params.other)
-		res.send('Hello World dude')
-	})
+	// match players
+	if (self.game_queue.length > 1){
+		// remove the first 2 players from the queue
 
-	app.delete('/', function (req, res) {
-		console.log("this is a PUT request");
-	});
-
-	app.post('/', function (req, res) {
-		console.log("this is a POST request");
-	});
-
-	server.listen(3000);
-
-	// console.log(io);
-
-	// io.on('connection', function(socket){
-	// 	console.log("socket:");
-	// 	console.log(socket.id);
-	// 	var socketid = socket.id;
-	// 	// var address = socket.handshake.address;
-	//     // console.log("New connection from " + address.address + ":" + address.port);
-
-	//   socket.on('chat message', function(msg){
-	//     io.emit('chat message', msg);
-	//     if (io.sockets.connected[socketid]) {
-	//     	io.sockets.connected[socketid].emit('chat message', 'for your eyes only');
-	// 	}
-	//   });
-	// });
-
-	io.on('connection', function (socket) {
-		console.log(socket.id);
-		socket.emit('news', { hello: 'world' });
-		socket.on('my other event', function (data) {
-	    console.log(data);
-	  });
-	});
-
-	// app.use(function (req, res, next) {
-	// 	console.log("syp");
-	// });
-
-	// var server = app.listen(3000, function () {
-
-	//   var host = server.address().address;
-	//   var port = server.address().port;
-
-	//   console.log('Example app listening at http://%s:%s', host, port)
-	// })
+		// send each a message
+	}
 }
 
-function init2(){
+// this.dude = 5;
+
+// console.log("=-========== " + this.dude);
+// console.log("=-========== " + self.dude);
+
+function handleSocketRequests(io){
+	io.on('connection', function (socket) {
+		console.log("your socket id is: " + socket.id);
+
+		socket.on('addPlayerToQueue', self.addPlayerToQueue );
+
+
+		// console.log(socket);
+
+		// socket.emit('news', { hello: 'world' });
+		// socket.on('blah', function (data) {
+		// 	console.log("NEW DATA:");
+	 //    	console.log(data);
+	 //  });
+	});
+}
+
+function init(){
+
+	console.log(self.active_users['billy']);
 
 	var express = require('express');
-	// var app = express();
 	var app = express();
-	// app.use(express.static(__dirname + '/public'));
-	// var io = require('socket.io')(http);
 
 	var server = require('http').Server(app);
 	var io = require('socket.io')(server);
 
+	app.use(express.static(process.cwd() + '/public'));
 	server.listen(3000);
 
-	// app.get('/', function (req, res) {
-	//   res.sendfile(__dirname + '/index.html');
-	// });
-	app.use(express.static(process.cwd() + '/public'));
-
-	io.on('connection', function (socket) {
-	  socket.emit('news', { hello: 'world' });
-	  socket.on('my other event', function (data) {
-	    console.log(data);
-	  });
-	});
+	handleSocketRequests(io);
 }
 
 init();
 
 exports.egg = {"hello": 5};
 
-var abc = require("./two.js");
+// var abc = require("./two.js");

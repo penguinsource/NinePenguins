@@ -491,6 +491,12 @@ nav a {
 	margin-top: 90px;
 }
 
+#gameButtons #searchingForGame {
+	margin-left: 13px;
+	background-color: white;
+
+}
+
 .gameBtnRegular {
 	outline: 0;
 	border: none;
@@ -516,4 +522,12 @@ nav a {
     font-weight: normal;
     font-style: normal;
 
+}
+
+
+#spinner {
+	/*width: 16px;*/
+	/*height: 16px;*/
+	background-image: 'images/spinner.gif';
+	/*background-color: white;*/
 }

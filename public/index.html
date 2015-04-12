@@ -27,13 +27,12 @@
 <script src="/angularApp/services/nineCache.js"></script>
 </head>
 
-
 <script>
-  var socket = io.connect('http://localhost:3000/');
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
+  // var socket = io.connect('http://localhost:3000/');
+  // socket.on('news', function (data) {
+  //   console.log(data);
+  //   socket.emit('my other event', { my: 'data' });
+  // });
 </script>
 
 <body ng-controller="mainController as mainCtrl">
@@ -44,10 +43,9 @@
 				<header class='rightHeader'>
 					<section class='loginSection'>
 						login
-						<button type="button" class="btn btn-primary btn-large" data-ng-show="!logged" data-ng-disabled="!facebookReady" data-ng-click="IntentLogin()">Login with Facebook</button>
-						<button type="button" class="btn btn-danger btn-large" data-ng-show="logged" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
+						<button type="button" class="btn btn-primary btn-large" data-ng-show="mainCtrl.NineCache.userType == 'guest'" data-ng-disabled="!facebookReady" data-ng-click="IntentLogin()">Login with Facebook</button>
+						<button type="button" class="btn btn-danger btn-large" data-ng-show="mainCtrl.NineCache.userType != 'guest'" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
 					</section>
-
 
 					<nav>
 						<a class='menuItem'>Lobby</a>
@@ -59,8 +57,12 @@
 			</header>
 			
 			<section id='gameButtons'>
-				<button class='gameBtnRegular' ui-sref='game'>Start a Game</button>
-				<button class='gameBtnRegular'>Play Quick Tutorial</button>
+				<button class='gameBtnRegular' ng-click='mainCtrl.startAGame()'>Start a Game</button>
+				<button class='gameBtnRegular' ui-sref='game'>
+					<span id="spinner"> </span>
+					Play Quick Tutorial
+				</button>
+				<!-- <span id='searchingForGame'>Searching for a game</span> -->
 			</section>
 		</section>
 	</section>
