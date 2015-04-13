@@ -565,6 +565,8 @@ nav a {
 	vertical-align: top;
 	width: 19%;
 	height: 100%;
+	border-left: 1px solid rgb(234, 234, 234);
+	padding-left: 13px;
 }
 
 .userWrap {
@@ -586,7 +588,7 @@ nav a {
 
 #chatInput {
 	border: none;
-	width: 80%;
+	width: 81%;
 	height: 28px;;
 	
 }
@@ -597,3 +599,21 @@ nav a {
 	/*background-color: red;*/
 }
 
+#sendMessageBtn {
+	border: none;
+	background-color: rgb(32, 32, 51);
+	border-radius: 5px;
+	color: white;
+	padding: 4px 15px;;
+}
+
+#sendMessageBtn:hover {
+	background-color: rgb(55, 55, 86);
+}
+
+/*#chatUsername {
+	display: inline-block;
+	color: gray;
+	width: 117px;
+	background-color: red;
+}*/

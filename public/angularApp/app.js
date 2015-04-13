@@ -91,3 +91,25 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router', 'facebook'], 
 
 
 
+nineApp.directive('sendMessagebtn', function() {
+  return {
+    restrict: 'E',
+    replace: true,
+    template: '<button id="sendMessageBtn">Send Message',
+    link: function(scope, elem, attrs) {
+      elem.bind('click', function() {
+      	console.log("TEXT: ");
+      	console.log(scope.messageText);
+      	console.log(elem);
+      	console.log(attrs);
+        // elem.css('background-color', 'white');
+        // scope.$apply(function() {
+        //   scope.color = "white";
+        // });
+      });
+      elem.bind('mouseover', function() {
+        elem.css('cursor', 'pointer');
+      });
+    }
+  };
+});
