@@ -114,6 +114,10 @@ self.addPlayerToQueue = function(data, socket, io){
 	console.log(self.game_queue);
 }
 
+self.postLobbyMessage = function(data, socket, io){
+	
+}
+
 function handleSocketRequests(io){
 	io.on('connection', function (socket) {
 
@@ -126,6 +130,9 @@ function handleSocketRequests(io){
 		socket.on('addPlayerToQueue', 
 			function(data){ self.addPlayerToQueue(data, socket, io); });
 
+		socket.on('postLobbyMessage', 
+			function(data){ self.postLobbyMessage(data, socket, io); });
+		
 
 		// console.log(socket);
 

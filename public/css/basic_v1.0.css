@@ -1,5 +1,6 @@
 
 body {
+	background-color: #2A2943;
 	/*width: 100%;*/
 	/*height: 200px;*/
 }
@@ -434,7 +435,6 @@ a:visited{
 
 #bottomSection {
 	background-color: #2A2943;
-	height: 500px;
 }
 
 #bodySectionWrap {
@@ -540,10 +540,10 @@ nav a {
 
 #chatWrap {
 	border-radius: 6px;
-	box-shadow: -9px 11px 2px #242244;
 	margin-top: 15px;
 	height: 339px;
 	background-color: rgb(255, 255, 255);
+	box-shadow: -9px 11px 2px #1E1C3C;
 }
 
 #topChatArea {
@@ -558,6 +558,24 @@ nav a {
 	display: inline-block;
 	width: 80%;
 	vertical-align: top;
+	overflow-y: scroll;
+	height: 280px;;
+}
+
+.userMessageWrap {
+	margin-bottom: 0px;
+}
+
+.userMessage {
+
+}
+
+.userMessageAuthor {
+	margin-right: 23px;
+	color: rgb(44, 180, 239);
+	font-weight: 600;
+	font-size: 15px;;;
+	
 }
 
 #chatUserList {
@@ -602,9 +620,10 @@ nav a {
 #sendMessageBtn {
 	border: none;
 	background-color: rgb(32, 32, 51);
-	border-radius: 5px;
 	color: white;
-	padding: 4px 15px;;
+	padding: 4px 15px;
+	border-radius: 5px;
+	margin-left: 34px;;
 }
 
 #sendMessageBtn:hover {
@@ -617,3 +636,30 @@ nav a {
 	width: 117px;
 	background-color: red;
 }*/
+span.userMessageAuthor {
+	/*width: 100%;*/
+	/*height: 200px;*/
+}
+
+::-webkit-scrollbar {
+      width: 7px;
+} /* this targets the default scrollbar (compulsory) */
+
+::-webkit-scrollbar-track {
+      background-color: #FFFFFF;
+} /* the new scrollbar will have a flat appearance with the set background color */
+ 
+::-webkit-scrollbar-thumb {
+      background-color: rgb(232, 232, 232);
+      border-radius: 3px;
+} /* this will style the thumb, ignoring the track */
+ 
+::-webkit-scrollbar-button {
+      background-color: rgb(104, 105, 107);
+      height: 7px;
+      border-radius: 3px;
+} /* optionally, you can style the top and the bottom buttons (left and right for horizontal bars) */
+ 
+::-webkit-scrollbar-corner {
+      background-color: black;
+} /* if both the vertical and the horizontal bars appear, then perhaps the right bottom corner also needs to be styled */

@@ -6,6 +6,7 @@ pokeApp.service('NineCache', function(){
 
 	self.userData = {};
 	self.userType = 'guest';	// {guest, facebook}
+	self.username = '';
 	self.mySocket = null;
 
 	this.setUserTypeToGuest = function(){

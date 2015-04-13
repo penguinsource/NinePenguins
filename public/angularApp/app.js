@@ -91,25 +91,90 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router', 'facebook'], 
 
 
 
+// nineApp.directive('sendMessagebtn', function() {
+// 	return {
+// 		restrict: 'E',
+// 		replace: true,
+// 		template: '<button id="sendMessageBtn">Send Message',
+// 		link: function(scope, elem, attrs) {
+// 			elem.bind('click', function() {
+// 				var msgWrap = document.createElement("p");
+// 				var msgAuthor = document.createElement("span");
+// 				var msgText = document.createElement("span");
+// 				var chatArea = document.getElementById('chatArea');
+// 				scope.$apply(function(){
+// 				  	msgAuthor.className = "userMessageAuthor";
+// 				  	msgAuthor.textContent = scope.username;
+
+// 				  	msgText.className = "userMessage";
+// 				  	msgText.textContent = scope.messageText;
+
+// 				  	msgWrap.className = "userMessageWrap";
+// 				  	msgWrap.appendChild(msgAuthor);
+// 				  	msgWrap.appendChild(msgText);
+				  	
+// 				  	chatArea.appendChild(msgWrap)
+// 					chatArea.scrollTop = chatArea.scrollHeight;
+// 					scope.messageText = '';
+// 				});
+// 				scope.postMessageToChat();
+// 			});
+
+// 			elem.bind('mouseover', function() {
+// 				elem.css('cursor', 'pointer');
+// 			});
+// 		}
+// 	};
+// });
+
 nineApp.directive('sendMessagebtn', function() {
-  return {
-    restrict: 'E',
-    replace: true,
-    template: '<button id="sendMessageBtn">Send Message',
-    link: function(scope, elem, attrs) {
-      elem.bind('click', function() {
-      	console.log("TEXT: ");
-      	console.log(scope.messageText);
-      	console.log(elem);
-      	console.log(attrs);
-        // elem.css('background-color', 'white');
-        // scope.$apply(function() {
-        //   scope.color = "white";
-        // });
-      });
-      elem.bind('mouseover', function() {
-        elem.css('cursor', 'pointer');
-      });
-    }
-  };
+	return {
+		restrict: 'E',
+		replace: true,
+		template: '<button id="sendMessageBtn">Send Message',
+		link: function(scope, elem, attrs) {
+			elem.bind('click', function() {
+				var msgWrap = document.createElement("p");
+				var msgAuthor = document.createElement("span");
+				var msgText = document.createElement("span");
+				var chatArea = document.getElementById('chatArea');
+				scope.$apply(function(){
+				 //  	msgAuthor.className = "userMessageAuthor";
+				 //  	msgAuthor.textContent = scope.username;
+
+				 //  	msgText.className = "userMessage";
+				 //  	msgText.textContent = scope.messageText;
+
+				 //  	msgWrap.className = "userMessageWrap";
+				 //  	msgWrap.appendChild(msgAuthor);
+				 //  	msgWrap.appendChild(msgText);
+				  	
+				 //  	chatArea.appendChild(msgWrap);
+					// chatArea.scrollTop = chatArea.scrollHeight;
+					// scope.messageText = '';
+
+					// chatArea.append("<user-message data-author-name='dude' data-message='smthing'></user-message>");
+					scope.chatMessagesList.push({author: scope.username, message: scope.messageText});
+					chatArea.scrollTop = chatArea.scrollHeight;
+				});
+				scope.postMessageToChat();
+			});
+
+			elem.bind('mouseover', function() {
+				elem.css('cursor', 'pointer');
+			});
+		}
+	};
+});
+
+nineApp.directive('userMessage', function() {
+	return {
+		restrict: 'E',
+		// replace: true,
+		template: "<p class='userMessageWrap'><span class='userMessageAuthor'>{{author}}</span class='userMessage'>{{messageText}}<span></span></p>",
+		scope: {
+			author: '@authorName',
+			messageText: '@message'
+		}
+	};
 });

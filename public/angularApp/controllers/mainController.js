@@ -46,7 +46,6 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 			console.log("logging in");
 			Facebook.login(function(response) {
 				if (response.status == 'connected') {
-					NineCache.userType = 'facebook';
 					$scope.me();
 				}
 			});
@@ -56,7 +55,9 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 			Facebook.api('/me', function(response) {
 				// Using $scope.$apply since this happens outside angular framework.
 				$scope.$apply(function() {
+					NineCache.userType = "facebook";
 					NineCache.userData = response;
+					self.setUsername();
 					// console.log("FB user name: ");
 					// console.log(NineCache.userData);
 				});
@@ -120,22 +121,34 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 
 	self.handleSocketRequests = function(){
 		NineCache.mySocket.on('gameMatched', function (data) {
-		    console.log("CHEEEEEEEEEEEEEECK IT OUT !");
-		    console.log(data);
 		    $state.go('game');
 		    // socket.emit('my other event', { my: 'data' });
 		});
+	}
+
+	self.setUsername = function(){
+		if (self.NineCache.userType === 'guest'){
+			$scope.username = self.NineCache.userData.id;
+			NineCache.username = $scope.username;
+		} else if (self.NineCache.userType === 'facebook'){
+			$scope.username = self.NineCache.userData.first_name;
+			NineCache.username = $scope.username;
+		}
 	}
 
 	self.init = function(){
 		console.log("mainController !");
 		self.currentGameState = "place";	// 'place' or 'move'
 		self.NineCache = NineCache;
+		
 		NineCache.userData.id = "guest_" + window.Math.random().toString(36).substring(7);
+		NineCache.userType = 'guest';
+		self.setUsername();
 
 		console.log("Guest user name: ");
 		console.log(NineCache.userData);
-
+		self.blah = 'agaaaain';
+		$scope.dude = 'i am main controller';
 		// Facebook
 		self.initFacebookLogin();
 
