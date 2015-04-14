@@ -3,26 +3,28 @@
 <div id='chatWrap'>
 	<section id='topChatArea'>
 		<div id='chatArea'>
+			<span style='color: gray'>
+				Welcome to The Original Nine Men's Morris Lobby Chatroom !
+			</span>
 			<user-message ng-repeat="messageObj in chatMessagesList" 
-						  data-author-name='{{messageObj.author}}' 
+						  data-author-name='{{messageObj.username}}' 
 						  data-message='{{messageObj.message}}'>
 			</user-message>
-			<user-message data-author-name='looney tunes blahh' data-message='this is my message 2'></user-message>
-			<!-- <span style='color: gray'>Welcome to The Original Nine Men's Morris Lobby Chatroom !</span> -->
 		</div>
 		<div id='chatUserList'>
-			<p class='userWrap'>Jack</p>
-			<p class='userWrap'>Jack_Jousseeffsky Pascal</p>
-			<p class='userWrap'>Jeff</p>
-			<p class='userWrap'>Jack_Jousseeffsky</p>
-			<p class='userWrap'>Leonardo Dicaprio</p>
-			<p class='userWrap'>Jack_Jousseeffsky Pascal</p>
+			<p  class='userWrap' 
+				ng-repeat='chatUsername in chatUsersList'>
+				{{chatUsername}}
+			</p>
 		</div>
 	</section>
 
 	<section id='chatInputArea'> 
-		<input maxlength='110' id='chatInput' ng-model='messageText' placeholder="Enter your message here..">
-		<!-- <button id='sendMessageBtn'>Send Message</button> -->
+		<input  ng-keypress='lobbyCtrl.checkEnterKeyPress($event)' 
+				maxlength='110' 
+				id='chatInput' 
+				ng-model='messageText' 
+				placeholder="Enter your message here..">
 		<send-messagebtn></send-messagebtn>
 	</section>
 </div>

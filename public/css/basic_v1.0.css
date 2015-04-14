@@ -482,8 +482,8 @@ nav a {
 }
 
 .loginSection {
-	background-color: red;
 	height: 70px;
+	background-color: red;
 }
 
 #gameButtons {
@@ -558,8 +558,9 @@ nav a {
 	display: inline-block;
 	width: 80%;
 	vertical-align: top;
-	overflow-y: scroll;
-	height: 280px;;
+	overflow-y: auto;
+	height: 279px;
+	padding-bottom: 25px;;;;
 }
 
 .userMessageWrap {

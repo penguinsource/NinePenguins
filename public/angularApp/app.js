@@ -81,6 +81,8 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router', 'facebook'], 
 			.state('home',{ 	url: "/", templateUrl: "angularApp/partials/lobby.html",
 								controller: 'lobbyController', controllerAs: 'lobbyCtrl'
 			})
+			.state('other',{	url: "/game", templateUrl: "angularApp/partials/inGame.html",
+								controller: 'gameController', controllerAs: 'gameCtrl'   })
 			.state('game',{	url: "/game", templateUrl: "angularApp/partials/inGame.html",
 								controller: 'gameController', controllerAs: 'gameCtrl'   })
 			;
@@ -134,34 +136,12 @@ nineApp.directive('sendMessagebtn', function() {
 		template: '<button id="sendMessageBtn">Send Message',
 		link: function(scope, elem, attrs) {
 			elem.bind('click', function() {
-				var msgWrap = document.createElement("p");
-				var msgAuthor = document.createElement("span");
-				var msgText = document.createElement("span");
-				var chatArea = document.getElementById('chatArea');
-				scope.$apply(function(){
-				 //  	msgAuthor.className = "userMessageAuthor";
-				 //  	msgAuthor.textContent = scope.username;
-
-				 //  	msgText.className = "userMessage";
-				 //  	msgText.textContent = scope.messageText;
-
-				 //  	msgWrap.className = "userMessageWrap";
-				 //  	msgWrap.appendChild(msgAuthor);
-				 //  	msgWrap.appendChild(msgText);
-				  	
-				 //  	chatArea.appendChild(msgWrap);
-					// chatArea.scrollTop = chatArea.scrollHeight;
-					// scope.messageText = '';
-
-					// chatArea.append("<user-message data-author-name='dude' data-message='smthing'></user-message>");
-					scope.chatMessagesList.push({author: scope.username, message: scope.messageText});
-					chatArea.scrollTop = chatArea.scrollHeight;
-				});
-				scope.postMessageToChat();
-			});
-
-			elem.bind('mouseover', function() {
-				elem.css('cursor', 'pointer');
+				if (scope.messageText != ''){
+					scope.$apply(function(){
+						scope.postMessageToChat(scope.username, scope.messageText, true);
+					});
+					
+				}
 			});
 		}
 	};

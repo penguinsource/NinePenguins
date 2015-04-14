@@ -8,7 +8,8 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 		console.log(NineCache.userData);
 
 		NineCache.mySocket.emit('addPlayerToQueue', 
-			{ userid: NineCache.userData.id });
+			{ username: NineCache.username, 
+			  userid: 	NineCache.userData.id });
 	}
 
 	self.initFacebookLogin = function(){
@@ -136,6 +137,26 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 		}
 	}
 
+
+	$scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams){
+		console.log("===============================================");
+		// console.log(event);
+		console.log("To State:");
+		console.log(toState.name);
+		// console.log(toParams);
+		console.log("From State:");
+		console.log(fromState.name);
+		// console.log(fromParams);
+		console.log("===============================================");
+	  // if (forbit){
+	  //   event.preventDefault()
+	  // }
+	  // else{  
+	  //   return;
+	  // {}
+	  // NineCache.mySocket.emit('blah', {toState: toState.name, fromState: fromState.name});
+	});
+
 	self.init = function(){
 		console.log("mainController !");
 		self.currentGameState = "place";	// 'place' or 'move'
@@ -147,16 +168,25 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 
 		console.log("Guest user name: ");
 		console.log(NineCache.userData);
-		self.blah = 'agaaaain';
-		$scope.dude = 'i am main controller';
 		// Facebook
 		self.initFacebookLogin();
 
 		console.log("FB user name: ");
 		console.log(NineCache.userData);
 		
+
+
 		self.connectToServer();
 		self.handleSocketRequests();
+
+		NineCache.mySocket.on('disconnect', function(){
+			console.log("dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+			NineCache.mySocket.emit('blah', 'SUPPPPPPPPPP');
+		});
+
+		console.log("state:");
+		console.log($state.current);
+		console.log($state);
 	}
 
 	self.init();

@@ -36,11 +36,12 @@ function closeConnDB(){
 }
 
 // create object for user with id 'userid' if one doesn't exist already
-self.addUserToActiveUsers = function(userid, socketid){
+self.addUserToActiveUsers = function(username, userid, socketid){
 	if ( (self.active_users[userid] === undefined) || 
 		 (self.active_users[userid] === null) ){
 		
-		self.active_users[userid] = { "socketId": socketid, 
+		self.active_users[userid] = { "username": username,
+									  "socketId": socketid, 
 									  "gamesWon": 0,
 									  "gamesLost": 0,
 									  "currentGameId": null };
@@ -73,7 +74,7 @@ self.addPlayerToQueue = function(data, socket, io){
 	console.log(socket.id);
 	// self.game_queue.push('hello');
 
-	self.addUserToActiveUsers(data.userid, socket.id);
+	self.addUserToActiveUsers(data.username, data.userid, socket.id);
 
 	// check if the player is already in the game queue
 	if (self.game_queue.indexOf(data.userid) === -1){
@@ -115,7 +116,18 @@ self.addPlayerToQueue = function(data, socket, io){
 }
 
 self.postLobbyMessage = function(data, socket, io){
-	
+	io.emit('updateLobbyChat', data);
+}
+
+self.addUserToLobby  = function(data, socket, io){
+	// add user if they don't currently exist in the chat users list
+	self.chatUsersList.push(data.username);
+	self.socketid_map[socket.id] = data.userid;
+
+	// self.addUserToActiveUsers(data.username, data.userid, socket.id);
+
+	// send everyone the chat users list
+	io.emit('updateLobbyUsersList', self.chatUsersList);
 }
 
 function handleSocketRequests(io){
@@ -126,6 +138,13 @@ function handleSocketRequests(io){
 		console.log("SOCKET: ");
 		console.log(socket.id);
 
+		socket.on('disconnect', function(event){
+		    console.log('haaaaaaaaaa');
+		});
+
+		socket.on('addUserToLobby', 
+			function(data){ self.addUserToLobby(data, socket, io); });
+
 		// socket.on('addPlayerToQueue', self.addPlayerToQueue );
 		socket.on('addPlayerToQueue', 
 			function(data){ self.addPlayerToQueue(data, socket, io); });
@@ -133,6 +152,8 @@ function handleSocketRequests(io){
 		socket.on('postLobbyMessage', 
 			function(data){ self.postLobbyMessage(data, socket, io); });
 		
+		socket.on('blah', 
+			function(data){ console.log(data); });
 
 		// console.log(socket);
 
@@ -145,15 +166,13 @@ function handleSocketRequests(io){
 }
 
 self.initDataStructures = function(){
-	self.active_users = {};
-	self.active_games = {};
-	self.game_queue = [];
+	self.socketid_map = {};	// hash map, index being 'socketid'
+	self.active_users = {};	// hash map, index being 'userid'
+	self.active_games = {};	// hash map, index being 'gameid'
+	self.game_queue = [];	// list of 'userid's waiting to play a game
 
-	self.active_users["billy"] = {  "socketId": null, 
-									"gamesWon": 0, 
-									"gamesLost": 0, 
-									"currentGameId": "fdf4325" };
-	self.active_games["fdf4325"] = {};
+	self.chatMessagesList = [];
+	self.chatUsersList = [];
 }
 
 function init(){
