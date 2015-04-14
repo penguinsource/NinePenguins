@@ -3,140 +3,111 @@ var nineApp = angular.module("nineApp");
 nineApp.controller('gameController', function($scope, $http){
 	var self = this;
 
-
-	//     0    1    2    3    4    5    6
-	
-	// 0  p0              p1             p2
-	
-	// 1        p8        p9       p10
-	
-	// 2             p16  p17  p18              
-	
-	// 3  p7    p15  p23       p19 p11   p3
-	
-	// 4             p22  p21  p20  
-	
-	// 5        p14       p13      p12
-	
-	// 6  p6              p5             p4
-
-	self.board = [{"control": "free", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" },
-				  {"control": "free", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" }];
-
-	console.log("HEEEEEEEEEEEEEEEEEEEEY");
-	console.log(self.board);
-
-	// sample position object: { "player": "none", "neighbours": [ [0,3], [] }
-	// self.p0 = "player1";
-	self.p0 = {"control": "free", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" };
-	self.p1 = {"control": "free", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ], "pclass": "pinFreePlace" };
-	self.p2 = {"control": "free", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" };
-	self.p3 = {"control": "free", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" };
-	self.p4 = {"control": "free", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" };
-	self.p5 = {"control": "free", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ], "pclass": "pinFreePlace" };
-	self.p6 = {"control": "free", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" };
-	self.p7 = {"control": "free", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" };
-	self.p8 = {"control": "free", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" };
-	self.p9 = {"control": "free", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ], "pclass": "pinFreePlace" };
-	self.p10 = {"control": "free", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" };
-	self.p11 = {"control": "free", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ], "pclass": "pinFreePlace" };
-	self.p12 = {"control": "free", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" };
-	self.p13 = {"control": "free", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ], "pclass": "pinFreePlace" };
-	self.p14 = {"control": "free", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" };
-	self.p15 = {"control": "free", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ], "pclass": "pinFreePlace" };
-	self.p16 = {"control": "free", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" };
-	self.p17 = {"control": "free", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ], "pclass": "pinFreePlace" };
-	self.p18 = {"control": "free", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" };
-	self.p19 = {"control": "free", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" };
-	self.p20 = {"control": "free", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" };
-	self.p21 = {"control": "free", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ], "pclass": "pinFreePlace" };
-	self.p22 = {"control": "free", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" };
-	self.p23 = {"control": "free", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" };
-
-	self.pinList = [];
-	for (var i = 0; i < 24; i++){
-		var obj = eval("self.p" + i);
-		obj.ind = i;
-		self.pinList.push(obj);
-	}
-	
-	console.log("pinlist:");
-	console.log(self.pinList);
-
-	self.playerColor = 'player1pin';
-
 	self.isEven = function(n) {
 	  return n === parseFloat(n)? !(n%2) : void 0;
 	}
 
-	self.checkForMills = function(pinBtn, position){
-		if (self.isEven(position)){
+	self.checkForMills = function(pinBtn, pinBtnInd){
+		if (self.isEven(pinBtnInd)){
 			console.log("its even !");
-			var middlePin = eval("self.p" + pinBtn.hNeighbours);
+
+			// get the 2 horizontal pins connected to pinBtn
+			var middlePinInd = pinBtn.hNeighbours[0];
+			var middlePin = self.board[middlePinInd];
 			var otherPin = {};
+			var otherPinInd = -1;
 			for (var i = 0; i < middlePin.hNeighbours.length; i++){
-				if (middlePin.hNeighbours[i] != pinBtn.ind){
-					otherPin = eval("self.p" + middlePin.hNeighbours[i]);
+				if (middlePin.hNeighbours[i] != pinBtnInd){
+					otherPinInd = middlePin.hNeighbours[i];
+					otherPin = self.board[otherPinInd];
 				}
 			}
-			console.log("my pin index is: " + pinBtn.ind);
-			console.log("middle pin index is: " + middlePin.ind);
-			console.log("other pin index is: " + otherPin.ind);
+
+			// check for horizontal mill
+			if ((pinBtn.control === middlePin.control) && (middlePin.control === otherPin.control)){
+				console.log("Horizontal Mill, indices: " + pinBtnInd, middlePinInd, otherPinInd);
+			}
+			// console.log("my pin index is: " + pinBtnInd);
+			// console.log("middle pin index is: " + middlePinInd);
+			// console.log("other pin index is: " + otherPinInd);
+
+			// get the 2 vertical pins connected to pinBtn
+			middlePinInd = pinBtn.vNeighbours[0];
+			middlePin = self.board[middlePinInd];
+			for (var i = 0; i < middlePin.vNeighbours.length; i++){
+				if (middlePin.vNeighbours[i] != pinBtnInd){
+					otherPinInd = middlePin.vNeighbours[i];
+					otherPin = self.board[otherPinInd];
+				}
+			}
+
+			// check for vertical mill
+			if ((pinBtn.control === middlePin.control) && (middlePin.control === otherPin.control)){
+				console.log("Vertical Mill, indices: " + pinBtnInd, middlePinInd, otherPinInd);
+			}
 		} else {
 			console.log("its odd !");
-			// pinBtn.animate
+			
+			var middlePinInd = -1;
+			var middlePin = {};
+			var otherPinInd = -1;
+			var otherPin = {};
+
 			// check for horizontal mill
-			var horizontalMill = true;
-			for (var i = 0; i < pinBtn.hNeighbours.length; i++){
-				if (pinBtn.hNeighbours[i].control != self.playerColor){
-					horizontalMill = false;
-					break;
+			// case 1, pinBtn only has 1 horizontal neighbour
+			if (pinBtn.hNeighbours.length == 1){
+				middlePinInd = pinBtn.hNeighbours[0];
+				var middlePin = self.board[middlePinInd];
+				for (var i = 0; i < middlePin.hNeighbours.length; i++){
+					if (middlePin.hNeighbours[i] != pinBtnInd){
+						otherPinInd = middlePin.hNeighbours[i];
+						otherPin = self.board[otherPinInd];
+					}
 				}
-			}
-			if (horizontalMill){
-				// highlight mill
-				// break;
+
+				if ( (pinBtn.control === middlePin.control) && (middlePin.control === otherPin.control) ){
+					console.log("Horizontal Mill case 1, indices: " + pinBtnInd, middlePinInd, otherPinInd);
+				}
+			} else { // case 2, pinBtn has 2 horizontal neighbours
+				var nPinOneInd = pinBtn.hNeighbours[0];
+				var nPinTwoInd = pinBtn.hNeighbours[1];
+				var neighbourPinOne = self.board[nPinOneInd];
+				var neighbourPinTwo = self.board[nPinTwoInd];
+				if ( (pinBtn.control === neighbourPinOne.control) && (pinBtn.control === neighbourPinTwo.control) ){
+					console.log("Horizontal Mill case 2, indices: " + pinBtnInd, nPinOneInd, nPinTwoInd);
+				}
 			}
 			
 			// check for vertical mill
-			var verticalMill = true;
-			for (var i = 0; i < pinBtn.hNeighbours.length; i++){
-				if (pinBtn.hNeighbours[i].control != self.playerColor){
-					verticalMill = false;
-					break;
+			// case 1, pinBtn only has 1 vertical neighbour
+			if (pinBtn.vNeighbours.length == 1){
+				middlePinInd = pinBtn.vNeighbours[0];
+				var middlePin = self.board[middlePinInd];
+				for (var i = 0; i < middlePin.vNeighbours.length; i++){
+					if (middlePin.vNeighbours[i] != pinBtnInd){
+						otherPinInd = middlePin.vNeighbours[i];
+						otherPin = self.board[otherPinInd];
+					}
+				}
+
+				if ( (pinBtn.control === middlePin.control) && (middlePin.control === otherPin.control) ){
+					console.log("Vertical Mill case 1, indices: " + pinBtnInd, middlePinInd, otherPinInd);
+				}
+			} else { // case 2, pinBtn has 2 vertical neighbours
+				var nPinOneInd = pinBtn.vNeighbours[0];
+				var nPinTwoInd = pinBtn.vNeighbours[1];
+				var neighbourPinOne = self.board[nPinOneInd];
+				var neighbourPinTwo = self.board[nPinTwoInd];
+				if ( (pinBtn.control === neighbourPinOne.control) && (pinBtn.control === neighbourPinTwo.control) ){
+					console.log("Vertical Mill case 2, indices: " + pinBtnInd, nPinOneInd, nPinTwoInd);
 				}
 			}
-			if (verticalMill){
-				// highlight mill
-				// break;
-			}
+
 		}
 	}
 
 	self.mouseOverEvent = function(pinBtn){
-		console.log("mouse over event");
+		// console.log("mouse over event");
 		if (self.currentGameState === 'place'){
 			pinBtn.pclass = self.playerColor;
 		} else if (self.currentGameState === 'move'){
@@ -147,8 +118,8 @@ nineApp.controller('gameController', function($scope, $http){
 	}
 
 	self.mouseOutEvent = function(pinBtn){
-		console.log("mouse over event");
-		console.log(pinBtn);
+		// console.log("mouse over event");
+		// console.log(pinBtn);
 		if (self.currentGameState=== 'place'){
 			if (pinBtn.control === 'free'){
 				pinBtn.pclass = "pinFreePlace";
@@ -158,68 +129,23 @@ nineApp.controller('gameController', function($scope, $http){
 		}
 	}
 
-	self.clickEvent = function(pinBtn, position){
-		console.log("click event, position " + position);
+	self.clickEvent = function(pinBtn, pinBtnInd){
+		console.log("click event, pinBtnInd " + pinBtnInd);
 		console.log(pinBtn);
 		if (self.currentGameState === 'place'){
-			if (pinBtn.control === 'free'){
-				pinBtn.control = self.playerColor;
-				pinBtn.pclass = self.playerColor;
-				self.checkForMills(pinBtn, position);
+			if (pinBtn.control === 'pinFreePlace'){
+				self.board[pinBtnInd].control = self.playerColor;
+				self.checkForMills(pinBtn, pinBtnInd);
 			}
 		} else if (self.currentGameState === 'move'){
 
-		}
-
-		console.log("socket:");
-		// var io = require('socket.io')(8080);
-		var socket = io.connect('http://localhost');
-		socket.on('news', function (data) {
-			console.log(data);
-			socket.emit('my other event', { my: 'data' });
-		});
-
-		
+		}		
 	}
 
 	// player = playerMe
-	self.placePin = function(player, position){
+	self.placePin = function(player, pinBtnInd){
 
 	}
-
-	
-	// $('form').submit(function(){
-	// socket.emit('chat message', $('#m').val());
-	// 	$('#m').val('');
-	// 	return false;
-	// });
-	// socket.on('chat message', function(msg){
-	// 	console.log("GOT MESSAGE:" + msg);
-	// 	$('#messages').append($('<li>').text(msg));
-	// });
-
-	console.log("board:");
-	console.log(self.board);
-
-	$scope.sendPost = function(){
-		console.log("POST Request");
-	    $http.post('http://localhost:3000/')
-	    	.success(function(data, status, headers, config) {
-	        	console.log("DATAAAAAAAAAAAA:");
-	        	console.log(data);
-	        // self.catList = data;
-	    });
-	};
-	
-	$scope.sendGet = function(){
-		console.log("GET Request");
-	    $http.delete('http://localhost:3000/')
-	    	.success(function(data, status, headers, config) {
-	        	// console.log("DATAAAAAAAAAAAA:");
-	        	// console.log(data);
-	        // self.catList = data;
-	    });
-	};
 
 	self.handleSocketRequests = function(){
 		// NineCache.mySocket.on('updateLobbyChat', function (data) {
@@ -234,10 +160,81 @@ nineApp.controller('gameController', function($scope, $http){
 
 	}
 
+	self.initDataStructures = function(){
+		//     0    1    2    3    4    5    6
+		
+		// 0  p0              p1             p2
+		
+		// 1        p8        p9       p10
+		
+		// 2             p16  p17  p18              
+		
+		// 3  p7    p15  p23       p19 p11   p3
+		
+		// 4             p22  p21  p20  
+		
+		// 5        p14       p13      p12
+		
+		// 6  p6              p5             p4
+
+		self.board = [{"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ] },
+					  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ] }];
+
+		// self.board = [{"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" },
+		// 			  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" }];
+
+		self.playerColor = 'player1pin';
+	}
+
 	self.init = function(){
 		console.log("Game Controller !");
 		self.currentGameState = "place";	// 'place' or 'move'
 
+		self.initDataStructures();
 		self.handleSocketRequests();
 	}
 
