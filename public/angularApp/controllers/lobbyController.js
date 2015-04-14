@@ -8,6 +8,7 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 		var chatArea = document.getElementById('chatArea');
 		$scope.chatMessagesList.push({username: username, message: messageText});
 		
+		// emitting message to (server) and all the users present in the lobby
 		if (isMyMessage){
 			NineCache.mySocket.emit('postLobbyMessage', 
 				{ username: NineCache.username, message: messageText });
@@ -32,7 +33,8 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 		    	$scope.$apply(function(){
 		    		console.log("LIST:");
 		    		console.log(data);
-		    		$scope.chatUsersList = data;
+		    		$scope.chatUsersList = data.chatUsersList;
+		    		// $scope.postMessageToChat('', data.message, true);
 		    	});		    
 		});
 

@@ -221,10 +221,24 @@ nineApp.controller('gameController', function($scope, $http){
 	    });
 	};
 
+	self.handleSocketRequests = function(){
+		// NineCache.mySocket.on('updateLobbyChat', function (data) {
+		// 	if (NineCache.username != data.username){
+		//     	$scope.$apply(function(){
+		//     		$scope.postMessageToChat(data.username, data.message, false);
+		//     	});
+		    	
+		// 	}
+		// });
+
+
+	}
+
 	self.init = function(){
 		console.log("Game Controller !");
 		self.currentGameState = "place";	// 'place' or 'move'
-		console.log("my:");
+
+		self.handleSocketRequests();
 	}
 
 	self.init();

@@ -13,15 +13,15 @@
 		</div>
 		<div id='chatUserList'>
 			<p  class='userWrap' 
-				ng-repeat='chatUsername in chatUsersList'>
-				{{chatUsername}}
+				ng-repeat='userObj in chatUsersList'>
+				{{userObj.username}}
 			</p>
 		</div>
 	</section>
 
 	<section id='chatInputArea'> 
 		<input  ng-keypress='lobbyCtrl.checkEnterKeyPress($event)' 
-				maxlength='110' 
+				maxlength='90' 
 				id='chatInput' 
 				ng-model='messageText' 
 				placeholder="Enter your message here..">

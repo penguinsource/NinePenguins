@@ -222,15 +222,15 @@ a:visited{
 .action-button
 {
 	position: absolute;
-	font-size: 25px;
-	border-radius: 37px;
 	text-decoration: none;
-	outline: white solid 7px;
+	outline: #2A2943 solid 2px;
 	color: #FFF;
 	font-family: 'Pacifico', cursive;
 	border-style: none;
-	padding: 21px 24px;
 	margin: 0px 10px 8px 0px;
+	border-radius: 37px;
+	font-size: 25px;
+	padding: 21px 24px;
 }
 
 .blue
@@ -331,101 +331,103 @@ a:visited{
 }
 
 .p0pos {
-	left: 22px;
 	top: 23px;
+	margin: 0;
+	padding: -10px 16px;
+	left: 25px;;
 }
 .p1pos {
-	left: 268px;
+	left: 263px;
 	top: 23px;
 }
 .p2pos {
-	left: 514px;
+	left: 502px;
 	top: 23px;
 }
 .p3pos {
-	left: 514px;
-	top: 268px;
+	left: 502px;
+	top: 262px;
 }
 .p4pos {
-	left: 514px;
-	top: 512px;
+	left: 502px;
+	top: 500px;
 }
 .p5pos {
-	left: 268px;
-	top: 512px;
+	left: 263px;
+	top: 500px;
 }
 .p6pos {
-	left: 22px;
-	top: 512px;
+	left: 25px;
+	top: 500px;
 }
 .p7pos {
-	left: 22px;
-	top: 268px;
+	left: 25px;
+	top: 262px;
 }
 .p8pos {
 	left: 98px;
-	top: 99px;
+	top: 98px;
 }
 .p9pos {
-	left: 268px;
-	top: 99px;
+	left: 263px;
+	top: 98px;
 }
 .p10pos {
-	left: 438px;
-	top: 99px;
+	left: 428px;
+	top: 98px;
 }
 .p11pos {
-	left: 438px;
-	top: 268px;
+	left: 428px;
+	top: 262px;
 }
 .p12pos {
-	left: 438px;
-	top: 437px;
+	left: 428px;
+	top: 426px;
 }
 .p13pos {
-	left: 268px;
-	top: 437px;
+	left: 263px;
+	top: 426px;
 }
 .p14pos {
 	left: 98px;
-	top: 437px;
+	top: 426px;
 }
 .p15pos {
 	left: 98px;
-	top: 268px;
+	top: 262px;
 }
 .p16pos {
 	left: 164px;
-	top: 166px;
+	top: 162px;
 }
 .p17pos {
-	left: 268px;
-	top: 166px;
+	left: 263px;
+	top: 162px;
 }
 .p18pos {
-	left: 370px;
-	top: 166px;
+	left: 363px;
+	top: 162px;
 }
 .p19pos {
-	left: 370px;
-	top: 268px;
+	left: 363px;
+	top: 262px;
 }
 
 .p20pos {
-	left: 370px;
-	top: 372px;
+	left: 363px;
+	top: 361px;
 }
 .p21pos {
-	left: 268px;
-	top: 372px;
+	left: 263px;
+	top: 361px;
 }
 .p22pos {
 	left: 164px;
-	top: 372px;
+	top: 361px;
 }
 .p23pos {
 	left: 164px;
-	top: 268px;
+	top: 262px;
 }
 
 #topSection {
@@ -532,6 +534,7 @@ nav a {
 	/*background-color: white;*/
 }
 
+/*------------*/
 /* lobby page */
 
 .h3custom {
@@ -594,6 +597,10 @@ nav a {
     height: 21px;
     overflow-y: hidden;
     border-bottom: 1px dotted rgb(213, 209, 209);
+}
+
+.userWrap:select {
+	background-color: red;
 }
 
 #chatInputArea {
@@ -664,3 +671,43 @@ span.userMessageAuthor {
 ::-webkit-scrollbar-corner {
       background-color: black;
 } /* if both the vertical and the horizontal bars appear, then perhaps the right bottom corner also needs to be styled */
+
+/*-----------*/
+/* game page */
+
+.playerInfoWrap {
+	width: 350px;
+	height: 80px;
+	background-color: #343351;
+	border-radius: 3px;
+	padding-top: 7px;
+	margin-top: 70px;
+}
+
+.playerName {
+	color: white;
+	font-family: Arial;
+	font-size: 23px;
+	padding-left: 15px;
+	padding-top: 0px;
+	margin: 0;
+}
+
+.playerPoints {
+	color: rgb(129, 145, 174);
+	font-size: 15px;
+	font-weight: bold;
+	padding-left: 15px;
+	padding-top: 7px
+}
+
+#gameBoard {
+	width: 577px;
+	height: 573px;
+	background-repeat: no-repeat;
+	margin: 0 auto;
+	margin-top: 50px;
+	position: relative;
+	background-image: url("/images/board_2.png");;
+	/*background-color: red;*/
+}

@@ -1,0 +1,27 @@
+<section id='player1'>
+	<section class='playerInfoWrap'>
+		<p class='playerName'>penguinsource</p>
+		<p class='playerPoints'>1000 points</p>
+	</section>
+</section>
+
+<section id='gameBoard'>
+	<button ng-repeat="pin in gameCtrl.pinList"
+			class="action-button shadow animate blue p{{$index}}pos pinFreePlace"
+			draggable='true'
+			ng-class='gameCtrl.p{{$index}}.pclass'
+			ng-mouseover='gameCtrl.mouseOverEvent( pin )'
+			ng-mouseout ='gameCtrl.mouseOutEvent( pin )'
+			ng-click='gameCtrl.clickEvent( pin, $index )'>
+			
+	</button>
+</section>
+
+<section id='player2'>
+	<section class='playerInfoWrap'>
+		<p class='playerName'>jack castor</p>
+		<p class='playerPoints'>1000 points</p>
+	</section>
+</section>
+
+<br><br><br>

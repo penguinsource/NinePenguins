@@ -121,13 +121,36 @@ self.postLobbyMessage = function(data, socket, io){
 
 self.addUserToLobby  = function(data, socket, io){
 	// add user if they don't currently exist in the chat users list
-	self.chatUsersList.push(data.username);
+	self.chatUsersList.push({username: data.username, userid: data.userid});
 	self.socketid_map[socket.id] = data.userid;
 
 	// self.addUserToActiveUsers(data.username, data.userid, socket.id);
 
 	// send everyone the chat users list
-	io.emit('updateLobbyUsersList', self.chatUsersList);
+	io.emit('updateLobbyUsersList', 
+		{message: "User '" + data.username + "' has joined the lobby.", 
+		 chatUsersList: self.chatUsersList});
+}
+
+// This is not very efficient ******************************
+// This is not very efficient ******************************
+// TO BE CHANGED !
+self.removeUserFromLobby = function(socketid, io){
+	var useridToRemove = self.socketid_map[socketid];
+	var usernameToRemove = '';
+	for (var i = 0; i < self.chatUsersList.length; i++){
+		if (self.chatUsersList[i].userid == useridToRemove){
+			console.log("user id to remove: " + useridToRemove);
+			usernameToRemove = self.chatUsersList.username;
+			self.chatUsersList.splice(i, 1);
+		}
+	}
+	console.log(self.chatUsersList);
+
+	// send everyone the chat users list
+	io.emit('updateLobbyUsersList', 
+		{message: "User '" + usernameToRemove + "' has left the lobby.", 
+		 chatUsersList: self.chatUsersList});
 }
 
 function handleSocketRequests(io){
@@ -138,8 +161,8 @@ function handleSocketRequests(io){
 		console.log("SOCKET: ");
 		console.log(socket.id);
 
-		socket.on('disconnect', function(event){
-		    console.log('haaaaaaaaaa');
+		socket.on('disconnect', function(){
+		    self.removeUserFromLobby(socket.id, io);
 		});
 
 		socket.on('addUserToLobby', 
