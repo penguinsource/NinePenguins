@@ -114,13 +114,6 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 		// });
 	}
 
-	self.handleSocketRequests = function(){
-		NineCache.mySocket.on('gameMatched', function (data) {
-		    $state.go('game');
-		    // socket.emit('my other event', { my: 'data' });
-		});
-	}
-
 	self.setUsername = function(){
 		if (self.NineCache.userType === 'guest'){
 			$scope.username = self.NineCache.userData.id;
@@ -139,6 +132,15 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 		// console.log("From State:");
 		// console.log("===============================================");
 	});
+
+	self.handleSocketRequests = function(){
+		NineCache.mySocket.on('gameMatched', function (data) {
+			console.log("game matched -> ");
+			console.log(data);
+		    // $state.go('game');
+		    // socket.emit('my other event', { my: 'data' });
+		});
+	}
 
 	self.init = function(){
 		console.log("mainController !");

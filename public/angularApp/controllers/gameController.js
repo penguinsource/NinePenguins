@@ -156,8 +156,6 @@ nineApp.controller('gameController', function($scope, $http){
 		    	
 		// 	}
 		// });
-
-
 	}
 
 	self.initDataStructures = function(){
