@@ -81,9 +81,9 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router', 'facebook'], 
 			.state('home',{ 	url: "/", templateUrl: "angularApp/partials/lobby.html",
 								controller: 'lobbyController', controllerAs: 'lobbyCtrl'
 			})
-			.state('other',{	url: "/game", templateUrl: "angularApp/partials/game.html",
+			.state('game',{	url: "/game/:game_id", templateUrl: "angularApp/partials/game.html",
 								controller: 'gameController', controllerAs: 'gameCtrl'   })
-			.state('game',{	url: "/game", templateUrl: "angularApp/partials/inGame.html",
+			.state('other',{	url: "/game", templateUrl: "angularApp/partials/inGame.html",
 								controller: 'gameController', controllerAs: 'gameCtrl'   })
 			;
 

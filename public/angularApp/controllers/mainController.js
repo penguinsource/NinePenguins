@@ -136,8 +136,10 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 	self.handleSocketRequests = function(){
 		NineCache.mySocket.on('gameMatched', function (data) {
 			console.log("game matched -> ");
-			console.log(data);
-		    // $state.go('game');
+			// console.log(data);
+
+			NineCache.initGameObj(data);
+		    $state.go('game', {game_id: data.gameId});
 		    // socket.emit('my other event', { my: 'data' });
 		});
 	}

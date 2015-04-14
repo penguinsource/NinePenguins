@@ -692,10 +692,13 @@ span.userMessageAuthor {
 .playerInfoWrap {
 	width: 255px;
 	height: 69px;
-	background-color: #343351;
 	border-radius: 3px;
 	padding-top: 7px;
 	margin-top: 25px;
+}
+
+.blueBackground {
+	background-color: #343351;
 }
 
 .playerName {

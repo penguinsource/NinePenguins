@@ -12,7 +12,8 @@ var SERVER_LISTEN_PORT_TWO 	= 3001;
 var connection = '';
 
 // Connect to MySQL Database 
-// --------------
+// -------------------------
+
 function connectToDB(callback){
 	connection = mysql.createConnection({
 	  host     : 'localhost',
@@ -35,128 +36,38 @@ function closeConnDB(){
 	connection.end();
 }
 
-// create object for user with id 'userid' if one doesn't exist already
-self.addUserToActiveUsers = function(username, userid, socketid){
-	if ( (self.active_users[userid] === undefined) || 
-		 (self.active_users[userid] === null) ){
-		
-		self.active_users[userid] = { "username": username,
-									  "socketId": socketid, 
-									  "gamesWon": 0,
-									  "gamesLost": 0,
-									  "currentGameId": null };
-	} else {
-		// if user with 'userid' is already defined, then update their socketid
-		// console.log("Updating socket id. Old socketid: " + self.active_users[userid].socketId + " to " + socketid );
-		self.active_users[userid].socketId = socketid;
-	}
-}
-
-// self.createGameObject = function(player1id, player2id){
-// 	console.log("Creating Game Object ..");
-// 	var gameObj = { "p1id": player1id, 
-// 					"p2id": player2id,
-// 					"p1_pins": 9,
-// 					"p2_pins": 9,
-// 					"currentPlayerTurn": player1id,
-// 					"currentGameState": "place"	// {place, move, fly}
-// 				  };
-
-// 	var game_id = "game_" + Math.random().toString(36).substring(7);
-// 	self.active_users[player1id].currentGameId = game_id;
-// 	self.active_users[player2id].currentGameId = game_id;
-
-// 	gameObj.board = 
-// 		[
-// 		{"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ] },
-// 		{"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ] }
-// 		];
-
-// 	self.active_games[game_id] = gameObj;
-// 	var gameObjCompact = {  "game_id": game_id,
-// 							"p1id": player1id, 
-// 							"p2id": player2id,
-// 							"p1_pins": 9,
-// 							"p2_pins": 9,
-// 							"currentPlayerTurn": player1id,
-// 							"currentGameState": "place"	// {place, move, fly}
-// 				  		};
-// 	return gameObjCompact;
-// }
-
-// NOT USED YET !
-self.getUserWithId = function(userid){
-	if (self.active_users[userid]){
-		return self.active_users[userid];
-	} else {
-		console.log("ERROR ! User with id: ");
-		console.log(userid);
-		console.log("doesn't exit !");
-		return null;
-	}
-}
+// Game Controller functions
+// -------------------------
 
 self.addPlayerToQueue = function(data, socket, io){
 	console.log("Adding player to queue !");
 
-	self.addUserToActiveUsers(data.username, data.userid, socket.id);
+	// add player to queue
+	var game_queue = 
+		self.dataModel.addUserToQueue(data, data.userid, socket.id);
 
-	// check if the player is already in the game queue
-	if (self.game_queue.indexOf(data.userid) === -1){
-		self.game_queue.push(data.userid);
-	}
-
-	// match players
-	if (self.game_queue.length > 1){
+	// match players from the game queue
+	if (game_queue.length > 1){
 		// remove the first 2 players from the queue
-		var p1id = self.game_queue.pop();
-		var p2id = self.game_queue.pop();
-		var p1Obj = self.active_users[p1id];
-		var p2Obj = self.active_users[p2id];
+		var p1id = game_queue.pop();
+		var p2id = game_queue.pop();
 
-		var gameObjCompact = self.createGameObject(p1id, p2id);
+		var gameObjCompact = self.dataModel.createGameObject(p1id, p2id);
 		
-		console.log("==================");
-		console.log(gameObjCompact);
+		var p1Obj = self.dataModel.getUserWithId(p1id);
+		var p2Obj = self.dataModel.getUserWithId(p2id);
 
 		// send each a message
 		if (io.sockets.connected[p1Obj.socketId] && 
 			io.sockets.connected[p2Obj.socketId]) {
-			io.to(p1.socketId).emit('gameMatched', gameObjCompact);
-			io.to(p2.socketId).emit('gameMatched', gameObjCompact);
+			io.to(p1Obj.socketId).emit('gameMatched', gameObjCompact);
+			io.to(p2Obj.socketId).emit('gameMatched', gameObjCompact);
 		}
-
-		console.log("p1: " + p1);
-		console.log("p2: " + p2);
-		console.log(self.game_queue);
-		console.log("game id: " + game_id);
 	}
-
-	console.log("Game Queue:");
-	console.log(self.game_queue);
 }
+
+// Lobby Controller functions
+// -------------------------
 
 self.postLobbyMessage = function(data, socket, io){
 	io.emit('updateLobbyChat', data);
@@ -171,16 +82,63 @@ self.addUserToLobby  = function(data, socket, io){
 		 chatUsersList: chatUsersList});
 }
 
-// This is not very efficient ******************************
-// This is not very efficient ******************************
-// TO BE CHANGED !
 self.removeUserFromLobby = function(socketid, io){
+	// This is not very efficient ******************************
 	var retObj = self.dataModel.removeUserFromLobby(socketid);
 
 	// send everyone the chat users list
 	io.emit('updateLobbyUsersList', 
 		{message: "User '" + retObj.usernameToRemove + "' has left the lobby.", 
 		 chatUsersList: retObj.chatUsersList});
+}
+
+self.updateGameObject = function(gameObj){
+	if (gameObj.gameState === "place"){
+		// if there are no more pins left to place for either player, 
+		// then change the gameState
+		if ( (gameObj.p1pins < 1) && (gameObj.p2pins < 1) ){
+			gameObj.gameState = "move";
+		}
+	}
+}
+
+// data = {gameId: .., userid: .., pinIndex: ..}
+self.userPlacedPin = function(data, io){
+	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
+	console.log("GAME OBJECT:");
+	console.log(gameObj);
+
+	if (gameObj.playerTurn !== data.userid){
+		console.log("ERROR ! Player Turn: " + gameObj.playerTurn +
+			". Attempt by user with id: " + data.userid);
+		return;
+	}
+
+	if (gameObj.board[data.pinIndex].control != 'pinFreePlace'){
+		console.log("ERROR ! Pin Index '" + data.pinIndex + "' is not free." +
+		 " User id in that position: " + gameObj.board[data.pinIndex].control);
+		return;
+	}
+
+	if (gameObj.gameState === "place"){
+		// check if this is a valid move (if there are pins left to place)
+		if ( (data.userid === gameObj.p1id) && (gameObj.p1pins > 0) ){
+			// player 1 placed a pin, send player 2 the updated game object
+			gameObj.p1pins--;
+			// update game status
+			updateGameObject(gameObj);
+		} else {
+			// player 2 placed a pin, send player 1 the updated game object
+			gameObj.p2pins--;
+			// update game status
+			updateGameObject(gameObj);
+		}
+
+		io.to(p1Obj.socketId).emit('gameMatched', gameObjCompact);
+
+	}
+	// gameObj.board[data.pinIndex].control = data.userid;
+
 }
 
 self.handleSocketRequests = function(io){
@@ -205,27 +163,10 @@ self.handleSocketRequests = function(io){
 		socket.on('postLobbyMessage', 
 			function(data){ self.postLobbyMessage(data, socket, io); });
 		
-		socket.on('blah', 
-			function(data){ console.log(data); });
+		socket.on('placePin', 
+			function(data){ self.userPlacedPin(data, io); });
 
-		// console.log(socket);
-
-		// socket.emit('news', { hello: 'world' });
-		// socket.on('blah', function (data) {
-		// 	console.log("NEW DATA:");
-	 //    	console.log(data);
-	 //  });
 	});
-}
-
-self.initDataStructures = function(){
-	self.socketid_map = {};	// hash map, index being 'socketid'
-	self.active_users = {};	// hash map, index being 'userid'
-	self.active_games = {};	// hash map, index being 'gameid'
-	self.game_queue = [];	// list of 'userid's waiting to play a game
-
-	self.chatMessagesList = [];
-	self.chatUsersList = [];
 }
 
 function init(){
@@ -237,10 +178,10 @@ function init(){
 	app.use(express.static(process.cwd() + '/public'));
 	server.listen(3000);
 
+	// Data Model object
 	var DataModel = require("./dataModel.js");
 	self.dataModel = new DataModel();
 
-	// self.initDataStructures();
 	self.handleSocketRequests(io);
 }
 

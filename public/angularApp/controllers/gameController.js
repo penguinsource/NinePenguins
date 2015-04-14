@@ -1,6 +1,6 @@
 var nineApp = angular.module("nineApp");
 
-nineApp.controller('gameController', function($scope, $http){
+nineApp.controller('gameController', function($scope, $http, $stateParams, NineCache){
 	var self = this;
 
 	self.isEven = function(n) {
@@ -120,7 +120,7 @@ nineApp.controller('gameController', function($scope, $http){
 	self.mouseOutEvent = function(pinBtn){
 		// console.log("mouse over event");
 		// console.log(pinBtn);
-		if (self.currentGameState=== 'place'){
+		if (self.currentGameState === 'place'){
 			if (pinBtn.control === 'free'){
 				pinBtn.pclass = "pinFreePlace";
 			}
@@ -133,18 +133,33 @@ nineApp.controller('gameController', function($scope, $http){
 		console.log("click event, pinBtnInd " + pinBtnInd);
 		console.log(pinBtn);
 		if (self.currentGameState === 'place'){
-			if (pinBtn.control === 'pinFreePlace'){
-				self.board[pinBtnInd].control = self.playerColor;
-				self.checkForMills(pinBtn, pinBtnInd);
-			}
+			self.placePin(pinBtn, pinBtnInd, self.playerColor);
 		} else if (self.currentGameState === 'move'){
 
 		}		
 	}
 
 	// player = playerMe
-	self.placePin = function(player, pinBtnInd){
+	self.placePin = function(pinBtn, pinBtnInd, player){
+		if (pinBtn.control === 'pinFreePlace'){
+			console.log("PLACE PIN:");
+			console.log(player);
 
+			// place pin
+			self.board[pinBtnInd].control = player;
+			NineCache.mySocket.emit('placePin', 
+				{ gameId: NineCache.gameObj.gameId, 
+				  userid: NineCache.userData.id, 
+				  pinIndex: pinBtnInd });
+
+			// mill detected
+			if (self.checkForMills(pinBtn, pinBtnInd)){
+				console.log("MILL !");
+			} else {
+				NineCache.gameObj.playerTurn = NineCache.gameObj.otherPlayerId;
+				console.log("NO MILL!");
+			}
+		}
 	}
 
 	self.handleSocketRequests = function(){
@@ -200,37 +215,27 @@ nineApp.controller('gameController', function($scope, $http){
 					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ] },
 					  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ] }];
 
-		// self.board = [{"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ], "pclass": "pinFreePlace" },
-		// 			  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ], "pclass": "pinFreePlace" }];
-
 		self.playerColor = 'player1pin';
+
+		// setup game
+		// if (self.NineCache.gameObj.playerTurn == self.userData.id){
+		// 	$scope.myTurn = true;
+		// } else {
+		// 	$scope.myTurn = false;
+		// }
+		$scope.myTurn = (NineCache.gameObj.playerTurn == NineCache.userData.id);
+		console.log("IS IT MY TURN ?");
+		console.log($scope.myTurn);
+
 	}
 
 	self.init = function(){
 		console.log("Game Controller !");
 		self.currentGameState = "place";	// 'place' or 'move'
+		self.NineCache = NineCache;
+		console.log("PARAM:");
+		console.log($stateParams['game_id']);
+		$scope.myTurn = false;
 
 		self.initDataStructures();
 		self.handleSocketRequests();
