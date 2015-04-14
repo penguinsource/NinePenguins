@@ -301,9 +301,22 @@ a:visited{
 
 */
 
+/*
+
 .player1pin {
 	background-color: rgb(67, 186, 225);
 	border-bottom: 5px solid rgb(28, 141, 148);
+}
+
+.player1pin:hover {
+	
+}
+
+*/
+
+.player1pin {
+	background-color: rgb(97, 93, 168);
+	border-bottom: 5px solid rgb(62, 61, 92);
 }
 
 .player1pin:hover {
@@ -315,8 +328,8 @@ a:visited{
 }
 
 .pinFreePlace {
-	background-color: rgb(67, 186, 225);
-	border-bottom: 5px solid rgb(28, 141, 148);
+	background-color: rgb(97, 93, 168);
+	border-bottom: 5px solid rgb(62, 61, 92);
 	opacity: 0;
 }
 
@@ -432,7 +445,7 @@ a:visited{
 
 #topSection {
 	background-color: #202033;
-	padding-bottom: 30px;
+	padding-bottom: 19px;
 }
 
 #bottomSection {
@@ -457,11 +470,11 @@ a:visited{
 }
 
 nav {
-	padding-top: 60px;
 	padding-left: 60px;
 	/*font-family: Arial;*/
 	font-family: "andika_basicregular";
 	font-size: 20px;
+	padding-top: 50px;
 }
 
 nav .menuItem {
@@ -481,6 +494,7 @@ nav a {
 .logo {
 	margin-top: 15px;
 	display: inline-block;
+	width: 37%;
 }
 
 .loginSection {
@@ -490,7 +504,7 @@ nav a {
 
 #gameButtons {
 	border: none;
-	margin-top: 90px;
+	margin-top: 82px;
 }
 
 #gameButtons #searchingForGame {
@@ -504,12 +518,12 @@ nav a {
 	border: none;
 	background-color: #2A2943;
 	color: white;
-	font-size: 23px;
+	font-size: 22px;
 	margin-left: 15px;
 	padding: 2px 10px;
 	border-radius: 5px;
 	border-color: transparent;
-	padding-bottom: 7px;
+	padding-bottom: 8px;
 	font-family: "andika_basicregular";
 }
 
@@ -676,18 +690,18 @@ span.userMessageAuthor {
 /* game page */
 
 .playerInfoWrap {
-	width: 350px;
-	height: 80px;
+	width: 255px;
+	height: 69px;
 	background-color: #343351;
 	border-radius: 3px;
 	padding-top: 7px;
-	margin-top: 70px;
+	margin-top: 25px;
 }
 
 .playerName {
 	color: white;
 	font-family: Arial;
-	font-size: 23px;
+	font-size: 20px;
 	padding-left: 15px;
 	padding-top: 0px;
 	margin: 0;
@@ -698,7 +712,7 @@ span.userMessageAuthor {
 	font-size: 15px;
 	font-weight: bold;
 	padding-left: 15px;
-	padding-top: 7px
+	padding-top: 5px
 }
 
 #gameBoard {
@@ -706,7 +720,7 @@ span.userMessageAuthor {
 	height: 573px;
 	background-repeat: no-repeat;
 	margin: 0 auto;
-	margin-top: 50px;
+	margin-top: 10px;
 	position: relative;
 	background-image: url("/images/board_2.png");;
 	/*background-color: red;*/
