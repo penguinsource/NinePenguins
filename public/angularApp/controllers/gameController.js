@@ -40,6 +40,7 @@ nineApp.controller('gameController',
 			// 				&& (middlePin.control === otherPin.control)){
 				console.log("!!!!!!Horizontal Mill, indices: " 
 							+ pinBtnInd, middlePinInd, otherPinInd);
+				return ;
 			}
 			// console.log("my pin index is: " + pinBtnInd);
 			// console.log("middle pin index is: " + middlePinInd);
@@ -149,9 +150,13 @@ nineApp.controller('gameController',
 				  userid: NineCache.userData.id, 
 				  pinIndex: pinBtnInd });
 
-			// mill detected
-			if (self.checkForMills(pinBtn, pinBtnInd)){
+			// check for mill detection
+			var pinsInMill = self.checkForMills(pinBtn, pinBtnInd);
+			console.log("Pins IN MILL:");
+			console.log(pinsInMill);
+			if (pinsInMill){
 				console.log("MILL !");
+				self.highlightRemovablePins();
 			} else {
 				self.updatePlayerTurn(NineCache.gameObj.otherPlayerId);
 				console.log("NO MILL!");
@@ -203,32 +208,35 @@ nineApp.controller('gameController',
 		
 		// 6  p6              p5             p4
 
-		self.board = [{"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ] },
-					  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ] }];
+		self.board = [
+					  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ],'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ], 'isMill': false },
+					  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ], 'isMill': false }
+					 ];
 
 		self.playerColor = 'player1pin';
+		self.canRemoveMillPin = false;	// 
 
 		NineCache.gameObj.board = self.board;
 		// setup game
@@ -241,6 +249,20 @@ nineApp.controller('gameController',
 		console.log("IS IT MY TURN ?");
 		console.log($scope.myTurn);
 
+	}
+
+	// if true, then the user can remove pins that are currently
+	// in a mill (have property 'isMill' set to true)
+	self.canRemoveMillPin = function(){
+		var board = NineCache.gameObj.board;
+		var otherPlayerNoPins = 0;
+		var otherPlayerNoMillPins = 0;	// number of pins that belong to the other player that 
+		for (var i = 0; i < board.length; i++){
+			if (board[i].control === "player2pin"){
+				otherPlayerNoPins++;
+
+			}
+		}
 	}
 
 	self.init = function(){

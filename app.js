@@ -45,7 +45,7 @@ self.addPlayerToQueue = function(data, socket, io){
 	// add player to queue
 	var game_queue = 
 		self.dataModel.addUserToQueue(data, data.userid, socket.id);
-
+	
 	// match players from the game queue
 	if (game_queue.length > 1){
 		// remove the first 2 players from the queue
