@@ -1,6 +1,6 @@
 <section id='player1'>
 	<section class='playerInfoWrap'
-			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.gameObj.p1id) ? 'blueBackground' : ''">
+			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.userData.id) ? 'blueBackground' : ''">
 		<p class='playerName'>penguinsource {{gameCtrl.NineCache.userData.id}}</p>
 		<p class='playerPoints'>1000 points</p>
 	</section>
@@ -20,7 +20,7 @@
 
 <section id='player2'>
 	<section class='playerInfoWrap' 
-			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.gameObj.p2id) ? 'blueBackground' : ''">
+			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.gameObj.otherPlayerId) ? 'blueBackground' : ''">
 		<p class='playerName'>jack castor {{gameCtrl.NineCache.gameObj.otherPlayerId}}</p>
 		<p class='playerPoints'>1000 points</p>
 	</section>
