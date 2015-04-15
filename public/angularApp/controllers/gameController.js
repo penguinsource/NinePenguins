@@ -40,7 +40,7 @@ nineApp.controller('gameController',
 			// 				&& (middlePin.control === otherPin.control)){
 				console.log("!!!!!!Horizontal Mill, indices: " 
 							+ pinBtnInd, middlePinInd, otherPinInd);
-				return ;
+				return [pinBtnInd, middlePinInd, otherPinInd];
 			}
 			// console.log("my pin index is: " + pinBtnInd);
 			// console.log("middle pin index is: " + middlePinInd);
@@ -61,6 +61,7 @@ nineApp.controller('gameController',
 							&& (middlePin.control === otherPin.control)){
 				console.log("Vertical Mill, indices: " 
 							+ pinBtnInd, middlePinInd, otherPinInd);
+				return [pinBtnInd, middlePinInd, otherPinInd];
 			}
 		} else {
 			console.log("its odd !");
@@ -86,6 +87,7 @@ nineApp.controller('gameController',
 								&& (middlePin.control === otherPin.control) ){
 					console.log("Horizontal Mill case 1, indices: " 
 									+ pinBtnInd, middlePinInd, otherPinInd);
+					return [pinBtnInd, middlePinInd, otherPinInd];
 				}
 			} else { // case 2, pinBtn has 2 horizontal neighbours
 				var nPinOneInd = pinBtn.hNeighbours[0];
@@ -113,6 +115,7 @@ nineApp.controller('gameController',
 
 				if ( (pinBtn.control === middlePin.control) && (middlePin.control === otherPin.control) ){
 					console.log("Vertical Mill case 1, indices: " + pinBtnInd, middlePinInd, otherPinInd);
+					return [pinBtnInd, middlePinInd, otherPinInd];
 				}
 			} else { // case 2, pinBtn has 2 vertical neighbours
 				var nPinOneInd = pinBtn.vNeighbours[0];
@@ -121,6 +124,7 @@ nineApp.controller('gameController',
 				var neighbourPinTwo = self.board[nPinTwoInd];
 				if ( (pinBtn.control === neighbourPinOne.control) && (pinBtn.control === neighbourPinTwo.control) ){
 					console.log("Vertical Mill case 2, indices: " + pinBtnInd, nPinOneInd, nPinTwoInd);
+					return [pinBtnInd, middlePinInd, otherPinInd];
 				}
 			}
 
@@ -156,7 +160,8 @@ nineApp.controller('gameController',
 			console.log(pinsInMill);
 			if (pinsInMill){
 				console.log("MILL !");
-				self.highlightRemovablePins();
+				// self.highlightRemovablePins();
+				self.canRemoveMillPin2();
 			} else {
 				self.updatePlayerTurn(NineCache.gameObj.otherPlayerId);
 				console.log("NO MILL!");
@@ -236,7 +241,7 @@ nineApp.controller('gameController',
 					 ];
 
 		self.playerColor = 'player1pin';
-		self.canRemoveMillPin = false;	// 
+		// self.canRemoveMillPin = false;	// 
 
 		NineCache.gameObj.board = self.board;
 		// setup game
@@ -253,16 +258,25 @@ nineApp.controller('gameController',
 
 	// if true, then the user can remove pins that are currently
 	// in a mill (have property 'isMill' set to true)
-	self.canRemoveMillPin = function(){
+	self.canRemoveMillPin2 = function(){
 		var board = NineCache.gameObj.board;
 		var otherPlayerNoPins = 0;
-		var otherPlayerNoMillPins = 0;	// number of pins that belong to the other player that 
+		// number of pins that belong to the other player that are not part of a mill
+		var otherPlayerNoMillPins = 0;	
 		for (var i = 0; i < board.length; i++){
 			if (board[i].control === "player2pin"){
 				otherPlayerNoPins++;
+				if (!board[i].isMill){
+					otherPlayerNoMillPins++;
+				}
 
 			}
 		}
+
+		
+		console.log("-- can remove mill pin --");
+		console.log(otherPlayerNoPins);
+		console.log(otherPlayerNoMillPins);
 	}
 
 	self.init = function(){

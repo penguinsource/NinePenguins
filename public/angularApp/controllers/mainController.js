@@ -3,6 +3,17 @@ var nineApp = angular.module("nineApp");
 nineApp.controller('mainController', function($scope, $http, $state, Facebook, NineCache){
 	var self = this;
 
+	self.connectToServer = function(){
+		var serverAddr = 'http://50.65.103.143:3000/';
+		serverAddr = 'localhost:3000/';
+		var mySocket = io.connect(serverAddr);
+		NineCache.mySocket = mySocket;
+		// mySocket.on('news', function (data) {
+		// 	console.log(data);
+		// 	mySocket.emit('blah', { my: 'data blah' });
+		// });
+	}
+
 	self.startAGame = function(){
 		console.log("FB user name: ");
 		console.log(NineCache.userData);
@@ -103,15 +114,6 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
         
       // });
 
-	}
-
-	self.connectToServer = function(){
-		var mySocket = io.connect('http://50.65.103.143:3000/');
-		NineCache.mySocket = mySocket;
-		// mySocket.on('news', function (data) {
-		// 	console.log(data);
-		// 	mySocket.emit('blah', { my: 'data blah' });
-		// });
 	}
 
 	self.setUsername = function(){
