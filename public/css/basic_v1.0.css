@@ -221,9 +221,7 @@ a:visited{
 
 .action-button
 {
-	position: absolute;
 	text-decoration: none;
-	outline: #2A2943 solid 2px;
 	color: #FFF;
 	font-family: 'Pacifico', cursive;
 	border-style: none;
@@ -231,13 +229,15 @@ a:visited{
 	border-radius: 37px;
 	font-size: 25px;
 	padding: 21px 24px;
+	outline: #2A2943 solid 2px;
+	position: absolute;
 }
 
 .blue
 {
-	background-color: #3498DB;
-	text-shadow: 0px -2px #2980B9;
 	border-bottom: 5px solid #2980B9;
+	text-shadow: 0px -2px #2980B9;
+	background-color: #3498DB;
 }
 
 .animate
@@ -327,14 +327,26 @@ a:visited{
 
 }
 
+.disablePins {
+
+}
+
+.disablePins:hover {
+	display: none;
+}
+
 .pinFreePlace {
 	background-color: rgb(97, 93, 168);
-	border-bottom: 5px solid rgb(62, 61, 92);
 	opacity: 0;
+	border-bottom: 5px solid rgb(62, 61, 92);
 }
 
 .pinFreePlace:hover {
 	opacity: 1;
+}
+
+.pinFreePlace:hover:disabled {
+	opacity: 0;
 }
 
 .pinAvailablePlaceHover {
@@ -350,8 +362,8 @@ a:visited{
 	left: 25px;;
 }
 .p1pos {
-	left: 263px;
 	top: 23px;
+	left: 263px;
 }
 .p2pos {
 	left: 502px;

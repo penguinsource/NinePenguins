@@ -90,17 +90,25 @@ var DataModel = function(){
 
 	self.createGameObject = function(player1id, player2id){
 		console.log("Creating Game Object ..");
-		var gameObj = { "p1id": player1id, 
-						"p2id": player2id,
-						"p1pins": 9,
-						"p2pins": 9,
-						"playerTurn": player1id,
-						"gameState": "place"	// {place, move, fly}
-					  };
 
 		var gameId = "game_" + Math.random().toString(36).substring(7);
 		self.active_users[player1id].currentGameId = gameId;
 		self.active_users[player2id].currentGameId = gameId;
+
+		var gameObj = 
+			{ 	
+				"gameId": gameId,
+				"p1id": player1id, 
+				"p2id": player2id,
+				"p1userName": '',
+				"p2userName": '',
+				"p1PlacePins": 9,	// used only for gameState 'place'
+				"p2PlacePins": 9,	// used only for gameState 'place'
+				"p1PinsLeft":9,
+				"p2PinsLeft":9,
+				"playerTurn": player1id,
+				"gameState": "place"	// {place, move, fly}
+			};
 
 		gameObj.board = 
 			[
@@ -134,8 +142,12 @@ var DataModel = function(){
 		var gameObjCompact = {  "gameId": gameId,
 								"p1id": player1id, 
 								"p2id": player2id,
-								"p1pins": 9,
-								"p2pins": 9,
+								"p1userName": '',
+								"p2userName": '',
+								"p1PlacePins": 9,	// used only for gameState 'place'
+								"p2PlacePins": 9,	// used only for gameState 'place'
+								"p1PinsLeft":9,
+								"p2PinsLeft":9,
 								"playerTurn": player1id,
 								"gameState": "place"	// {place, move, fly}
 					  		};

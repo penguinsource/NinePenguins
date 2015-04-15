@@ -1,20 +1,18 @@
 <section id='player1'>
 	<section class='playerInfoWrap'
 			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.gameObj.p1id) ? 'blueBackground' : ''">
-		<p class='playerName'>penguinsource</p>
+		<p class='playerName'>penguinsource {{gameCtrl.NineCache.userData.id}}</p>
 		<p class='playerPoints'>1000 points</p>
 	</section>
 </section>
 
 <section id='gameBoard'>
 	<button ng-repeat="pin in gameCtrl.board"
-			class="action-button shadow animate blue p{{$index}}pos pinFreePlace"
+			class="action-button shadow animate blue p{{$index}}pos"
 			draggable='true'
-			ng-class="gameCtrl.board[{{$index}}].control"
-			ng-mouseover="(myTurn) ? gameCtrl.mouseOverEvent( pin ) : ''"
-			ng-mouseout ="(myTurn) ? gameCtrl.mouseOutEvent( pin ) : ''"
+			ng-class="[gameCtrl.board[{{$index}}].control]"
 			ng-click='gameCtrl.clickEvent( pin, $index )'
-			ng-hide='!myTurn'>
+			ng-disabled="gameCtrl.NineCache.gameObj.playerTurn != gameCtrl.NineCache.userData.id">
 			
 	</button>
 	
@@ -23,7 +21,7 @@
 <section id='player2'>
 	<section class='playerInfoWrap' 
 			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.gameObj.p2id) ? 'blueBackground' : ''">
-		<p class='playerName'>jack castor</p>
+		<p class='playerName'>jack castor {{gameCtrl.NineCache.gameObj.otherPlayerId}}</p>
 		<p class='playerPoints'>1000 points</p>
 	</section>
 </section>
