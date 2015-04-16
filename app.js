@@ -1,7 +1,7 @@
 var http = require('http');
-var util = require('util');
+// var util = require('util');
 // var fs 	 = require('fs');
-var mysql = require('mysql');
+// var mysql = require('mysql');
 
 var self = this;
 
@@ -141,7 +141,7 @@ self.buildCompactGameObj = function(gameObj){
 };
 
 self.checkForMills = function(){
-	
+	console.log("Checking Mills");
 }
 
 // data = {gameId: .., userid: .., pinIndex: ..}
@@ -236,8 +236,8 @@ self.userPlacedPin = function(data, io){
 self.handleSocketRequests = function(io){
 	io.on('connection', function (socket) {
 
-		// console.log("IO: ");
-		// console.log(io.id);
+		console.log("IO: ");
+		console.log(io.id);
 		// console.log("SOCKET: ");
 		// console.log(socket.id);
 
@@ -268,7 +268,7 @@ function init(){
 	var server = require('http').Server(app);
 	var io = require('socket.io')(server);
 	app.use(express.static(process.cwd() + '/public'));
-	server.listen(3000);
+	server.listen(3002);
 
 	// Data Model object
 	var DataModel = require("./dataModel.js");

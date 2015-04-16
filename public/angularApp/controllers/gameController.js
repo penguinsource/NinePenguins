@@ -161,7 +161,7 @@ nineApp.controller('gameController',
 			if (pinsInMill){
 				console.log("MILL !");
 				// self.highlightRemovablePins();
-				self.canRemoveMillPin2();
+				self.canRemoveMillPin();
 			} else {
 				self.updatePlayerTurn(NineCache.gameObj.otherPlayerId);
 				console.log("NO MILL!");
@@ -258,7 +258,7 @@ nineApp.controller('gameController',
 
 	// if true, then the user can remove pins that are currently
 	// in a mill (have property 'isMill' set to true)
-	self.canRemoveMillPin2 = function(){
+	self.canRemoveMillPin = function(){
 		var board = NineCache.gameObj.board;
 		var otherPlayerNoPins = 0;
 		// number of pins that belong to the other player that are not part of a mill
@@ -269,11 +269,9 @@ nineApp.controller('gameController',
 				if (!board[i].isMill){
 					otherPlayerNoMillPins++;
 				}
-
 			}
 		}
 
-		
 		console.log("-- can remove mill pin --");
 		console.log(otherPlayerNoPins);
 		console.log(otherPlayerNoMillPins);

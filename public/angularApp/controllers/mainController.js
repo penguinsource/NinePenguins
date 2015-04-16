@@ -4,8 +4,9 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 	var self = this;
 
 	self.connectToServer = function(){
-		var serverAddr = 'http://50.65.103.143:3000/';
-		serverAddr = 'localhost:3000/';
+		var serverAddr = 'http://50.65.103.143:3002/';
+		// serverAddr = 'http://142.244.5.95:3000/';
+		// serverAddr = 'localhost:3000/';
 		var mySocket = io.connect(serverAddr);
 		NineCache.mySocket = mySocket;
 		// mySocket.on('news', function (data) {
