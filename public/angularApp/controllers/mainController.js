@@ -71,6 +71,10 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 					NineCache.userType = "facebook";
 					NineCache.userData = response;
 					self.setUsername();
+
+					NineCache.mySocket.emit('addUserToLobby', 
+						{ username: NineCache.username, 
+						  userid: 	NineCache.userData.id });
 					// console.log("FB user name: ");
 					// console.log(NineCache.userData);
 				});

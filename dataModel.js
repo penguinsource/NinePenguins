@@ -10,8 +10,24 @@ var DataModel = function(){
 
 	self.addUserToLobby = function(data, socketid){
 		console.log("ADDING USER TO LOBBY !");
+		console.log("socket id: " + socketid + ", userid: " + data.userid)
+		// same socket - user either logged in or logged out of a service
+		if (self.socketid_map[socketid] == data.userid){
+			console.log("Same Socket - changing user id");
+		}
+		// if (self.chatUsersList.indexOf())
+
+
+		self.chatUsersList.push(data.userid);
+
+
+		console.log("INDEX OF:");
+		// console.log(self.chatUsersList);
+		// console.log(data.userid);
+		// console.log(self.chatUsersList.indexOf(data.userid));
+		
 		// add user if they don't currently exist in the chat users list ********
-		self.chatUsersList.push({username: data.username, userid: data.userid});
+		// self.chatUsersList.push({username: data.username, userid: data.userid});
 		self.socketid_map[socketid] = data.userid;
 
 		return self.chatUsersList;
@@ -23,6 +39,7 @@ var DataModel = function(){
 	self.removeUserFromLobby = function(socketid){
 		var useridToRemove = self.socketid_map[socketid];
 		var usernameToRemove = '';
+		
 		for (var i = 0; i < self.chatUsersList.length; i++){
 			if (self.chatUsersList[i].userid == useridToRemove){
 				usernameToRemove = self.chatUsersList.username;
