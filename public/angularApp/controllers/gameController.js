@@ -271,7 +271,7 @@ nineApp.controller('gameController',
 				}
 			}
 		}
-
+		
 		console.log("-- can remove mill pin --");
 		console.log(otherPlayerNoPins);
 		console.log(otherPlayerNoMillPins);
@@ -285,7 +285,7 @@ nineApp.controller('gameController',
 		console.log("PARAM:");
 		console.log($stateParams['game_id']);
 		$scope.myTurn = false;
-
+		
 		self.updatePlayerTurn(NineCache.gameObj.playerTurn);
 		self.initDataStructures();
 		self.handleSocketRequests();

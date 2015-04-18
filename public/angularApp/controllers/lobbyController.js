@@ -58,11 +58,6 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 	self.initLobbyData = function(){
 		$scope.chatMessagesList = [];
 		$scope.chatUsersList = [];
-		console.log(NineCache.userData);
-		console.log(NineCache.userType);
-
-		NineCache.mySocket.emit('addUserToLobby', 
-			{ username: NineCache.username, userid: NineCache.userData.id });
 	}
 
 	self.init = function(){

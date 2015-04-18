@@ -7,12 +7,9 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 		var serverAddr = 'http://50.65.103.143:3000/';
 		// serverAddr = 'http://142.244.5.95:3000/';
 		// serverAddr = 'localhost:3000/';
+		
 		var mySocket = io.connect(serverAddr);
 		NineCache.mySocket = mySocket;
-		// mySocket.on('news', function (data) {
-		// 	console.log(data);
-		// 	mySocket.emit('blah', { my: 'data blah' });
-		// });
 	}
 
 	self.startAGame = function(){
@@ -114,24 +111,6 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 
 	}
 
-	// self.setUsername = function(){
-	// 	if (self.NineCache.userType === 'guest'){
-	// 		$scope.username = self.NineCache.userData.id;
-	// 		NineCache.username = $scope.username;
-	// 	} else if (self.NineCache.userType === 'facebook'){
-	// 		$scope.username = self.NineCache.userData.first_name;
-	// 		NineCache.username = $scope.username;
-	// 	}
-	// }
-
-
-	$scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams){
-		// console.log("===============================================");
-		// console.log("To State:");
-		// console.log(toState.name);
-		// console.log("From State:");
-		// console.log("===============================================");
-	});
 
 	self.handleSocketRequests = function(){
 		NineCache.mySocket.on('gameMatched', function (data) {
@@ -147,18 +126,15 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 	self.init = function(){
 		console.log("mainController !");
 
+		// this should be run earlier than in this controller..*****
 		if (!NineCache.mySocket){
 			NineCache.connectToServer();
 		}
-		
-		self.currentGameState = "place";	// 'place' or 'move'
+
 		self.NineCache = NineCache;
 		
 		NineCache.setupAccount('guest');
-		// self.setUsername();
-
-		// Facebook
-		self.initFacebookLogin();		
+		self.initFacebookLogin();			// Facebook
 		self.handleSocketRequests();
 	}
 

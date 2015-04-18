@@ -28,10 +28,6 @@ pokeApp.service('NineCache', function(){
 		}
 	}
 
-	self.setUserTypeToGuest = function(){
-		self.userType = 'guest';	// !!!!!!!!!!! set random char name
-	}
-
 	self.setupAccount = function(type, data){
 		// if (!self.mySocket){
 			// self.connectToServer();
