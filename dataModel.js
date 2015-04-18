@@ -1,54 +1,135 @@
 var DataModel = function(){
 	var self = this;
-	self.socketid_map = {};	// hash map, index being 'socketid'
+	self.socketid_map = {};	// hash map, index being 'socketid' (socketid => userid)
 	self.active_users = {};	// hash map, index being 'userid'
 	self.active_games = {};	// hash map, index being 'gameid'
 	self.game_queue = [];	// list of 'userid's waiting to play a game
+	self.cached_users = {};	// hash map of users that are not active, index being 'userid'
 
-	self.chatMessagesList = [];
-	self.chatUsersList = [];
+	// ***** NOT IN USE YET !
+	self.chatMessagesList = [];	
 
-	self.addUserToLobby = function(data, socketid){
-		console.log("ADDING USER TO LOBBY !");
-		console.log("socket id: " + socketid + ", userid: " + data.userid)
-		// same socket - user either logged in or logged out of a service
-		if (self.socketid_map[socketid] == data.userid){
-			console.log("Same Socket - changing user id");
-		}
-		// if (self.chatUsersList.indexOf())
+	// compact hash map of active_users; used for the lobby chat user list
+	self.active_users_compact = {};	
 
 
-		self.chatUsersList.push(data.userid);
+	// ******************************************************************
+	// ******************************************************************
 
 
-		console.log("INDEX OF:");
-		// console.log(self.chatUsersList);
-		// console.log(data.userid);
-		// console.log(self.chatUsersList.indexOf(data.userid));
+	// self.addUserToLobby = function(data, socketid){
+	// 	console.log("ADDING USER TO LOBBY !");
+	// 	console.log("socket id: " + socketid + ", userid: " + data.userid);
+	// 	console.log("is socket already ? ");
+	// 	console.log(self.socketid_map[socketid]);
+	// 	// var newUser = self.addUserToActiveUsers(data.username, userid, socketid);
+
+	// 	// if it's a new user.. 
+	// 	if (self.addUserToActiveUsers(data.username, userid, socketid)){
+	// 		// check if user exists in the chatroom at the moment
+	// 	} else {
+
+	// 	}
+	// 	// socket already exists - user either logged in or logged out of a service
+	// 	if (self.socketid_map[socketid]){
+	// 		console.log("Same Socket - updating user id and username");
+	// 		// update the userid that is mapped to the socketid
+	// 		self.socketid_map[socketid] = data.userid;
+
+	// 		return self.chatUsersList;
+	// 	} else if (self.socketid_map[socketid] == data.userid){
+	// 		// same user id - user refreshed the page
+
+
+	// 	}
+	// 	// if (self.chatUsersList.indexOf())
+
+
+	// 	self.chatUsersList.push(data.userid);
+
+
+
+	// 	// console.log("INDEX OF:");
+	// 	// console.log(self.chatUsersList);
+	// 	// console.log(data.userid);
+	// 	// console.log(self.chatUsersList.indexOf(data.userid));
 		
-		// add user if they don't currently exist in the chat users list ********
-		// self.chatUsersList.push({username: data.username, userid: data.userid});
-		self.socketid_map[socketid] = data.userid;
+	// 	// add user if they don't currently exist in the chat users list ********
+	// 	// self.chatUsersList.push({username: data.username, userid: data.userid});
+	// 	self.socketid_map[socketid] = data.userid;
 
-		return self.chatUsersList;
+	// 	return self.chatUsersList;
+	// }
+
+	// create object for user with id 'userid' if one doesn't exist already
+	// in the database (or in cookies)
+	self.addUserToActiveUsers = function(username, userid, socketid){
+		console.log("adding to active users, username: " + username + ", userid: " + userid);
+		if ( (self.active_users[userid] === undefined) || 
+			 (self.active_users[userid] === null) ){
+			
+			// load data from database (if it exists) (or from cookies) 
+				// self.active_users[userid] = database data..
+
+			// else create a new active user object
+			self.active_users[userid] = {
+									"username": username,
+								  	"socketId": socketid, 
+								  	"gamesWon": 0,
+									"gamesLost": 0,
+									"currentGameId": null
+								 };
+
+			var lastUserid = self.socketid_map[socketid];
+			// socket is already mapped to an existing user id, so user logged in/out of a service
+			// update socket mapping, active_users and active_users_compact
+			if (lastUserid){
+				console.log("SOCKET ALREADY MAPPED TO AN id");
+				// cache the old user id and its data
+				self.cached_users[lastUserid] = self.active_users[lastUserid];
+				// ^ save it to database
+
+				// delete the inactive user data
+				delete self.active_users[lastUserid];
+				delete self.active_users_compact[lastUserid];
+				console.log("active users:");
+				console.log(self.active_users);
+				console.log("active users compact:");
+				console.log(self.active_users_compact);
+			}
+
+			self.active_users_compact[userid] = username;
+			self.socketid_map[socketid] = userid;
+
+
+			return true;
+		} else {
+			// if user with 'userid' is already an active user
+			// update their socketid
+			self.active_users[userid].socketId = socketid;
+			self.socketid_map[socketid] = userid;
+			return false;
+		}
 	}
 
-	// This is not very efficient ******************************
-	// This is not very efficient ******************************
-	// TO BE CHANGED !
-	self.removeUserFromLobby = function(socketid){
-		var useridToRemove = self.socketid_map[socketid];
+	self.getUserChatList = function(){
+		console.log("LIST:");
+		console.log(self.active_users_compact);
+		return self.active_users_compact;
+	}
+
+	self.removeActiveUser = function(socketid){
+		var userid = self.socketid_map[socketid];
 		var usernameToRemove = '';
 		
-		for (var i = 0; i < self.chatUsersList.length; i++){
-			if (self.chatUsersList[i].userid == useridToRemove){
-				usernameToRemove = self.chatUsersList.username;
-				self.chatUsersList.splice(i, 1);
-			}
-		}
-		
-		return { usernameToRemove: usernameToRemove, 
-				chatUsersList: self.chatUsersList};
+		// console.log("DISCONNECTING: " + self.socketid_map[socketid]);
+
+		// cache the data of the user that left
+		self.cached_users[userid] = self.active_users[userid];
+		// remove the data from the active hash maps
+		delete self.active_users_compact[userid];
+		delete self.active_users[userid];
+		delete self.socketid_map[userid];
 	}
 
 	self.addUserToQueue = function(data, userid, socketid){
@@ -60,28 +141,6 @@ var DataModel = function(){
 		}
 
 		return self.game_queue;
-	}
-
-	// create object for user with id 'userid' if one doesn't exist already
-	// in the database (or in cookies)
-	self.addUserToActiveUsers = function(username, userid, socketid){
-		if ( (self.active_users[userid] === undefined) || 
-			 (self.active_users[userid] === null) ){
-			
-			// load data from database (if it exists) (or from cookies) 
-
-			// else create a new active user object
-			self.active_users[userid] = { "username": username,
-										  "socketId": socketid, 
-										  "gamesWon": 0,
-										  "gamesLost": 0,
-										  "currentGameId": null };
-			return true;
-		} else {
-			// if user with 'userid' is already defined, then update their socketid
-			self.active_users[userid].socketId = socketid;
-			return false;
-		}
 	}
 
 	self.getGameQueue = function(){

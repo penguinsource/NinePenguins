@@ -1,10 +1,10 @@
 var nineApp = angular.module("nineApp");
 
-nineApp.controller('mainController', function($scope, $http, $state, Facebook, NineCache){
+nineApp.controller('mainController', function($scope, $http, $state, $cookies, Facebook, NineCache){
 	var self = this;
 
 	self.connectToServer = function(){
-		var serverAddr = 'http://50.65.103.143:3002/';
+		var serverAddr = 'http://50.65.103.143:3000/';
 		// serverAddr = 'http://142.244.5.95:3000/';
 		// serverAddr = 'localhost:3000/';
 		var mySocket = io.connect(serverAddr);
@@ -68,13 +68,7 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 			Facebook.api('/me', function(response) {
 				// Using $scope.$apply since this happens outside angular framework.
 				$scope.$apply(function() {
-					NineCache.userType = "facebook";
-					NineCache.userData = response;
-					self.setUsername();
-
-					NineCache.mySocket.emit('addUserToLobby', 
-						{ username: NineCache.username, 
-						  userid: 	NineCache.userData.id });
+					NineCache.setupAccount('facebook', response);
 					// console.log("FB user name: ");
 					// console.log(NineCache.userData);
 				});
@@ -84,9 +78,8 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 		$scope.logout = function() {
 			Facebook.logout(function() {
 				$scope.$apply(function() {
-					console.log("user logged out !");
-					NineCache.setUserTypeToGuest();
-					$scope.userData   = {};
+					// console.log("user logged out of Facebook!");
+					NineCache.setupAccount('guest');
 				});
 			});
 		}
@@ -121,15 +114,15 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 
 	}
 
-	self.setUsername = function(){
-		if (self.NineCache.userType === 'guest'){
-			$scope.username = self.NineCache.userData.id;
-			NineCache.username = $scope.username;
-		} else if (self.NineCache.userType === 'facebook'){
-			$scope.username = self.NineCache.userData.first_name;
-			NineCache.username = $scope.username;
-		}
-	}
+	// self.setUsername = function(){
+	// 	if (self.NineCache.userType === 'guest'){
+	// 		$scope.username = self.NineCache.userData.id;
+	// 		NineCache.username = $scope.username;
+	// 	} else if (self.NineCache.userType === 'facebook'){
+	// 		$scope.username = self.NineCache.userData.first_name;
+	// 		NineCache.username = $scope.username;
+	// 	}
+	// }
 
 
 	$scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams){
@@ -153,16 +146,19 @@ nineApp.controller('mainController', function($scope, $http, $state, Facebook, N
 
 	self.init = function(){
 		console.log("mainController !");
+
+		if (!NineCache.mySocket){
+			NineCache.connectToServer();
+		}
+		
 		self.currentGameState = "place";	// 'place' or 'move'
 		self.NineCache = NineCache;
 		
-		NineCache.userData.id = "guest_" + window.Math.random().toString(36).substring(7);
-		NineCache.userType = 'guest';
-		self.setUsername();
+		NineCache.setupAccount('guest');
+		// self.setUsername();
 
 		// Facebook
 		self.initFacebookLogin();		
-		self.connectToServer();
 		self.handleSocketRequests();
 	}
 

@@ -70,26 +70,28 @@ self.addPlayerToQueue = function(data, socket, io){
 // -------------------------
 
 self.postLobbyMessage = function(data, socket, io){
+	console.log("================");
+	console.log(data);
 	io.emit('updateLobbyChat', data);
 }
 
 self.addUserToLobby  = function(data, socket, io){
-	var chatUsersList = self.dataModel.addUserToLobby(data, socket.id);
-
+	self.dataModel.addUserToActiveUsers(data.username, data.userid, socket.id);
+	var chatUserList = self.dataModel.getUserChatList();
 	// send everyone the chat users list
-	io.emit('updateLobbyUsersList', 
+	io.emit('updateLobbyUserList', 
 		{message: "User '" + data.username + "' has joined the lobby.", 
-		 chatUsersList: chatUsersList});
+		 chatUsersList: chatUserList});
 }
 
-self.removeUserFromLobby = function(socketid, io){
+self.removeActiveUser = function(socketid, io){
 	// This is not very efficient ******************************
-	var retObj = self.dataModel.removeUserFromLobby(socketid);
-
+	var retObj = self.dataModel.removeActiveUser(socketid);
+	var chatUserList = self.dataModel.getUserChatList();
 	// send everyone the chat users list
-	io.emit('updateLobbyUsersList', 
-		{message: "User '" + retObj.usernameToRemove + "' has left the lobby.", 
-		 chatUsersList: retObj.chatUsersList});
+	io.emit('updateLobbyUserList', 
+		{message: "User has left the lobby.", 
+		 chatUsersList: chatUserList});
 }
 
 self.updateGameObject = function(gameObj){
@@ -124,21 +126,21 @@ self.updateGameObject = function(gameObj){
 	}
 }
 
-self.buildCompactGameObj = function(gameObj){
-	return { 
-		"gameId": gameObj.gameId,
-		"p1id": gameObj.p1id,
-		"p2id": gameObj.p2id,
-		"p1username": gameObj.p1userName,
-		"p2username": gameObj.p2userName,
-		"p1PlacePins": gameObj.p1PlacePins,
-		"p2PlacePins": gameObj.p2PlacePins,
-		"p1PinsLeft": gameObj.p1PinsLeft,
-		"p2PinsLeft": gameObj.p2PinsLeft,
-		"playerTurn": gameObj.playerTurn,
-		"gameState": gameObj.gameState
-	};
-};
+// self.buildCompactGameObj = function(gameObj){
+// 	return { 
+// 		"gameId": gameObj.gameId,
+// 		"p1id": gameObj.p1id,
+// 		"p2id": gameObj.p2id,
+// 		"p1username": gameObj.p1userName,
+// 		"p2username": gameObj.p2userName,
+// 		"p1PlacePins": gameObj.p1PlacePins,
+// 		"p2PlacePins": gameObj.p2PlacePins,
+// 		"p1PinsLeft": gameObj.p1PinsLeft,
+// 		"p2PinsLeft": gameObj.p2PinsLeft,
+// 		"playerTurn": gameObj.playerTurn,
+// 		"gameState": gameObj.gameState
+// 	};
+// };
 
 self.checkForMills = function(){
 	console.log("Checking Mills");
@@ -236,13 +238,12 @@ self.userPlacedPin = function(data, io){
 self.handleSocketRequests = function(io){
 	io.on('connection', function (socket) {
 
-		console.log("IO: ");
-		console.log(io.id);
+		// console.log("IO: ");
 		// console.log("SOCKET: ");
-		// console.log(socket.id);
 
 		socket.on('disconnect', function(){
-		    self.removeUserFromLobby(socket.id, io);
+			// console.log("SOCKET WITH ID: " + socket.id + " has DISCONNECTED !");
+		    self.removeActiveUser(socket.id, io);
 		});
 
 		socket.on('addUserToLobby', 
@@ -268,7 +269,7 @@ function init(){
 	var server = require('http').Server(app);
 	var io = require('socket.io')(server);
 	app.use(express.static(process.cwd() + '/public'));
-	server.listen(3002);
+	server.listen(3000);
 
 	// Data Model object
 	var DataModel = require("./dataModel.js");

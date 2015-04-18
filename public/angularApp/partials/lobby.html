@@ -11,12 +11,23 @@
 						  data-message='{{messageObj.message}}'>
 			</user-message>
 		</div>
-		<div id='chatUserList'>
+
+
+
+<!-- 		<div id='chatUserList'>
 			<p  class='userWrap' 
 				ng-repeat='userObj in chatUsersList'>
-				{{userObj.username}}
+				{{userObj}}
+			</p>
+		</div> -->
+
+		<div id='chatUserList'>
+			<p  class='userWrap' 
+				ng-repeat='(userid, name) in chatUsersList'>
+				{{name}}
 			</p>
 		</div>
+
 	</section>
 
 	<section id='chatInputArea'> 

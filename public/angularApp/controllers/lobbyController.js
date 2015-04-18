@@ -4,17 +4,19 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 	var self = this;
 
 	$scope.postMessageToChat = function(username, messageText, isMyMessage){
-		console.log("POSTING MESSAGE !");
-		var chatArea = document.getElementById('chatArea');
-		$scope.chatMessagesList.push({username: username, message: messageText});
+		// console.log("POSTING MESSAGE !");
 		
 		// emitting message to (server) and all the users present in the lobby
 		if (isMyMessage){
+			$scope.chatMessagesList.push({username: NineCache.username, message: messageText});
 			NineCache.mySocket.emit('postLobbyMessage', 
 				{ username: NineCache.username, message: messageText });
 			$scope.messageText = '';
+		} else {
+			$scope.chatMessagesList.push({username: username, message: messageText});
 		}
 
+		var chatArea = document.getElementById('chatArea');
 		chatArea.scrollTop = chatArea.scrollHeight;
 	}
 
@@ -22,6 +24,7 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 		NineCache.mySocket.on('updateLobbyChat', function (data) {
 			if (NineCache.username != data.username){
 		    	$scope.$apply(function(){
+		    		console.log("UPDATING GUI:" + data.username);
 		    		$scope.postMessageToChat(data.username, data.message, false);
 		    	});
 		    	
@@ -29,11 +32,15 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 		    // socket.emit('my other event', { my: 'data' });
 		});
 
-		NineCache.mySocket.on('updateLobbyUsersList', function (data) {
+		NineCache.mySocket.on('updateLobbyUserList', function (data) {
 		    	$scope.$apply(function(){
 		    		console.log("LIST:");
-		    		console.log(data);
+		    		console.log(data.chatUsersList);
 		    		$scope.chatUsersList = data.chatUsersList;
+
+		    		for (var i in data.chatUsersList){
+		    			console.log(data.chatUsersList[i]);
+		    		}
 		    		// $scope.postMessageToChat('', data.message, true);
 		    	});		    
 		});
@@ -53,6 +60,7 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 		$scope.chatUsersList = [];
 		console.log(NineCache.userData);
 		console.log(NineCache.userType);
+
 		NineCache.mySocket.emit('addUserToLobby', 
 			{ username: NineCache.username, userid: NineCache.userData.id });
 	}

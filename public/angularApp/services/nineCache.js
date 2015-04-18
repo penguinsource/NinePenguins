@@ -28,8 +28,37 @@ pokeApp.service('NineCache', function(){
 		}
 	}
 
-	this.setUserTypeToGuest = function(){
+	self.setUserTypeToGuest = function(){
 		self.userType = 'guest';	// !!!!!!!!!!! set random char name
+	}
+
+	self.setupAccount = function(type, data){
+		// if (!self.mySocket){
+			// self.connectToServer();
+		// }
+		
+		if (type === 'guest'){
+			self.userType = 'guest';
+			self.userData.id = 'guest_' + window.Math.random().toString(36).substring(7);
+			self.username = self.userData.id;
+		} else if (type === 'facebook'){
+			self.userType = 'facebook';
+			if (data){
+				self.userData = data;
+			}
+			self.username = self.userData.userData.first_name;
+		}
+
+		self.mySocket.emit('addUserToLobby', 
+			{ username: self.username, 
+			  userid: 	self.userData.id });
+	}
+
+	self.connectToServer = function(){
+		var serverAddr = 'http://50.65.103.143:3000/';
+		// serverAddr = 'http://142.244.5.95:3000/';
+		// serverAddr = 'localhost:3000/';
+		self.mySocket = io.connect(serverAddr);
 	}
 
 });
