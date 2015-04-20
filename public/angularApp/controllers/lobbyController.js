@@ -60,6 +60,11 @@ nineApp.controller('lobbyController', function($scope, $http, $state, Facebook, 
 		$scope.chatUsersList = [];
 	}
 
+	// var onDragStart = function(evt){
+	// 	console.log("ondragstart !!");
+	// 	console.log(evt);
+	// }
+
 	self.init = function(){
 		console.log("lobbyController !");
 

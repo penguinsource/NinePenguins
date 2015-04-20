@@ -137,8 +137,23 @@ nineApp.controller('gameController',
 		if (self.currentGameState === 'place'){
 			self.placePin(pinBtn, pinBtnInd, self.playerColor);
 		} else if (self.currentGameState === 'move'){
+			self.selectedPin = pinBtn;
 
 		}		
+	}
+
+
+	self.onDragStart = function(evt){
+		console.log("ondragstart !!");
+		console.log(evt);
+	}
+
+	self.displayPossibleMoves = function(pinBtn){
+		if (NineCache.gameObj.gameState === 'move'){
+
+		} else if (NineCache.gameObj.gameState === 'fly'){
+
+		}
 	}
 
 	// player = playerMe
@@ -285,11 +300,13 @@ nineApp.controller('gameController',
 		console.log("PARAM:");
 		console.log($stateParams['game_id']);
 		$scope.myTurn = false;
-		
+		$scope.displayAll = true;
+
 		self.updatePlayerTurn(NineCache.gameObj.playerTurn);
 		self.initDataStructures();
 		self.handleSocketRequests();
 	}
 
 	self.init();
+
 });

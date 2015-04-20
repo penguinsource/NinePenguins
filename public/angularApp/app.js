@@ -129,32 +129,3 @@ var nineApp = angular.module('nineApp', ['ngCookies', 'ui.router', 'facebook'], 
 // 	};
 // });
 
-nineApp.directive('sendMessagebtn', function() {
-	return {
-		restrict: 'E',
-		replace: true,
-		template: '<button id="sendMessageBtn">Send Message',
-		link: function(scope, elem, attrs) {
-			elem.bind('click', function() {
-				if (scope.messageText != ''){
-					scope.$apply(function(){
-						scope.postMessageToChat(scope.username, scope.messageText, true);
-					});
-					
-				}
-			});
-		}
-	};
-});
-
-nineApp.directive('userMessage', function() {
-	return {
-		restrict: 'E',
-		// replace: true,
-		template: "<p class='userMessageWrap'><span class='userMessageAuthor'>{{author}}</span class='userMessage'>{{messageText}}<span></span></p>",
-		scope: {
-			author: '@authorName',
-			messageText: '@message'
-		}
-	};
-});

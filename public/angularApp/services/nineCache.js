@@ -42,7 +42,7 @@ pokeApp.service('NineCache', function(){
 			if (data){
 				self.userData = data;
 			}
-			self.username = self.userData.userData.first_name;
+			self.username = self.userData.first_name;
 		}
 
 		self.mySocket.emit('addUserToLobby', 
