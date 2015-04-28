@@ -102,28 +102,39 @@ self.updateGameObject = function(gameObj){
 		// Player 1 wins !
 	}
 
-	if (gameObj.gameState === "place"){
-		// if there are no more pins left to place for either player, 
-		// then change the gameState
-		if ( (gameObj.p1PlacePins < 1) && (gameObj.p2PlacePins < 1) ){
-			gameObj.gameState = "move";
-		}
-
-		if (gameObj.p1PinsLeft < 4){
-			console.log("!!!!!! player 1 can fly");
-		}
-
-		if (gameObj.p2PinsLeft < 4){
-			console.log("!!!!!! player 2 can fly");
-		}
-
-	} else if (gameObj.gameState === "move"){
-		// ****
-		// have to do a check to see if the player that moves next can move at all
-
-	} else if (gameObj.gameState === "fly"){
-
+	// if there are no more pins left to place for either player, 
+	// then change the gameState
+	if ( (gameObj.p1PlacePins < 1) && (gameObj.p2PlacePins < 1) ){
+		gameObj.gameState = "move";
+	} else {
+		gameObj.gameState = "place";
 	}
+
+	if (gameObj.p1PinsLeft == 3){
+		console.log("!!!!!! player 1 can fly");
+	}
+
+	if (gameObj.p2PinsLeft == 3){
+		console.log("!!!!!! player 2 can fly");
+	}
+
+	// if (gameObj.gameState === "place"){
+
+	// 	if (gameObj.p1PinsLeft == 3){
+	// 		console.log("!!!!!! player 1 can fly");
+	// 	}
+
+	// 	if (gameObj.p2PinsLeft == 3){
+	// 		console.log("!!!!!! player 2 can fly");
+	// 	}
+
+	// } else if (gameObj.gameState === "move"){
+	// 	// ****
+	// 	// have to do a check to see if the player that moves next can move at all
+
+	// } else if (gameObj.gameState === "fly"){
+
+	// }
 }
 
 // self.buildCompactGameObj = function(gameObj){
@@ -146,93 +157,135 @@ self.checkForMills = function(){
 	console.log("Checking Mills");
 }
 
-// data = {gameId: .., userid: .., pinIndex: ..}
-self.userPlacedPin = function(data, io){
+self.userRemovedPin = function(data, io){
 	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
+	console.log("---> USER REMOVED PIN: " + gameObj.gameState);
 
+	// check player turn
 	if (gameObj.playerTurn !== data.userid){
-		console.log("ERROR ! Player Turn: " + gameObj.playerTurn +
+		console.log("ERROR 2! Player Turn: " + gameObj.playerTurn +
 			". Attempt by user with id: " + data.userid);
 		return;
 	}
 
+	if (gameObj.gameState === "remove"){
+		var otherPlayerPinName = (data.userid == gameObj.p1id) ? 'player2Pin' : 'player1Pin';
+		var otherPlayerId = (data.userid == gameObj.p1id) ? gameObj.p2id : gameObj.p1id;
+		console.log("Removing pin index: " + data.pinIndex, gameObj.board[data.pinIndex].control, otherPlayerId, otherPlayerPinName);
+		// check to see if pinIndex is in a mill.. or if there are pins not in mills.. etc.
+		if (gameObj.board[data.pinIndex].control === otherPlayerPinName){
+			gameObj.board[data.pinIndex].control = "pinFreePlace";
+			// console.log("control is: " + gameObj.board[data.pinIndex].control);
+		}
+		gameObj.playerTurn = otherPlayerId;
+		self.updateGameObject(gameObj);
+
+
+		// console.log("=============================================");
+		// console.log("current player turn: " + gameObj.playerTurn);
+		// gameObj.playerTurn = otherPlayerId;
+		// console.log("updated player turn: " + gameObj.playerTurn);
+		// console.log("=============================================");
+		// gameObj.gameState = "place";
+		
+		// console.log("again player turn: " + gameObj.playerTurn);
+		// console.log("=============================================");
+		// send the updated game object to the other player
+		var otherPlayerObj = self.dataModel.getUserWithId(otherPlayerId);
+		// var gameObjCompact = self.buildCompactGameObj(gameObj);
+		var returnObj = 
+			{
+				"gameId": gameObj.gameId,
+				"pinIndex": data.pinIndex,
+				"playerTurn": gameObj.playerTurn,
+				"gameState": gameObj.gameState
+			};
+
+		if (io.sockets.connected[otherPlayerObj.socketId]) {
+			io.to(otherPlayerObj.socketId).emit('removePin', returnObj);
+		}
+
+	} else {
+		console.log("ERROR 4: this call should only be made when the gameState is 'remove'." + 
+			" Game state: " + gameObj.gameState);
+
+	}
+}
+
+// data = {gameId: .., userid: .., pinIndex: ..}
+self.userPlacedPin = function(data, io){
+	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
+	console.log("---> USER PLACED PIN: " + gameObj.gameState);
+	// should check if the data.userid belongs in the game object gameObj
+	// not so sure about this part yet.. because the userids are already checked
+	// later below
+	// ...
+
+	// check player turn
+	if (gameObj.playerTurn !== data.userid){
+		console.log("ERROR 1! Player Turn: " + gameObj.playerTurn +
+			". Attempt by user with id: " + data.userid);
+		return;
+	}
+
+	// check if the pin's index is actually available
 	if (gameObj.board[data.pinIndex].control != 'pinFreePlace'){
-		console.log("ERROR ! Pin Index '" + data.pinIndex + "' is not free." +
+		console.log("ERROR 3! Pin Index '" + data.pinIndex + "' is not free." +
 		 " User id in that position: " + gameObj.board[data.pinIndex].control);
 		return;
 	}
-	console.log("USER PLACED PIN: player turn");
-	console.log("player turn: " + gameObj.playerTurn);
-	console.log("my id: " + data.userid);
-	console.log("p2 id: " + gameObj.p2id);
-	console.log("p1 id: " + gameObj.p1id);
-	console.log("p1 id: " + gameObj.p1PlacePins);
-	console.log("p1 id: " + gameObj.p2PlacePins);
-	console.log("--------------------------");
 
 	if (gameObj.gameState === "place"){
-		// check if this is a valid move (if there are pins left to place)
-		if ( (data.userid == gameObj.p1id) && (gameObj.p1PlacePins > 0) ){
-			// player 1 placed a pin, send player 2 the updated game object
-			gameObj.p1PlacePins--;
+		var playerPlacePins = (data.userid == gameObj.p1id) ? gameObj.p1PlacePins : gameObj.p2PlacePins;
+		var playerPinName = (data.userid == gameObj.p1id) ? 'player1Pin' : 'player2Pin';
+		var playerId = (data.userid == gameObj.p1id) ? gameObj.p1id : gameObj.p2id; 
+		var otherPlayerId = (data.userid == gameObj.p1id) ? gameObj.p2id : gameObj.p1id; 
 
-			// update game object
-			gameObj.playerTurn = gameObj.p2id;
-			console.log("user is p1 ");
-			console.log("AND: " + gameObj.playerTurn);
-			self.checkForMills();
-			self.updateGameObject(gameObj);
+		console.log("p1 LEFT TO PLACE: " + gameObj.p1PlacePins);
+		console.log("p2 LEFT TO PLACE: " + gameObj.p2PlacePins);
 
-			// send the updated game object to player 2
-			var p2Obj = self.dataModel.getUserWithId(gameObj.p2id);
+		if (playerPlacePins > 0){
+			self.dataModel.decreasePlacePins(gameObj, playerId);
+
+		console.log("p1 LEFT TO PLACE: " + gameObj.p1PlacePins);
+		console.log("p2 LEFT TO PLACE: " + gameObj.p2PlacePins);
+
+			// place pin in data.pinIndex
+			gameObj.board[data.pinIndex].control = playerPinName;
+
+			// has a mill been formed ?
+			if (data.newMill){
+				// check if a new mill has actually been formed
+				if (self.dataModel.checkNewMill(data.gameId, playerPinName, data.pinIndex, data.newMill)){
+					console.log("MILL CONFIRMED !!!!!");
+					gameObj.gameState = "remove";
+				} else {
+					console.log("ERROR 5: A mill has been reported but that's not true.");
+					gameObj.playerTurn = otherPlayerId;
+				}
+			} else {
+				gameObj.playerTurn = otherPlayerId;
+			}
+
+			// send updates to the other player
+			var otherPlayerObj = self.dataModel.getUserWithId(otherPlayerId);
 			// var gameObjCompact = self.buildCompactGameObj(gameObj);
 			var returnObj = 
 				{
 					"gameId": gameObj.gameId,
-					"playerid": gameObj.p1id,
+					"playerid": playerId,
 					"pinIndex": data.pinIndex,
 					"playerTurn": gameObj.playerTurn,
 					"gameState": gameObj.gameState
 				};
 			// add the newly placed pin's index to the gameObjCompact
 			
-
-			if (io.sockets.connected[p2Obj.socketId]) {
-				io.to(p2Obj.socketId).emit('placePin', returnObj);
+			// send player 2 the updated game object
+			if (io.sockets.connected[otherPlayerObj.socketId]) {
+				io.to(otherPlayerObj.socketId).emit('placePin', returnObj);
 			}
-		} else if ( (data.userid == gameObj.p2id) && (gameObj.p2PlacePins > 0) ){
-			// player 2 placed a pin, send player 1 the updated game object
-			gameObj.p2PlacePins--;
-
-			// update game object
-
-			gameObj.playerTurn = gameObj.p1id;
-			console.log("user is p2 ");
-			console.log("AND: " + gameObj.playerTurn);
-			self.checkForMills();
-			self.updateGameObject(gameObj);
-
-			// send the updated game object to player 1
-			var p1Obj = self.dataModel.getUserWithId(gameObj.p1id);
-			// var gameObjCompact = self.buildCompactGameObj(gameObj);
-			var returnObj = 
-				{
-					"gameId": gameObj.gameId,
-					"playerid": gameObj.p2id,
-					"pinIndex": data.pinIndex,
-					"playerTurn": gameObj.playerTurn,
-					"gameState": gameObj.gameState
-				};
-
-			if (io.sockets.connected[p1Obj.socketId]) {
-				io.to(p1Obj.socketId).emit('placePin', returnObj);
-			}
-		} else {
-			console.log("WTFFFFFFFFFFFFFFFFFF");
 		}
 	}
-	// gameObj.board[data.pinIndex].control = data.userid;
-
 }
 
 self.handleSocketRequests = function(io){
@@ -242,7 +295,8 @@ self.handleSocketRequests = function(io){
 		// console.log("SOCKET: ");
 
 		socket.on('disconnect', function(){
-			// console.log("SOCKET WITH ID: " + socket.id + " has DISCONNECTED !");
+			console.log("USER Disconnected, socketid: " + socket.id + ", userid: " + 
+				self.dataModel.getUserWithSocketid(socket.id));
 		    self.removeActiveUser(socket.id, io);
 		});
 
@@ -258,6 +312,9 @@ self.handleSocketRequests = function(io){
 		
 		socket.on('placePin', 
 			function(data){ self.userPlacedPin(data, io); });
+
+		socket.on('removePin', 
+			function(data){ self.userRemovedPin(data, io); });
 
 	});
 }

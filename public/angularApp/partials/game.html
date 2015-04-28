@@ -10,12 +10,12 @@
 	<button ng-repeat="pin in gameCtrl.board"
 			class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}}"
 			draggable='true'
+			draggable droppable
 			ondragstart='gameCtrl.onDragStart(event)'
-			ng-class="{white: displayAll == true}"
+			ng-class="{white: displayAll == true, }"
 			ng-click='gameCtrl.clickEvent( pin, $index )'
 			ng-disabled="gameCtrl.NineCache.gameObj.playerTurn != gameCtrl.NineCache.userData.id">
 	</button>
-	
 </section>
 
 <section id='player2'>
@@ -25,8 +25,5 @@
 		<p class='playerPoints'>1000 points</p>
 	</section>
 </section>
-
-
-
 
 <br><br><br>

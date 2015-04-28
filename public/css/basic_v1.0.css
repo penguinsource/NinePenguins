@@ -222,7 +222,6 @@ a:visited{
 .action-button
 {
 	text-decoration: none;
-	color: #FFF;
 	font-family: 'Pacifico', cursive;
 	border-style: none;
 	margin: 0px 10px 8px 0px;
@@ -231,6 +230,8 @@ a:visited{
 	padding: 21px 24px;
 	outline: #2A2943 solid 2px;
 	position: absolute;
+	color: #FFF;
+	cursor: pointer;
 }
 
 .blue
@@ -314,16 +315,16 @@ a:visited{
 
 */
 
-.player1pin {
+.player1Pin {
 	background-color: rgb(97, 93, 168);
 	border-bottom: 5px solid rgb(62, 61, 92);
 }
 
-.player1pin:hover {
+.player1Pin:hover {
 	
 }
 
-.player2pin {
+.player2Pin {
 
 }
 
@@ -768,9 +769,22 @@ span.userMessageAuthor {
 	/* Required to make elements draggable in old WebKit */
 	-khtml-user-drag: element;
 	-webkit-user-drag: element;
-	cursor: move;
-	border:1px solid black;
+	cursor: -webkit-grab;
 }
+
+/* for safari: */
+[draggable=true] {
+  -khtml-user-drag: element;
+}
+
+/*
+[draggable=true] {
+	cursor: pointer;
+}*/
+
+/*.drag {
+	cursor: -webkit-grabbing;
+}*/
 
 .peg {
 	text-align: center;
@@ -794,7 +808,6 @@ span.userMessageAuthor {
 }
 
 .blue {
-	background-color: blue;
 }
 
 .green {
@@ -812,4 +825,9 @@ span.userMessageAuthor {
 
 pre strong {
 	font-size:12pt;
+}
+.drag {
+	cursor: -webkit-grabbing;
+	/*width: 100%;*/
+	/*height: 200px;*/
 }

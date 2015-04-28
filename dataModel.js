@@ -65,6 +65,7 @@ var DataModel = function(){
 	// in the database (or in cookies)
 	self.addUserToActiveUsers = function(username, userid, socketid){
 		console.log("adding to active users, username: " + username + ", userid: " + userid);
+		console.log();
 		if ( (self.active_users[userid] === undefined) || 
 			 (self.active_users[userid] === null) ){
 			
@@ -84,7 +85,9 @@ var DataModel = function(){
 			// socket is already mapped to an existing user id, so user logged in/out of a service
 			// update socket mapping, active_users and active_users_compact
 			if (lastUserid){
-				console.log("SOCKET ALREADY MAPPED TO AN id");
+				console.log("SOCKET ALREADY MAPPED TO AN id: " + lastUserid);
+				console.log("Chat Active Users (compact) Before:");
+				console.log(self.active_users_compact);
 				// cache the old user id and its data
 				self.cached_users[lastUserid] = self.active_users[lastUserid];
 				// ^ save it to database
@@ -92,19 +95,27 @@ var DataModel = function(){
 				// delete the inactive user data
 				delete self.active_users[lastUserid];
 				delete self.active_users_compact[lastUserid];
-				console.log("active users:");
-				console.log(self.active_users);
-				console.log("active users compact:");
-				console.log(self.active_users_compact);
+				// console.log("active users:");
+				// console.log(self.active_users);
 			}
 
 			self.active_users_compact[userid] = username;
 			self.socketid_map[socketid] = userid;
-
+			
+			console.log("Chat Active Users (compact) CURRENT:");
+			console.log(self.active_users_compact);
 
 			return true;
 		} else {
+			console.log("userid: " + userid + " is already an active user");
 			// if user with 'userid' is already an active user
+			// that means that the user might still be in the chat room
+			// so remove the last userid that was in the active user lists
+			var lastUserid = self.socketid_map[socketid];
+			console.log("last user id: ");
+			console.log(lastUserid);
+			delete self.active_users[lastUserid];
+			delete self.active_users_compact[lastUserid];
 			// update their socketid
 			self.active_users[userid].socketId = socketid;
 			self.socketid_map[socketid] = userid;
@@ -113,8 +124,8 @@ var DataModel = function(){
 	}
 
 	self.getUserChatList = function(){
-		console.log("LIST:");
-		console.log(self.active_users_compact);
+		// console.log("LIST:");
+		// console.log(self.active_users_compact);
 		return self.active_users_compact;
 	}
 
@@ -133,7 +144,7 @@ var DataModel = function(){
 	}
 
 	self.addUserToQueue = function(data, userid, socketid){
-		self.addUserToActiveUsers(data.username, userid, socketid);
+		// self.addUserToActiveUsers(data.username, userid, socketid);
 		
 		// check if the player is already in the game queue
 		if (self.game_queue.indexOf(data.userid) === -1){
@@ -143,8 +154,22 @@ var DataModel = function(){
 		return self.game_queue;
 	}
 
+	self.decreasePlacePins = function(gameObj, playerid){
+		if (gameObj.p1id == playerid){
+			gameObj.p1PlacePins--;
+		} else if (gameObj.p2id == playerid){
+			gameObj.p2PlacePins--;
+		} else {
+			console.log("ERROR 7: dataModel, decreasePlacePins function");
+		}
+	}
+
 	self.getGameQueue = function(){
 		return self.game_queue;
+	}
+
+	self.getUserWithSocketid = function(socketid){
+		return self.socketid_map[socketid];
 	}
 
 	self.getUserWithId = function(userid){
@@ -177,6 +202,58 @@ var DataModel = function(){
 				"playerTurn": player1id,
 				"gameState": "place"	// {place, move, fly}
 			};
+	}
+
+	self.checkNewMill = function(gameId, playerNo, newPinIndex, millData){
+		var gameObj = self.active_games[gameId];
+		var neighPinIndex1 = -1;
+		var neighPinIndex2 = -1;
+
+		if (millData.millType === "vertical"){
+			if (gameObj.board[newPinIndex].vNeighbours.length == 2){
+				neighPinIndex1 = gameObj.board[newPinIndex].vNeighbours[0];
+				neighPinIndex2 = gameObj.board[newPinIndex].vNeighbours[1];
+				console.log("!! V 2 neighbours: " + gameObj.board[newPinIndex].vNeighbours.length);
+			} else {
+				neighPinIndex1 = gameObj.board[newPinIndex].vNeighbours[0];
+				var neighbourPin = gameObj.board[neighPinIndex1];
+				for (var i = 0; i < neighbourPin.vNeighbours.length; i++){
+					if (neighbourPin.vNeighbours[i] != newPinIndex){
+						neighPinIndex2 = neighbourPin.vNeighbours[i];
+					}
+				}
+				console.log("!! V 1 neighbour: " + gameObj.board[newPinIndex].vNeighbours.length);
+			}
+		} else if (millData.millType === "horizontal"){
+			if (gameObj.board[newPinIndex].hNeighbours.length == 2){
+				neighPinIndex1 = gameObj.board[newPinIndex].hNeighbours[0];
+				neighPinIndex2 = gameObj.board[newPinIndex].hNeighbours[1];
+				console.log("!! H 2 neighbours: " + gameObj.board[newPinIndex].hNeighbours.length);
+			} else {
+				neighPinIndex1 = gameObj.board[newPinIndex].hNeighbours[0];
+				var neighbourPin = gameObj.board[neighPinIndex1];
+				for (var i = 0; i < neighbourPin.hNeighbours.length; i++){
+					if (neighbourPin.hNeighbours[i] != newPinIndex){
+						neighPinIndex2 = neighbourPin.hNeighbours[i];
+					}
+				}
+				console.log("!! H 1 neighbour: " + gameObj.board[newPinIndex].hNeighbours.length);
+			}
+		}
+
+		if ( (gameObj.board[newPinIndex].control === gameObj.board[neighPinIndex1].control) &&
+			 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control) &&
+			 (gameObj.board[newPinIndex].control === playerNo) ){
+			return true;
+		} else {
+			return false;
+		}
+		// console.log("=-=-=-=-=-=-=-=");
+		// console.log("Data received:");
+		// console.log(millData);
+		// console.log();
+		// console.log("Data calculated:");
+		// console.log(newPinIndex, neighPinIndex1, neighPinIndex2);
 	}
 
 	self.createGameObject = function(player1id, player2id){

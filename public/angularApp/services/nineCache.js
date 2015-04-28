@@ -26,6 +26,7 @@ pokeApp.service('NineCache', function(){
 		} else {
 			self.gameObj.otherPlayerId = self.gameObj.p1id;
 		}
+		
 	}
 
 	self.setupAccount = function(type, data){
