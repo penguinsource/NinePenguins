@@ -9,7 +9,8 @@ nineApp.directive('sendMessagebtn', function() {
 			elem.bind('click', function() {
 				if (scope.messageText != ''){
 					scope.$apply(function(){
-						scope.postMessageToChat(scope.username, scope.messageText, true);
+						scope.postMessageToChat(scope.username, 
+													scope.messageText, true);
 					});
 					
 				}

@@ -137,6 +137,13 @@ var DataModel = function(){
 
 		// cache the data of the user that left
 		self.cached_users[userid] = self.active_users[userid];
+
+		// check if the user is currently in the game queue / remove them if they are
+		var userGQindex = self.game_queue.indexOf(userid);
+		if (userGQindex != -1){
+			self.game_queue.splice(userGQindex);
+		}
+
 		// remove the data from the active hash maps
 		delete self.active_users_compact[userid];
 		delete self.active_users[userid];

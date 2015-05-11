@@ -331,32 +331,33 @@ nineApp.controller('gameController',
 		
 		// 6  p6              p5             p4
 
-		self.board = [
-					  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ],'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ], 'isMill': false },
-					  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ], 'isMill': false }
-					 ];
+		self.board = 
+			[
+			  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ],'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 1 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 2, 4 ], "hNeighbours": [ 11 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 3 ], "hNeighbours": [ 5 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 4, 6 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 5 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 0, 6 ], "hNeighbours": [ 15 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 9 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 1, 17 ], "hNeighbours": [ 8, 10 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 9 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 10, 12 ], "hNeighbours": [ 3, 19 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 11 ], "hNeighbours": [ 13 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 5, 21 ], "hNeighbours": [ 12, 14 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 15 ], "hNeighbours": [ 13 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 8, 14 ], "hNeighbours": [ 7, 23 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 17 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 16, 18 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 17 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 18, 20 ], "hNeighbours": [ 11 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 19 ], "hNeighbours": [ 21 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 13 ], "hNeighbours": [ 20, 22 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 23 ], "hNeighbours": [ 21 ], 'isMill': false },
+			  {"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ], 'isMill': false }
+			];
 
 		self.playerColor = 'player1Pin';
 		// self.canRemoveMillPin = false;	// 
