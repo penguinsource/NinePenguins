@@ -18,6 +18,10 @@ var wordListLength			= 0;
 
 var connection = '';
 
+function helloWorld(){
+	
+}
+
 // Connect to MySQL Database 
 // --------------
 function connectToDB(callback){
