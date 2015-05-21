@@ -19,7 +19,7 @@ var wordListLength			= 0;
 var connection = '';
 
 function helloWorld(){
-	
+	print("Sup !");
 }
 
 // Connect to MySQL Database 
