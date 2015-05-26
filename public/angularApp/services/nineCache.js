@@ -52,9 +52,9 @@ pokeApp.service('NineCache', function(){
 	}
 
 	self.connectToServer = function(){
-		var serverAddr = 'http://50.65.103.143:3000/';
+		// var serverAddr = 'http://50.65.103.143:3000/';
 		// serverAddr = 'http://142.244.5.95:3000/';
-		// serverAddr = 'localhost:3000/';
+		serverAddr = 'localhost:3000/';
 		self.mySocket = io.connect(serverAddr);
 	}
 
