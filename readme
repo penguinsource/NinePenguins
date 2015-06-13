@@ -1,0 +1,4 @@
+2 places where you have to change the ip in order for it to work..
+
+public/angularApp/controllers/mainController.js
+public/angularApp/services/NineCache.js
