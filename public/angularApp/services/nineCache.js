@@ -22,7 +22,7 @@ pokeApp.service('NineCache', function(){
 	self.initGameObj = function(data){
 		self.gameObj = data;
 		if (self.gameObj.p1id === self.userData.id){
-			self.gameObj.otherPlayerId = self.gameObj.p2id;
+			self.gameObj.otherPalyerId = self.gameObj.p2id;
 		} else {
 			self.gameObj.otherPlayerId = self.gameObj.p1id;
 		}
@@ -52,9 +52,11 @@ pokeApp.service('NineCache', function(){
 	}
 
 	self.connectToServer = function(){
+		var serverAddr = '';
 		// var serverAddr = 'http://50.65.103.143:3000/';
 		// serverAddr = 'http://142.244.5.95:3000/';
 		serverAddr = 'localhost:3000/';
+		serverAddr = '65.34.248.251:3000/';
 		self.mySocket = io.connect(serverAddr);
 	}
 
