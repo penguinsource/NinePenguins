@@ -11,8 +11,9 @@
 			class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}}"
 			draggable='true'
 			draggable droppable
-			ondragstart='gameCtrl.onDragStart(event)'
+			
 			ng-class="{white: displayAll == true, }"
+			data-pinIndex="{{$index}}"
 			ng-click='gameCtrl.clickEvent( pin, $index )'
 			ng-disabled="gameCtrl.NineCache.gameObj.playerTurn != gameCtrl.NineCache.userData.id">
 	</button>
@@ -27,3 +28,8 @@
 </section>
 
 <br><br><br>
+
+<!-- 
+	one of the buttons' attribute was ......:
+	ondragstart="gameCtrl.onDragStart(event)" 
+-->

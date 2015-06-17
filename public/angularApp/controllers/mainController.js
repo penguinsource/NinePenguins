@@ -15,8 +15,10 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 	}
 
 	self.startAGame = function(){
-		console.log("FB user name: ");
-		console.log(NineCache.userData);
+		// console.log("FB user name: ");
+		// console.log(NineCache.userData);
+		$scope.startGameBtnText = "Searching for a game..";
+
 
 		NineCache.mySocket.emit('addPlayerToQueue', 
 			{ username: NineCache.username, 
@@ -39,7 +41,7 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 
 		Facebook.getLoginStatus(function(response) {
 			if (response.status == 'connected') {
-				console.log('im connected ');
+				// console.log('im connected ');
 				NineCache.userType = 'facebook';
 				$scope.me();
 			}
@@ -55,7 +57,7 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 		};
       
 		$scope.login = function() {
-			console.log("logging in");
+			// console.log("logging in");
 			Facebook.login(function(response) {
 				if (response.status == 'connected') {
 					$scope.me();
@@ -113,11 +115,11 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 
 	}
 
-
 	self.handleSocketRequests = function(){
 		NineCache.mySocket.on('gameMatched', function (data) {
-			console.log("game matched -> ");
+			// console.log("game matched -> ");
 			// console.log(data);
+			$scope.startGameBtnText = "Start a Game";
 
 			NineCache.initGameObj(data);
 		    $state.go('game', {game_id: data.gameId});
@@ -126,7 +128,8 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 	}
 
 	self.init = function(){
-		console.log("mainController !");
+		// console.log("mainController !");
+		$scope.startGameBtnText = "Start a game";
 
 		// this should be run earlier than in this controller..*****
 		if (!NineCache.mySocket){

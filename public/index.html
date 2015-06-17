@@ -43,14 +43,14 @@
 						login
 						<button type="button" 
 								class="btn btn-primary btn-large" 
-								data-ng-show="mainCtrl.NineCache.userType == 'guest'" 
+								data-ng-show="mainCtrl.NineCache.userType=='guest'" 
 								data-ng-disabled="!facebookReady" 
 								data-ng-click="IntentLogin()">
 							Login with Facebook
 						</button>
 						<button type="button" 
 								class="btn btn-danger btn-large" 
-								data-ng-show="mainCtrl.NineCache.userType != 'guest'" 
+								data-ng-show="mainCtrl.NineCache.userType!='guest'" 
 								data-ng-disabled="!facebookReady" 
 								data-ng-click="logout()">
 							Logout
@@ -69,7 +69,7 @@
 			<section id='gameButtons'>
 				<button class='gameBtnRegular' 
 						ng-click='mainCtrl.startAGame()'>
-					Start a Game
+					{{startGameBtnText}}
 				</button>
 				<button class='gameBtnRegular' ui-sref='game'>
 					<span id="spinner"> </span>

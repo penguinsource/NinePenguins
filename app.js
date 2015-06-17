@@ -215,6 +215,9 @@ self.userRemovedPin = function(data, io){
 // data = {gameId: .., userid: .., pinIndex: ..}
 self.userPlacedPin = function(data, io){
 	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
+	console.log("game object:");
+	console.log(gameObj);
+	
 	console.log("---> USER PLACED PIN: " + gameObj.gameState);
 	// should check if the data.userid belongs in the game object gameObj
 	// not so sure about this part yet.. because the userids are already checked

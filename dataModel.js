@@ -64,8 +64,8 @@ var DataModel = function(){
 	// create object for user with id 'userid' if one doesn't exist already
 	// in the database (or in cookies)
 	self.addUserToActiveUsers = function(username, userid, socketid){
-		console.log("adding to active users, username: " + username + ", userid: " + userid);
-		console.log();
+		// console.log("adding to active users, username: " + username + ", userid: " + userid);
+		// console.log();
 		if ( (self.active_users[userid] === undefined) || 
 			 (self.active_users[userid] === null) ){
 			
@@ -85,9 +85,9 @@ var DataModel = function(){
 			// socket is already mapped to an existing user id, so user logged in/out of a service
 			// update socket mapping, active_users and active_users_compact
 			if (lastUserid){
-				console.log("SOCKET ALREADY MAPPED TO AN id: " + lastUserid);
-				console.log("Chat Active Users (compact) Before:");
-				console.log(self.active_users_compact);
+				// console.log("SOCKET ALREADY MAPPED TO AN id: " + lastUserid);
+				// console.log("Chat Active Users (compact) Before:");
+				// console.log(self.active_users_compact);
 				// cache the old user id and its data
 				self.cached_users[lastUserid] = self.active_users[lastUserid];
 				// ^ save it to database
@@ -102,18 +102,18 @@ var DataModel = function(){
 			self.active_users_compact[userid] = username;
 			self.socketid_map[socketid] = userid;
 			
-			console.log("Chat Active Users (compact) CURRENT:");
-			console.log(self.active_users_compact);
+			// console.log("Chat Active Users (compact) CURRENT:");
+			// console.log(self.active_users_compact);
 
 			return true;
 		} else {
-			console.log("userid: " + userid + " is already an active user");
+			// console.log("userid: " + userid + " is already an active user");
 			// if user with 'userid' is already an active user
 			// that means that the user might still be in the chat room
 			// so remove the last userid that was in the active user lists
 			var lastUserid = self.socketid_map[socketid];
-			console.log("last user id: ");
-			console.log(lastUserid);
+			// console.log("last user id: ");
+			// console.log(lastUserid);
 			delete self.active_users[lastUserid];
 			delete self.active_users_compact[lastUserid];
 			// update their socketid
@@ -220,7 +220,7 @@ var DataModel = function(){
 			if (gameObj.board[newPinIndex].vNeighbours.length == 2){
 				neighPinIndex1 = gameObj.board[newPinIndex].vNeighbours[0];
 				neighPinIndex2 = gameObj.board[newPinIndex].vNeighbours[1];
-				console.log("!! V 2 neighbours: " + gameObj.board[newPinIndex].vNeighbours.length);
+				// console.log("!! V 2 neighbours: " + gameObj.board[newPinIndex].vNeighbours.length);
 			} else {
 				neighPinIndex1 = gameObj.board[newPinIndex].vNeighbours[0];
 				var neighbourPin = gameObj.board[neighPinIndex1];
@@ -229,13 +229,13 @@ var DataModel = function(){
 						neighPinIndex2 = neighbourPin.vNeighbours[i];
 					}
 				}
-				console.log("!! V 1 neighbour: " + gameObj.board[newPinIndex].vNeighbours.length);
+				// console.log("!! V 1 neighbour: " + gameObj.board[newPinIndex].vNeighbours.length);
 			}
 		} else if (millData.millType === "horizontal"){
 			if (gameObj.board[newPinIndex].hNeighbours.length == 2){
 				neighPinIndex1 = gameObj.board[newPinIndex].hNeighbours[0];
 				neighPinIndex2 = gameObj.board[newPinIndex].hNeighbours[1];
-				console.log("!! H 2 neighbours: " + gameObj.board[newPinIndex].hNeighbours.length);
+				// console.log("!! H 2 neighbours: " + gameObj.board[newPinIndex].hNeighbours.length);
 			} else {
 				neighPinIndex1 = gameObj.board[newPinIndex].hNeighbours[0];
 				var neighbourPin = gameObj.board[neighPinIndex1];
@@ -244,7 +244,7 @@ var DataModel = function(){
 						neighPinIndex2 = neighbourPin.hNeighbours[i];
 					}
 				}
-				console.log("!! H 1 neighbour: " + gameObj.board[newPinIndex].hNeighbours.length);
+				// console.log("!! H 1 neighbour: " + gameObj.board[newPinIndex].hNeighbours.length);
 			}
 		}
 
@@ -264,7 +264,7 @@ var DataModel = function(){
 	}
 
 	self.createGameObject = function(player1id, player2id){
-		console.log("Creating Game Object ..");
+		// console.log("Creating Game Object ..");
 
 		var gameId = "game_" + Math.random().toString(36).substring(7);
 		self.active_users[player1id].currentGameId = gameId;

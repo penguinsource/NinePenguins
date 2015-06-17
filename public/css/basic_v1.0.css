@@ -5,6 +5,11 @@ body {
 	/*height: 200px;*/
 }
 
+.over {
+	background-color: rgb(97, 93, 168);
+	border-bottom: 5px solid rgb(62, 61, 92);
+}
+
 .board {
 	background-image: url('/images/board.png');
 	width: 595px;
@@ -740,12 +745,6 @@ span.userMessageAuthor {
 	position: relative;
 	background-image: url("/images/board_2.png");;
 	/*background-color: red;*/
-}
-
-.white {
-	/*opacity: 0.2;*/
-	/*background-color: white;*/
-	/*border-bottom: 5px solid green;*/
 }
 
 /* Dragging buttons styles */
