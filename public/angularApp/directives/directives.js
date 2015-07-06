@@ -47,23 +47,23 @@ nineApp.directive('droppable', function() {
                     // console.log(e);
                     // console.log(scope);
 
-			        e.dataTransfer.dropEffect = 'move';
+			        // e.dataTransfer.dropEffect = 'move';
+                    
 			        // allows us to drop
 			        if (e.preventDefault) e.preventDefault();
 
 			        // this.classList.add('over');
                     // this.classList.remove("pinFreePlace");
                     var pinIndex = e.target.attributes["data-pinIndex"].value;
-                    
+                    var sourceIndex = scope.gameCtrl.dragStartIndex;
+
                     // if it's my turn,show that pin could be placed at pinIndex
-                    if (scope.gameCtrl.isMyTurn()){
-                        this.classList.add("player1Pin");
-                        this.classList.remove("pinFreePlace");
-                        // console.log(this.classList);
-                    }
-                    // console.log("CLASS LIST:");
-                    // 
-                    
+                    // if ( scope.gameCtrl.canPlacePin(
+                    //                     pinIndex, "player1Pin", sourceIndex) ){
+                    //     this.classList.add("player1Ghost");
+                    //     this.classList.remove("pinFreePlace");
+                    // }
+
                     // scope.setPinAction("dragover", pinIndex);
 			        return false;
 			    },
@@ -73,8 +73,21 @@ nineApp.directive('droppable', function() {
 
             el.addEventListener("dragleave", function(e){
                 console.log("Drag Leave");
-                this.classList.remove("player1Pin");
-                this.classList.add("pinFreePlace");
+                // var pinIndex = e.target.attributes["data-pinIndex"].value;
+                // if (scope.gameCtrl.isPinIndexFree(pinIndex)){
+                //     this.classList.add("pinFreePlace");
+                // }
+                // this.classList.remove("player1Ghost");
+            })
+
+            el.addEventListener("dragend", function(e){
+                console.log("Drag Stop!!");
+                // if ( (this.classList.indexOf("player1Pin") == -1) ){
+                    // this.classList.add("pinFreePlace");
+                // }
+                // this.classList.remove("player1Ghost");
+                // this.classList.remove("player1Pin");
+                // this.classList.add("pinFreePlace");
             })
 
             el.addEventListener(
@@ -96,6 +109,9 @@ nineApp.directive('droppable', function() {
                     // scope.$apply('drop()');
                     var pinIndex = e.target.attributes["data-pinIndex"].value;
                     scope.setPinAction("dropppp", pinIndex);
+                    scope.gameCtrl.movePin(scope.gameCtrl.movingPinStartIndex,
+                                           pinIndex,
+                                           scope.gameCtrl.playerLink);
                     return false;
                 },
                 false
@@ -115,16 +131,11 @@ nineApp.directive('draggable', function() {
             'dragstart',
             function(e) {
             	console.log("dragstart");
-            	// console.log(e);
-                // console.log("value: ");
-                // console.log(scope);
-                // console.log(this);
-                // console.log(scope);
-                // console.log(e.target.attributes["data-pinIndex"].value);
-                var pinIndex = e.target.attributes["data-pinIndex"].value;
-                e.dataTransfer.effectAllowed = 'move';
+            	var pinIndex = e.target.attributes["data-pinIndex"].value;
+                scope.gameCtrl.movingPinStartIndex = pinIndex;
+                // e.dataTransfer.effectAllowed = 'move';
                 // e.dataTransfer.setData('Text', this.id);
-                this.classList.add('drag');
+                // this.classList.add('drag');
                 scope.setPinAction("dragstart", pinIndex);
                 return false;
             },
@@ -138,7 +149,6 @@ nineApp.directive('draggable', function() {
             	// console.log(e);
                 // console.log("value: ");
                 // console.log(e.target.attributes["data-pinIndex"].value);
-                this.classList.remove('drag');
                 return false;
             },
             false

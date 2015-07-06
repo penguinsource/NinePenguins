@@ -7,9 +7,8 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 		var serverAddr = 'http://50.65.103.143:3000/';
 		// serverAddr = 'http://142.244.5.95:3000/';
 		serverAddr = 'http://localhost:3000/';
-		serverAddr = '65.34.248.251:3000/';
-		
-		
+		// serverAddr = '[2601:589:2:5fc0:f959:f5dd:5932:49be]:3000/';
+
 		var mySocket = io.connect(serverAddr);
 		NineCache.mySocket = mySocket;
 	}
@@ -18,7 +17,6 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 		// console.log("FB user name: ");
 		// console.log(NineCache.userData);
 		$scope.startGameBtnText = "Searching for a game..";
-
 
 		NineCache.mySocket.emit('addPlayerToQueue', 
 			{ username: NineCache.username, 
@@ -116,6 +114,7 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 	}
 
 	self.handleSocketRequests = function(){
+		// found a game
 		NineCache.mySocket.on('gameMatched', function (data) {
 			// console.log("game matched -> ");
 			// console.log(data);

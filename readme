@@ -1,4 +1,13 @@
-2 places where you have to change the ip in order for it to work..
+places where you have to change the ip in order for it to work..
 
 public/angularApp/controllers/mainController.js
 public/angularApp/services/NineCache.js
+app.js (init function, setting the port to listen on)
+
+
+if you have an ipv6 ip address, type it in browser as such:
+
+ip address: 2601:589:2:5fc0:f959:f5dd:5932:49be
+port number: 3000
+
+type: [2601:589:2:5fc0:f959:f5dd:5932:49be]:3000

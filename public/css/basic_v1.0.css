@@ -320,6 +320,11 @@ a:visited{
 
 */
 
+.player1Ghost {
+	background-color: rgb(97, 93, 168);
+	border-bottom: 5px solid rgb(62, 61, 92);
+}
+
 .player1Pin {
 	background-color: rgb(97, 93, 168);
 	border-bottom: 5px solid rgb(62, 61, 92);

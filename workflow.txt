@@ -1,0 +1,167 @@
+me placing/moving/flying a pin:
+
+===== CLIENT SIDE ======
+
+- first of all, the server will update me with my state (place, move or fly)
+
+- update gui actions:
+	(Extra)- if i'm grabbing a pin and hovering it over other pin indices, 'shadow' those spots
+			 if i can actually place my pin there 
+			 	(for state place, shadow any pin index i hover my mouse over, IF i can place my pin on that index)
+			 	(for state move, i can either select a pin, and neighbours where i can place my pin should be shadowed
+			 					OR i can grab a pin and neighbours where i can place my pin should be shadowed)
+			 	(for state fly, there might be no need to shadow anything, as there are too many indices to shadow ?? not sure yet.)
+
+
+(PART 1) :
+
+-check if its my turn
+-check if target pin index is available (DEPRECATED ****))
+
+-triage by current state (place, move or fly)
+
+if place
+	check if target pin index is available
+	check if i have enough pins left to place
+	place pin
+	decrease pins left to place
+	function check for mill	
+	if current user moved the pin
+		update server
+	function check game winning conditions
+	(NOT REQUIRED, but nice feature to update the client side: )
+		check # of pins left to place, if it's 0, set state to move (NOT REQUIRED as the server will update my state the next turn)
+	
+else if move
+	check if target pin index is available
+	check if source element (the index im moving the pin from) belongs to me
+	check if its a valid move (the target pin is the neighbour of the source pin)
+	move pin
+	function check for mill
+	if current user moved the pin
+		update server
+	function check game winning conditions
+
+else if fly
+	check if target pin index is available
+	check if source element belongs to me
+	function check for mill
+	function check game winning conditions
+
+else if remove
+	check if the target pin index belongs to the other player
+	remove their pin
+
+
+
+function check for mill
+	- if i made a mill, let me remove one of the other players' pin
+	  (conditions: )
+	(nice feature to have:)
+		- if i hover over my opponents' pin, it should turn red-ish if the pin is removable
+
+function check game winning conditions (removeAction boolean)
+	if (removeAction is true)
+		- if the other player has < 3 pins, i win
+	- check if the other player can move any pin.. if they cant, i win
+	- (DO NOT CHECK conditions if i lost the game.. updates on my current state 
+	   will be updated everytime i receive data from the server)
+
+(PART 2) :
+
+This part is about handling calls from the server, and updating the client-side game object as well as the GUI.
+every call needs to receive:
+	{gameid, playerTurn, actionType(place, move, fly, remove, win, lose), targetIndex, sourceIndex}
+
+- check to see if the client side gameid matches the gameid received. if it doesnt, print error
+- follow the steps in (PART 1).. 
+  basically, the game will wait for my user input (placing/	  moving pins.. etc)
+
+- Triage by actionType
+
+===== SERVER SIDE ======
+
+Sending from client to server:
+
+every call needs to receive:
+	{authentication (.., .., userid) , gameid, playerTurn, actionObject(actionType (place, move, fly, remove), targetIndex, sourceIndex) }
+
+- get game object using the received gameid (if no game object found or game is not active, return error)
+- check to see if the userid is one of the players defined in the game object (else return error).
+- check to see if its userid's turn to play
+
+- triage by action Type: (check that the action type received from user matches action type set in the game object)
+
+case place
+	- check if target pin index is available
+	- check if current user has enough pins left to place another one; 
+	    - return error if not, cause the current user should not be in 'place' state if they dont have any pins left to place
+	- place pin, decrease the pins left to be placed
+	- function check for mill
+		- if a mill occured, send message to both players letting them know
+		  one of them made a mill. keep the same player's turn. 
+		  Need a way that keeps track of when the server is waiting for a player to remove a pin; return
+	- check game winning conditions
+		- if a player won game, announce both, return;
+	- if the current user has 0 pins left to place, set its state to move
+	- send update to both players
+
+case move
+	- check if target pin index is available
+	- check if the source pin index belongs to the current user
+	- check if its a valid move (the target pin is the neighbour of the source pin)
+	- move pin (that means update game obj board)
+	- function check for mill
+		- if a mill occured, send message to both players letting them know
+		  one of them made a mill. keep the same player's turn
+		  Need a way that keeps track of when the server is waiting for a player to remove a pin; return
+	- check game winning conditions
+		- if a player won game, announce both, return;
+	- send update to both players
+
+case fly
+	(NO NEED) - idk if i should check if the current user has 3 pins left.. 
+	should make sure there is no way to get to fly mode without making sure user only has 3 pins left.
+	- check if the target pin index is available
+	- check if the source pin index belongs to the current user
+	- fly pin
+	-function check for mill
+		- if a mill occured, send message to both players letting them know one of them made a mill.
+		  keep the same player's turn.
+		  Need a way that keeps track of when the server is waiting for a player to remove a pin; return
+	- function check game winning conditions 2 (it shouldnt check if the player has < 3 pins)
+		- if a player won game, announce both, return;
+	- send update to both players
+
+case remove
+	- check that the pin index selected to be removed (targetIndex) belongs 
+	  to the other player (so not the one whois current turn it is)
+	- check if its a valid move (if all pins on the board are in mills, then it 
+	  can be deleted. if targetIndex is in a mill but there are other pins that aren't, return error, player should pick another pin)
+	- remove pin
+	- function check game winning conditions
+		- if a player won game, announce both, return;
+	- if the player has 
+	- send update to both players
+
+
+function check for mill
+	- if i made a mill, let me remove one of the other players' pin
+	  (conditions: )
+	(nice feature to have:)
+		- if i hover over my opponents' pin, it should turn red-ish if the pin is removable
+
+// removeAction Boolean is true if this function is called after the player has removed a pin 
+function check game winning conditions (param removeAction Boolean)
+	- if (removeAction)
+		if the other player has < 3 pins, you win !
+	- check if the other player can move any pin.. if they cant, i win
+	- (DO NOT CHECK conditions if i
+	 lost the game.. updates on my current state 
+	   will be updated everytime i receive data from the server)
+
+
+
+****************
+Think about cases where check game winning conditions doesnt need to check if 
+the other player has < 3 pins.. sometimes its unnecessary

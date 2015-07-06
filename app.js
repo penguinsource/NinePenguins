@@ -329,8 +329,8 @@ function init(){
 	var server = require('http').Server(app);
 	var io = require('socket.io')(server);
 	app.use(express.static(process.cwd() + '/public'));
-	server.listen(3000);
-
+	// server.listen(SERVER_LISTEN_PORT, '2601:589:2:5fc0:f959:f5dd:5932:49be');
+	server.listen(SERVER_LISTEN_PORT);
 	// Data Model object
 	var DataModel = require("./dataModel.js");
 	self.dataModel = new DataModel();

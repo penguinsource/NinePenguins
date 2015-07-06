@@ -11,7 +11,6 @@
 			class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}}"
 			draggable='true'
 			draggable droppable
-			
 			ng-class="{white: displayAll == true, }"
 			data-pinIndex="{{$index}}"
 			ng-click='gameCtrl.clickEvent( pin, $index )'
