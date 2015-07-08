@@ -18,17 +18,21 @@ me placing/moving/flying a pin:
 -check if its my turn
 -check if target pin index is available (DEPRECATED ****))
 
--triage by current state (place, move or fly)
+-triage by current state (place, move, fly or remove)
 
 if place
 	check if target pin index is available
 	check if i have enough pins left to place
 	place pin
 	decrease pins left to place
-	function check for mill	
-	if current user moved the pin
+	if current user moved the pin // this might be deprecated
 		update server
-	function check game winning conditions
+	function check for mill
+		if a mill occured
+			it's still current (my turn) player's turn
+			change current state to remove
+		else
+			function check game winning conditions
 	(NOT REQUIRED, but nice feature to update the client side: )
 		check # of pins left to place, if it's 0, set state to move (NOT REQUIRED as the server will update my state the next turn)
 	
@@ -37,22 +41,33 @@ else if move
 	check if source element (the index im moving the pin from) belongs to me
 	check if its a valid move (the target pin is the neighbour of the source pin)
 	move pin
-	function check for mill
-	if current user moved the pin
+	if current user moved the pins// this might be deprecated
 		update server
-	function check game winning conditions
+	function check for mill
+		if a mill occured
+			it's still current (my turn) player's turn
+			change current state to remove
+		else
+			function check game winning conditions
 
 else if fly
 	check if target pin index is available
 	check if source element belongs to me
 	function check for mill
-	function check game winning conditions
+		if a mill occured
+			it's still current (my turn) player's turn
+			change current state to remove
+		else
+			function check game winning conditions
 
 else if remove
 	check if the target pin index belongs to the other player
 	remove their pin
+	if current user removed the pins// this might be deprecated
+		update server
+	function check game winning conditions (removeAction = true)
 
-
+-----
 
 function check for mill
 	- if i made a mill, let me remove one of the other players' pin
@@ -66,6 +81,23 @@ function check game winning conditions (removeAction boolean)
 	- check if the other player can move any pin.. if they cant, i win
 	- (DO NOT CHECK conditions if i lost the game.. updates on my current state 
 	   will be updated everytime i receive data from the server)
+
+-----
+
+handling server calls:
+	place, move or fly
+		receive updates from server 
+			update local game object board
+			update current state
+			move pin
+			if a mill occured, server should update and tell me the 3 pins (should highlight them on the board)
+			if a player won the game, server should update and tell me..
+	remove
+		receive updates from server
+			update local game object board
+			update current state
+			remove pin
+			if a player won the game, server should update and tell me..
 
 (PART 2) :
 
@@ -98,12 +130,22 @@ case place
 	    - return error if not, cause the current user should not be in 'place' state if they dont have any pins left to place
 	- place pin, decrease the pins left to be placed
 	- function check for mill
-		- if a mill occured, send message to both players letting them know
-		  one of them made a mill. keep the same player's turn. 
-		  Need a way that keeps track of when the server is waiting for a player to remove a pin; return
-	- check game winning conditions
-		- if a player won game, announce both, return;
-	- if the current user has 0 pins left to place, set its state to move
+		if mill occured
+			keep same player's turn (player A)
+			update the other player (player B) by sending him the placed pin index, and current player turn
+			player A gameState = remove, playerTurn = A's id
+			emit "placePin:" to the other player (B)
+			{gameId, playerid, playerState, pinIndex, playerTurn}
+		else if no mill occured
+			player turn = player B (the other player)
+			check game winning conditions
+				if game won:
+					gameState = "end"
+					emit "placePin": {gameId, playerid, pinIndex, playerTurn, gameState, message}
+				else:
+					if the current user has 0 pins left to place, set gameState to 'move'
+					emit "placePin": {gameId, playerid, pinIndex, playerTurn, gameState, newMill}
+	
 	- send update to both players
 
 case move
@@ -122,8 +164,8 @@ case move
 case fly
 	(NO NEED) - idk if i should check if the current user has 3 pins left.. 
 	should make sure there is no way to get to fly mode without making sure user only has 3 pins left.
-	- check if the target pin index is available
-	- check if the source pin index belongs to the current user
+	- check if the target pin index is availabl
+ered	- check if the source pin index belongs to the current user
 	- fly pin
 	-function check for mill
 		- if a mill occured, send message to both players letting them know one of them made a mill.
@@ -156,12 +198,74 @@ function check game winning conditions (param removeAction Boolean)
 	- if (removeAction)
 		if the other player has < 3 pins, you win !
 	- check if the other player can move any pin.. if they cant, i win
-	- (DO NOT CHECK conditions if i
-	 lost the game.. updates on my current state 
-	   will be updated everytime i receive data from the server)
-
+		- check this by their playerState:
+			- for place state and fly, return true
+			- for place move, go through each element on the board that belongs
+			  to this player and check to see if their neighbour element is empty. if it is, return true
+			  else return false;
 
 
 ****************
 Think about cases where check game winning conditions doesnt need to check if 
 the other player has < 3 pins.. sometimes its unnecessary
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+API
+
+server game object ('gameObj'):
+return {"gameId": gameId,
+		"p1id": player1id, 
+		"p2id": player2id,
+		"p1state": 'place',
+		"p2state": 'place',
+		"p1userName": '',
+		"p2userName": '',
+		"p1PlacePins": 9,	// used only for gameState 'place'
+		"p2PlacePins": 9,	// used only for gameState 'place'
+		"p1PinsLeft":9,
+		"p2PinsLeft":9,
+		"playerTurn": player1id,
+		// "gameState": "place"	// {place, move, fly}
+
+	};
+
+User to Server
+
+placePin
+	userid: 'guest_af3f34453',
+	gameId: 'game_f2ff3f34',
+	pinIndex: 1,
+	newMill: false // not necessary
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+MAYBE IN FUTURE:
+
+game object on server ('gameObj'):
+{
+	gameId: 'game_2f24f13f1',
+	p1Obj: {
+				id: 'guest_f24f24f24f',
+				userName: '',
+				placePinsLeft: 9,
+				totalPinsLeft: 9,
+		   },
+	p2Obj: {
+				id: 'guest_d1d13dsa',
+				userName: '',
+				placePinsLeft: 9,
+				totalPinsLeft: 9,
+		   },
+	playerTurnId: 'guest_d1d13dsa',
+	gameState: 'place',
+	board:
+		[
+			{ // this is for pin index 0:
+				control: 'pinFreePlace',
+			 	vNeighbours: [7]
+			 	hNeighbours: [1]
+			},
+			{...}(same thing for each index up to 23. it goes from index 0 to 23)
+		]
+}

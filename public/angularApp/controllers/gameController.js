@@ -177,7 +177,7 @@ nineApp.controller('gameController',
 						" is not available. It belongs to a player.");
 			return;
 		}
-
+		
 		// check if i have enough pins left to place *************
 
 
@@ -206,8 +206,8 @@ nineApp.controller('gameController',
 		if (self.playerLink == playerLink){
 			// send update to server
 			NineCache.mySocket.emit('placePin', 
-				{ gameId: NineCache.gameObj.gameId, 
-				  userid: NineCache.userData.id, 
+				{ userid: NineCache.userData.id,
+				  gameId: NineCache.gameObj.gameId,  
 				  pinIndex: targetIndex,
 				  newMill: millData });
 		}
@@ -245,8 +245,8 @@ nineApp.controller('gameController',
 			return;
 		}
 
+		// move pin
 		$scope.$apply(function(){
-			// move pin
 			self.NineCache.gameObj.board[sourceIndex].control = "pinFreePlace";
 			self.NineCache.gameObj.board[targetIndex].control = playerLink;
 		});
@@ -254,13 +254,22 @@ nineApp.controller('gameController',
 		console.log("check for mills ::: " + targetIndex);
 		console.log(self.checkForMills(targetIndex));
 
+		// send update to server
+
+
 		// if playerLink is me, then send update to server
 		// if playerLink is not me, then do nothing as this is a server update
-		if (self.playerLink == playerLink){
+		// if (self.playerLink == playerLink){
 			// send update to server
-		}
+		// }
 
 		// check game winning conditions and update gui (if anything)
+		self.checkGameConditions();
+	}
+
+	self.checkGameConditions = function(){
+		console.log("Checking game conditions");
+		// ************** unimplemented yet..
 	}
 
 	// Array.prototype.contains = function(k) {
