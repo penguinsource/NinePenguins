@@ -348,13 +348,32 @@ self.placePin = function(data, io){
 			// mill occured
 			newMill = true;
 			// keep same player's turn
-
 			var otherPlayerId = (data.userid == gameObj.p1id) ? 
 											     gameObj.p2id : gameObj.p1id;
-			gameObj.gameState = "remove";
+			// set the current player's state to 'remove'
+			if (data.userid == gameObj.p1id){
+				gameObj.p1state = "remove";
+			} else if (data.userid == gameObj.p2id){
+				gameObj.p2state = "remove";
+			}
+			// this should be either p1state or p2state, but the current
+			// player's state is 'remove' for sure as curr player made a mill
+			var currPlayerState = "remove";
 
-			// update the other player with the placed pin
-			// ***********
+			// send update to the other player
+			var otherPlayerObj = self.dataModel.getUserWithId(otherPlayerId);
+			// init object to be sent
+			var returnObj = 
+				{
+					"gameId": gameObj.gameId,
+					"playerid": playerId,
+					"pinIndex": data.pinIndex,
+					"playerTurn": gameObj.playerTurn,
+					"playerState": currPlayerState
+				};
+			if (io.sockets.connected[otherPlayerObj.socketId]) {
+				io.to(otherPlayerObj.socketId).emit('placePin', returnObj);
+			}
 	} else {
 		newMill = false;
 		// gameObj.playerTurn = otherPlayerId;

@@ -200,6 +200,8 @@ var DataModel = function(){
 		return {"gameId": gameId,
 				"p1id": player1id, 
 				"p2id": player2id,
+				"p1state": "place",
+				"p2state": "place",
 				"p1userName": '',
 				"p2userName": '',
 				"p1PlacePins": 9,	// used only for gameState 'place'
