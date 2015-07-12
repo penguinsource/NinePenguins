@@ -67,7 +67,10 @@ nineApp.controller('gameController',
 							&& (middlePin.control === otherPin.control)){
 				// console.log("Vertical Mill, indices: " 
 							// + pinIndex, middlePinInd, otherPinInd);
-				return { "millType" : 'vertical', "millIndices": [pinIndex, middlePinInd, otherPinInd] };
+				var retData = 
+					{"millType" : 'vertical', 
+					 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
+				return retData;
 			}
 		} else {
 			// console.log("its odd !");
@@ -93,7 +96,10 @@ nineApp.controller('gameController',
 								&& (middlePin.control === otherPin.control) ){
 					// console.log("Horizontal Mill case 1, indices: " 
 									// + pinIndex, middlePinInd, otherPinInd);
-					return { "millType" : 'horizontal', "millIndices": [pinIndex, middlePinInd, otherPinInd] };
+					var retData = 
+						{"millType" : 'horizontal', 
+						 "millIndices": [pinIndex, middlePinInd, otherPinInd] };
+					return retData;
 				}
 			} else { // case 2, pinBtn has 2 horizontal neighbours
 				var nPinOneInd = pinBtn.hNeighbours[0];
@@ -104,7 +110,10 @@ nineApp.controller('gameController',
 							&& (pinBtn.control === neighbourPinTwo.control) ){
 					// console.log("Horizontal Mill case 2, indices: " 
 							// + pinIndex, nPinOneInd, nPinTwoInd);
-					return { "millType" : 'horizontal', "millIndices": [pinIndex, middlePinInd, otherPinInd] };
+					var retData =
+						{"millType" : 'horizontal',
+						 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
+					return retData;
 				}
 			}
 			
@@ -120,18 +129,28 @@ nineApp.controller('gameController',
 					}
 				}
 
-				if ( (pinBtn.control === middlePin.control) && (middlePin.control === otherPin.control) ){
-					// console.log("Vertical Mill case 1, indices: " + pinIndex, middlePinInd, otherPinInd);
-					return { "millType" : 'vertical', "millIndices": [pinIndex, middlePinInd, otherPinInd] };
+				if ( (pinBtn.control === middlePin.control) && 
+					 (middlePin.control === otherPin.control) ){
+					// console.log("Vertical Mill case 1, indices: " 
+					// + pinIndex, middlePinInd, otherPinInd);
+					var retData = 
+						{"millType" : 'vertical',
+						 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
+					return retData;
 				}
 			} else { // case 2, pinBtn has 2 vertical neighbours
 				var nPinOneInd = pinBtn.vNeighbours[0];
 				var nPinTwoInd = pinBtn.vNeighbours[1];
 				var neighbourPinOne = self.board[nPinOneInd];
 				var neighbourPinTwo = self.board[nPinTwoInd];
-				if ( (pinBtn.control === neighbourPinOne.control) && (pinBtn.control === neighbourPinTwo.control) ){
+				if ( (pinBtn.control === neighbourPinOne.control) && 
+					 (pinBtn.control === neighbourPinTwo.control) ){
 					// console.log("Vertical Mill case 2, indices: " + pinIndex, nPinOneInd, nPinTwoInd);
-					return { "millType" : 'vertical', "millIndices": [pinIndex, middlePinInd, otherPinInd] };
+					var retData = 
+						{"millType" : 'vertical',
+						 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
+					
+					return retData;
 				}
 			}
 
@@ -146,25 +165,34 @@ nineApp.controller('gameController',
 			console.log("ERROR! Not my turn");
 			return;
 		}
-		
+		console.log("ind: " + pinIndex);
 		// console.log("click event, pinIndex " + pinIndex);
 		// console.log(pinBtn);
-		// console.log("Current GAME STATE:" + NineCache.gameObj.gameState, pinIndex);
-		if (NineCache.gameObj.gameState === 'place'){
-			self.placePin(pinIndex, self.playerLink);
-		} else if (NineCache.gameObj.gameState === 'remove'){
-			// self.selectedPin = pinBtn;
-			// console.log("removing pin with index: " + pinIndex);
-			self.removePin(pinIndex, self.playerLink);
-		} else if (NineCache.gameObj.gameState === 'move'){
-
+		// console.log("Current GAME STATE:" + 
+		// NineCache.gameObj.gameState, pinIndex);
+		var myPlayerObj = NineCache.getMyPlayerObject();
+		console.log("player obj:");
+		console.log(myPlayerObj);
+		switch(myPlayerObj.pState){
+			case "place":
+				self.placePin(pinIndex, self.playerLink);
+				break;
+			case "remove":
+				self.removePin(pinIndex, self.playerLink);
+				break;
+			default:
+				console.log("default code block called for some reason");
+				break;
 		}
 	}
 
 	self.placePin = function(targetIndex, playerLink){
 		// console.log("__pin index: " + targetIndex);
 		// console.log(">>pin index: " + playerLink);
-
+		console.log("before:");
+		console.log(NineCache.gameObj);
+		var myPlayerObj = NineCache.getMyPlayerObject();
+		var otherPlayerObj = NineCache.getOtherPlayerObject();
 		// check if it's my turn
 		if (!self.isMyTurn()){
 			console.log("ERROR! Not my turn");
@@ -179,20 +207,14 @@ nineApp.controller('gameController',
 		}
 		
 		// check if i have enough pins left to place
-		var placePins = (NineCache.userData.id == NineCache.gameObj.p1id) ?
-							NineCache.gameObj.p1PlacePins :
-							NineCache.gameObj.p2PlacePins;
-		if (placePins < 1){
+		if (myPlayerObj.pPlacePins < 1){
 			console.log("ERROR! You don't have any pins left to place.");
 		}
 
 		// place pin
 		self.board[targetIndex].control = playerLink;
-		if (NineCache.userData.id == NineCache.gameObj.p1id){
-			NineCache.gameObj.p1PlacePins--;
-		} else {
-			NineCache.gameObj.p2PlacePins--;
-		}
+		myPlayerObj.pPlacePins--;
+
 		console.log("after:");
 		console.log(NineCache.gameObj);
 		
@@ -204,11 +226,7 @@ nineApp.controller('gameController',
 		if (millData){
 			// keep my turn
 			// change my gameState to 'remove'
-			if (NineCache.userData.id == NineCache.gameObj.p1id){
-				NineCache.gameObj.p1state = "remove";
-			} else {
-				NineCache.gameObj.p2state = "remove";
-			}
+			myPlayerObj.pState = "remove";
 			self.highlightRemovablePins();
 			// if (self.playerLink == playerLink){	// DEPRECATED !
 				// send update to server ***
@@ -224,20 +242,11 @@ nineApp.controller('gameController',
 				console.log("YOU WON !!!!!!!!!!!!!!!!!!");
 			} else {
 				// if player has 0 pins left to place, set their state to 'move'
-				if (NineCache.userData.id == NineCache.gameObj.p1id){
-					if (NineCache.gameObj.p1PlacePins == 0){
-						NineCache.gameObj.p1state = "move";
-					}
-				} else {
-					if (NineCache.gameObj.p2PlacePins == 0){
-						NineCache.gameObj.p2state = "move";
-					}
+				if (myPlayerObj.pPlacePins == 0){
+					myPlayerObj.pState = "move";
 				}
-				// change player turn (to the other player) ***
-				var otherPlayerId = 
-					(NineCache.userData.id == NineCache.gameObj.p1id) ?
-					NineCache.gameObj.p2id : NineCache.gameObj.p1id;
-				NineCache.gameObj.playerTurn = otherPlayerId;
+				// change player turn to the other player
+				NineCache.gameObj.playerTurn = otherPlayerObj.pid;
 
 				// send data to server
 				NineCache.mySocket.emit('placePin', 
@@ -305,24 +314,18 @@ nineApp.controller('gameController',
 	self.checkGameConditions = function(removeAction){
 		console.log("Checking game conditions");
 		if (removeAction){
-			// get the # of overall pins that the other player has
-			var otherPlayerPins = 
-				(NineCache.userData.id == NineCache.gameObj.p1id) ?
-				NineCache.gameObj.p2PinsLeft :
-				NineCache.gameObj.p1PinsLeft;
-			if (otherPlayerPins < 3){
+			// if the other player has less than 3 pins..
+			var otherPlayerObj = NineCache.getOtherPlayerObject();
+			if (otherPlayerObj.pPinsLeft < 3){
 				// current player wins game
 				console.log("You Won Game. #1");
 			}
 			// check if the other player can move any pin..
-			var otherPlayerState = 
-				(NineCache.userData.id == NineCache.gameObj.p1id) ?
-				NineCache.gameObj.p2state : NineCache.gameObj.p1state;
-			if ( (otherPlayerState == "place") || 
+			if ( (otherPlayerObj.pState == "place") || 
 				 (otherPlayerState == "fly") ){
 				return true;
-			} else if (otherPlayerState == "move"){
-
+			} else if (otherPlayerObj.pState == "move"){
+				// *********
 			}
 
 		}
@@ -547,11 +550,6 @@ nineApp.controller('gameController',
 	}
 
 	self.isMyTurn = function(){
-		// if (NineCache.userData.id == NineCache.gameObj.playerTurn){
-		// 	return true;
-		// } else {
-		// 	return false;
-		// }
 		return (NineCache.gameObj.playerTurn == NineCache.userData.id);
 	}
 
@@ -605,21 +603,16 @@ nineApp.controller('gameController',
 		// self.canRemoveMillPin = false;	// 
 
 		NineCache.gameObj.board = self.board;
-		// setup game
-		// if (self.NineCache.gameObj.playerTurn == self.userData.id){
-		// 	$scope.myTurn = true;
-		// } else {
-		// 	$scope.myTurn = false;
-		// }
-		$scope.myTurn = (NineCache.gameObj.playerTurn == NineCache.userData.id);
 		console.log("IS IT MY TURN ?");
 		console.log(self.isMyTurn());
-
 	}
 
 	self.handleSocketRequests = function(){
 		NineCache.mySocket.on('placePin', function (data) {
 			if (NineCache.gameObj.gameId == data.gameId){
+				console.log("data received:");
+				console.log(data);
+				
 				// NineCache.gameObj.gameState = data.gameState;
 				var player = 'player2Pin';
 				NineCache.gameObj.board[data.pinIndex].control = player;
@@ -668,7 +661,6 @@ nineApp.controller('gameController',
 		self.NineCache = NineCache;
 		// console.log("PARAM:");
 		// console.log($stateParams['game_id']);
-		$scope.myTurn = false;
 		$scope.displayAll = true;
 
 		self.updatePlayerTurn(NineCache.gameObj.playerTurn);

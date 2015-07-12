@@ -206,8 +206,8 @@ self.userRemovedPin = function(data, io){
 		}
 
 	} else {
-		console.log("ERROR 4: this call should only be made when the gameState is 'remove'." + 
-			" Game state: " + gameObj.gameState);
+		console.log("ERROR 4: this call should only be made when the "+
+					"gameState is 'remove'. Game state: " + gameObj.gameState);
 
 	}
 }
@@ -297,6 +297,10 @@ self.userPlacedPin = function(data, io){
 
 // data = {userid, gameId, pinIndex}
 self.placePin = function(data, io){
+	// if (!data.gameId || !data.userid){
+
+	// }
+
 	// get game object
 	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
 	if (!gameObj){
@@ -312,6 +316,11 @@ self.placePin = function(data, io){
 		return;
 	}
 
+	// my player object represents the player who placed this pin
+	var myPlayerObj = self.dataModel.getMyPlayerObject(data.gameId, data.userid);
+	var otherPlayerObj = self.dataModel.getOtherPlayerObject(data.gameId, data.userid);
+	var otherUserObj = self.dataModel.getUserWithId(otherPlayerObj.pid);
+
 	// check if the pin's index is actually available
 	if (gameObj.board[data.pinIndex].control != 'pinFreePlace'){
 		console.log("ERROR 3! Pin Index '" + data.pinIndex + "' is not free." +
@@ -319,30 +328,23 @@ self.placePin = function(data, io){
 		return;
 	}
 
-	// get user data
-	var playerPlacePins = (data.userid == gameObj.p1id) ? 
-						  			gameObj.p1PlacePins : gameObj.p2PlacePins;
-	var playerPinName = (data.userid == gameObj.p1id) ? 
-										 'player1Pin' : 'player2Pin';
-	var playerId = (data.userid == gameObj.p1id) ? gameObj.p1id : gameObj.p2id;
-
 	// check if current user has enough pins left to place another one;
-	if (playerPlacePins < 1){
+	if (myPlayerObj.pPlacePins < 1){
 		console.log("ERROR! Player '"+data.userid+
 					"' has 0 pins left to place!");
 		return;
 	}
 	// decrease the # of pins left to place for playerId
-	self.dataModel.decreasePlacePins(gameObj, playerId);
+	myPlayerObj.pPlacePins--;
 
 	// place pin in data.pinIndex
-	gameObj.board[data.pinIndex].control = playerPinName;
+	gameObj.board[data.pinIndex].control = myPlayerObj.pBoardName;
 
 	// check for mill
 	var newMill = false;
 	if ( data.newMill && 
 		 (self.dataModel.checkNewMill(data.gameId, 
-									  playerPinName, 
+									  myPlayerObj.pBoardName, 
 									  data.pinIndex, 
 									  data.newMill)) ){
 			// mill occured
@@ -351,28 +353,20 @@ self.placePin = function(data, io){
 			var otherPlayerId = (data.userid == gameObj.p1id) ? 
 											     gameObj.p2id : gameObj.p1id;
 			// set the current player's state to 'remove'
-			if (data.userid == gameObj.p1id){
-				gameObj.p1state = "remove";
-			} else if (data.userid == gameObj.p2id){
-				gameObj.p2state = "remove";
-			}
-			// this should be either p1state or p2state, but the current
-			// player's state is 'remove' for sure as curr player made a mill
-			var currPlayerState = "remove";
+			myPlayerObj.pState = "remove";
 
 			// send update to the other player
-			var otherPlayerObj = self.dataModel.getUserWithId(otherPlayerId);
-			// init object to be sent
+			var otherUserObj = self.dataModel.getUserWithId(otherPlayerId);
 			var returnObj = 
 				{
 					"gameId": gameObj.gameId,
-					"playerid": playerId,
+					// "playerid": playerId,
 					"pinIndex": data.pinIndex,
 					"playerTurn": gameObj.playerTurn,
-					"playerState": currPlayerState
+					// "playerState": myPlayerObj.pState
 				};
-			if (io.sockets.connected[otherPlayerObj.socketId]) {
-				io.to(otherPlayerObj.socketId).emit('placePin', returnObj);
+			if (io.sockets.connected[otherUserObj.socketId]) {
+				io.to(otherUserObj.socketId).emit('placePin', returnObj);
 			}
 	} else {
 		newMill = false;
@@ -383,83 +377,85 @@ self.placePin = function(data, io){
 			self.checkGameConditions(false, data.gameId, data.userid);
 		// game has been won
 		if (gameCondition){
-
+			// GAME WON **************
 		} else {	// game has NOT been won
-			// if the player has 0 pins left to place
-			if (playerPlacePins == 0){
+			// if the player has 0 pins left to place, change state to 'move'
+			if (myPlayerObj.pPlacePins == 0){
 				gameState = "move";
 			}
-			// emit to the other player the board update
-			// **************
+
+			
+			var returnObj = 
+				{
+					"gameId": gameObj.gameId,
+					// "playerid": playerId,
+					"pinIndex": data.pinIndex,
+					"playerTurn": gameObj.playerTurn,
+					// "playerState": myPlayerObj.pState
+				};
+			if (io.sockets.connected[otherUserObj.socketId]) {
+				io.to(otherUserObj.socketId).emit('placePin', returnObj);
+			}
 		}
 	}
 
-
-
-	// send updates to the other player
-	var otherPlayerObj = self.dataModel.getUserWithId(otherPlayerId);
-	// var gameObjCompact = self.buildCompactGameObj(gameObj);
 	var returnObj = 
 		{
 			"gameId": gameObj.gameId,
-			"playerid": playerId,
+			// "playerid": playerId,
 			"pinIndex": data.pinIndex,
 			"playerTurn": gameObj.playerTurn,
-			"gameState": gameObj.gameState
+			// "gameState": gameObj.gameState
 		};
 	// add the newly placed pin's index to the gameObjCompact
 	
 	// send player 2 the updated game object
-	if (io.sockets.connected[otherPlayerObj.socketId]) {
-		io.to(otherPlayerObj.socketId).emit('placePin', returnObj);
+	if (io.sockets.connected[otherUserObj.socketId]) {
+		io.to(otherUserObj.socketId).emit('placePin', returnObj);
 	}
-
-	console.log("game object is ");
-	console.log(gameObj);
 }
 
 // if a pin has been removed, removeAction should be 'true'
-// playerId should be the player that sent the API call to the server
-self.checkGameConditions = function(removeAction, gameId, playerId){
+self.checkGameConditions = function(removeAction, gameId, userid){
 	// get game object
-	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
+	// var gameObj = self.dataModel.getGameObjectWithId(gameId);
+	var myPlayerObject = self.dataModel.getMyPlayerObject(gameId, userid);
+	var otherPlayerObj = self.dataModel.getOtherPlayerObject(gameId, userid);
+
 	// check to see if either player has less than 3 overall pins
 	if (removeAction){
-		if (gameObj.p1PinsLeft < 3){
-			// p2 wins, send message to both
-			// *****
-			console.log("p1 has < 3 pins left. p2 wins");
-		} else if (gameObj.p2PinsLeft < 3){
-			// p1 wins, send message to both
-			// *****
-			console.log("p2 has < 3 pins left. p1 wins");
+		if (otherPlayerObj.pPinsLeft < 3){
+			// myPlayerObject wins
+			console.log("player with id "+otherPlayerObj.pid +
+					    " has < 3 pins left. p2 wins");
 		}
 	}
 
-	var otherPlayerId = (playerId == gameObj.p1id) ? 
-									  gameObj.p2id : gameObj.p1id; 
+	// var otherPlayerId = (playerId == gameObj.p1id) ? 
+	// 								  gameObj.p2id : gameObj.p1id; 
 	// ***** this can be improved.. think about gameState = fly.. in that case
 	// ***** self.canPlayerMove doesnt have to be checked
 	// check if the other player can move any pin, if not i win (i am playerId)
-	if (!self.canPlayerMove(gameId, otherPlayerId)){
+	if (!self.canPlayerMove(gameId, otherPlayerObj.pState)){
 
 	}
 }
 
-self.canPlayerMove = function(gameId, playerId){
+self.canPlayerMove = function(gameId, playerObj){
 	// get game object
-	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
-	if (gameObj.gameState == "place"){
-		var placePins = (playerId == gameObj.p1id) ? 
-						  	   gameObj.p1PlacePins : gameObj.p2PlacePins;
-		if (placePins > 0){
-			return true;
-		} else {
-			return false;
-		}
-	} else if (gameObj.gameState == "move"){
+	var gameObj = self.dataModel.getGameObjectWithId(gameId);
+	if (playerObj.pState == "place"){
+		// var placePins = (playerId == gameObj.p1id) ? 
+		// 				  	   gameObj.p1PlacePins : gameObj.p2PlacePins;
+		// if (placePins > 0){
+		// 	return true;
+		// } else {
+		// 	return false;
+		// }
+		return true;
+	} else if (playerObj.pState == "move"){
 		// ******
-	} else if (gameObj.gameState == "fly"){
+	} else if (playerObj.pState == "fly"){
 		return true;
 	}
 }
@@ -489,9 +485,6 @@ self.handleSocketRequests = function(io){
 		
 		socket.on('placePin', 
 			function(data){ 
-				console.log("place pin data:");
-				console.log(data);
-				// self.userPlacedPin(data, io); });
 				self.placePin(data, io);
 			});
 		

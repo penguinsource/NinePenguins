@@ -26,7 +26,22 @@ pokeApp.service('NineCache', function(){
 		} else {
 			self.gameObj.otherPlayerId = self.gameObj.p1id;
 		}
-		
+	}
+
+	self.getMyPlayerObject = function(){
+		if (self.gameObj.p1Obj.pid == self.userData.id){
+			return self.gameObj.p1Obj;
+		} else if (self.gameObj.p2Obj.pid == self.userData.id){
+			return self.gameObj.p2Obj;
+		}
+	}
+
+	self.getOtherPlayerObject = function(){
+		if (self.gameObj.p1Obj.pid == self.userData.id){
+			return self.gameObj.p2Obj;
+		} else if (self.gameObj.p2Obj.pid == self.userData.id){
+			return self.gameObj.p1Obj;
+		}
 	}
 
 	self.setupAccount = function(type, data){

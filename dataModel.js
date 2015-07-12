@@ -197,20 +197,60 @@ var DataModel = function(){
 	}
 
 	self.createBasicGameObject = function(gameId, player1id, player2id){
+		// return {"gameId": gameId,
+		// 		"p1id": player1id, 
+		// 		"p2id": player2id,
+		// 		"p1state": "place",
+		// 		"p2state": "place",
+		// 		"p1userName": '',
+		// 		"p2userName": '',
+		// 		"p1PlacePins": 9,	// used only for gameState 'place'
+		// 		"p2PlacePins": 9,	// used only for gameState 'place'
+		// 		"p1PinsLeft":9,
+		// 		"p2PinsLeft":9,
+		// 		"playerTurn": player1id,
+		// 		"gameState": "place"	// {place, move, fly}
+		// 	};
 		return {"gameId": gameId,
-				"p1id": player1id, 
-				"p2id": player2id,
-				"p1state": "place",
-				"p2state": "place",
-				"p1userName": '',
-				"p2userName": '',
-				"p1PlacePins": 9,	// used only for gameState 'place'
-				"p2PlacePins": 9,	// used only for gameState 'place'
-				"p1PinsLeft":9,
-				"p2PinsLeft":9,
+				"p1Obj": 
+					{
+						"pid": player1id,
+						"pState": "place",
+						"pUserName": "",
+						"pPlacePins": 9,	// used only for gameState 'place'
+						"pPinsLeft": 9,
+						"pBoardName": "player1Pin"
+					},
+				"p2Obj": 
+					{
+						"pid": player2id,
+						"pState": "place",
+						"pUserName": "",
+						"pPlacePins": 9,	// used only for gameState 'place'
+						"pPinsLeft": 9,
+						"pBoardName": "player2Pin"
+					},
 				"playerTurn": player1id,
-				"gameState": "place"	// {place, move, fly}
+				"board": null
 			};
+	}
+
+	self.getMyPlayerObject = function(gameid, userid){
+		var gameObj = self.getGameObjectWithId(gameid);
+		if (gameObj.p1Obj.pid == userid){
+			return gameObj.p1Obj;
+		} else if (gameObj.p2Obj.pid == userid){
+			return gameObj.p2Obj;
+		}
+	}
+
+	self.getOtherPlayerObject = function(gameid, userid){
+		var gameObj = self.getGameObjectWithId(gameid);
+		if (gameObj.p1Obj.pid == userid){
+			return gameObj.p2Obj;
+		} else if (gameObj.p2Obj.pid == userid){
+			return gameObj.p1Obj;
+		}
 	}
 
 	self.checkNewMill = function(gameId, playerNo, newPinIndex, millData){
