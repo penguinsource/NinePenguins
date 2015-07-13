@@ -217,7 +217,7 @@ var DataModel = function(){
 						"pid": player1id,
 						"pState": "place",
 						"pUserName": "",
-						"pPlacePins": 9,	// used only for gameState 'place'
+						"pPlacePins": 3,	// used only for gameState 'place'
 						"pPinsLeft": 9,
 						"pBoardName": "player1Pin"
 					},
@@ -226,7 +226,7 @@ var DataModel = function(){
 						"pid": player2id,
 						"pState": "place",
 						"pUserName": "",
-						"pPlacePins": 9,	// used only for gameState 'place'
+						"pPlacePins": 3,	// used only for gameState 'place'
 						"pPinsLeft": 9,
 						"pBoardName": "player2Pin"
 					},
@@ -253,12 +253,67 @@ var DataModel = function(){
 		}
 	}
 
-	self.checkNewMill = function(gameId, playerNo, newPinIndex, millData){
+	// required: gameId, newPinIndex
+	// optional: millData
+	// *********** this func can be VASTLY optimized
+	self.checkNewMill = function(gameId, newPinIndex, millData){
 		var gameObj = self.active_games[gameId];
 		var neighPinIndex1 = -1;
 		var neighPinIndex2 = -1;
 
-		if (millData.millType === "vertical"){
+		if (!millData){
+			if (gameObj.board[newPinIndex].vNeighbours.length == 2){
+				neighPinIndex1 = gameObj.board[newPinIndex].vNeighbours[0];
+				neighPinIndex2 = gameObj.board[newPinIndex].vNeighbours[1];
+				// console.log("!! V 2 neighbours: " + gameObj.board[newPinIndex].vNeighbours.length);
+			} else {
+				neighPinIndex1 = gameObj.board[newPinIndex].vNeighbours[0];
+				var neighbourPin = gameObj.board[neighPinIndex1];
+				for (var i = 0; i < neighbourPin.vNeighbours.length; i++){
+					if (neighbourPin.vNeighbours[i] != newPinIndex){
+						neighPinIndex2 = neighbourPin.vNeighbours[i];
+					}
+				}
+				// console.log("!! V 1 neighbour: " + gameObj.board[newPinIndex].vNeighbours.length);
+			}
+			console.log("1 v: " + newPinIndex + ", " + neighPinIndex1 + ", " + neighPinIndex2);
+			console.log(gameObj.board[newPinIndex].control);
+			console.log(gameObj.board[neighPinIndex1].control);
+			console.log(gameObj.board[neighPinIndex2].control);
+
+			if ( (gameObj.board[newPinIndex].control === gameObj.board[neighPinIndex1].control) &&
+				 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control)){
+				return [newPinIndex, neighPinIndex1, neighPinIndex2];
+			}
+
+			if (gameObj.board[newPinIndex].hNeighbours.length == 2){
+				neighPinIndex1 = gameObj.board[newPinIndex].hNeighbours[0];
+				neighPinIndex2 = gameObj.board[newPinIndex].hNeighbours[1];
+				// console.log("!! H 2 neighbours: " + gameObj.board[newPinIndex].hNeighbours.length);
+			} else {
+				neighPinIndex1 = gameObj.board[newPinIndex].hNeighbours[0];
+				var neighbourPin = gameObj.board[neighPinIndex1];
+				for (var i = 0; i < neighbourPin.hNeighbours.length; i++){
+					if (neighbourPin.hNeighbours[i] != newPinIndex){
+						neighPinIndex2 = neighbourPin.hNeighbours[i];
+					}
+				}
+				// console.log("!! H 1 neighbour: " + gameObj.board[newPinIndex].hNeighbours.length);
+			}
+
+			console.log("2 v: " + newPinIndex + ", " + neighPinIndex1 + ", " + neighPinIndex2);
+			console.log(gameObj.board[newPinIndex].control);
+			console.log(gameObj.board[neighPinIndex1].control);
+			console.log(gameObj.board[neighPinIndex2].control);
+
+			if ( (gameObj.board[newPinIndex].control === gameObj.board[neighPinIndex1].control) &&
+				 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control)){
+				return [newPinIndex, neighPinIndex1, neighPinIndex2];
+			} else {
+				return false;
+			}
+
+		} else if (millData.millType === "vertical"){
 			if (gameObj.board[newPinIndex].vNeighbours.length == 2){
 				neighPinIndex1 = gameObj.board[newPinIndex].vNeighbours[0];
 				neighPinIndex2 = gameObj.board[newPinIndex].vNeighbours[1];
@@ -290,9 +345,12 @@ var DataModel = function(){
 			}
 		}
 
+
+		// if ( (gameObj.board[newPinIndex].control === gameObj.board[neighPinIndex1].control) &&
+		// 	 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control) &&
+		// 	 (gameObj.board[newPinIndex].control === playerNo) ){
 		if ( (gameObj.board[newPinIndex].control === gameObj.board[neighPinIndex1].control) &&
-			 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control) &&
-			 (gameObj.board[newPinIndex].control === playerNo) ){
+			 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control)){
 			return true;
 		} else {
 			return false;

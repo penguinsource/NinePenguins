@@ -97,10 +97,10 @@ else if fly
 					update the other player
 
 else if remove
-	check that the player is actually in the 'remove' gamestate
-	check if the target pin index belongs to the other player
+	check that the player is actually in the 'remove' gamestate +
+	check if the target pin index belongs to the other player +
 	check if its a valid move (if all pins on the board are in mills, then it 
-	can be deleted. if targetIndex is in a mill but there are other pins that aren't, return error, player should pick another pin)
+	can be deleted. if targetIndex is in a mill but there are other pins that aren't, return error, player should pick another pin) +
 	remove their pin, update their player object  variable pPinsLeft (decrease by 1)
 	gotta figure out my current state now.. 
 		- if i have > 0 pins left to place, set my gamestate to 'place'
