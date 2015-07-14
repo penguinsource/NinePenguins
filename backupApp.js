@@ -11,7 +11,8 @@ var unixWordsFilePath 		= "words";	// for my pc
 // var unixWordsFilePath 		= "/usr/share/dict/words";
 var wordsFilePath			= 'hangmanWordList.txt';
 
-var saveDataMethod 			= 'file';	// user data saved to: database ('db') or 'file'
+// user data saved to: database ('db') or 'file'
+var saveDataMethod 			= 'file';
 var userDataFolderPath		= "userData/";
 // game variables
 var wordListLength			= 0;
@@ -22,7 +23,7 @@ function helloWorld(){
 	print("Sup !");
 }
 
-// Connect to MySQL Database 
+// Connect to MySQL Database
 // --------------
 function connectToDB(callback){
 	connection = mysql.createConnection({

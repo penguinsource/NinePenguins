@@ -1,16 +1,18 @@
 var DataModel = function(){
 	var self = this;
-	self.socketid_map = {};	// hash map, index being 'socketid' (socketid => userid)
+	// hash map, index being 'socketid'(socketid=>userid)
+	self.socketid_map = {};
 	self.active_users = {};	// hash map, index being 'userid'
 	self.active_games = {};	// hash map, index being 'gameid'
 	self.game_queue = [];	// list of 'userid's waiting to play a game
-	self.cached_users = {};	// hash map of users that are not active, index being 'userid'
+	// hash map of users that are not active, index being 'userid'
+	self.cached_users = {};
 
 	// ***** NOT IN USE YET !
-	self.chatMessagesList = [];	
+	self.chatMessagesList = [];
 
 	// compact hash map of active_users; used for the lobby chat user list
-	self.active_users_compact = {};	
+	self.active_users_compact = {};
 
 
 	// ******************************************************************
@@ -24,7 +26,7 @@ var DataModel = function(){
 	// 	console.log(self.socketid_map[socketid]);
 	// 	// var newUser = self.addUserToActiveUsers(data.username, userid, socketid);
 
-	// 	// if it's a new user.. 
+	// 	// if it's a new user..
 	// 	if (self.addUserToActiveUsers(data.username, userid, socketid)){
 	// 		// check if user exists in the chatroom at the moment
 	// 	} else {
@@ -53,7 +55,7 @@ var DataModel = function(){
 	// 	// console.log(self.chatUsersList);
 	// 	// console.log(data.userid);
 	// 	// console.log(self.chatUsersList.indexOf(data.userid));
-		
+
 	// 	// add user if they don't currently exist in the chat users list ********
 	// 	// self.chatUsersList.push({username: data.username, userid: data.userid});
 	// 	self.socketid_map[socketid] = data.userid;
@@ -66,17 +68,17 @@ var DataModel = function(){
 	self.addUserToActiveUsers = function(username, userid, socketid){
 		// console.log("adding to active users, username: " + username + ", userid: " + userid);
 		// console.log();
-		if ( (self.active_users[userid] === undefined) || 
+		if ( (self.active_users[userid] === undefined) ||
 			 (self.active_users[userid] === null) ){
-			
-			// load data from database (if it exists) (or from cookies) 
+
+			// load data from database (if it exists) (or from cookies)
 				// self.active_users[userid] = database data..
 
 			// else create a new active user object
 			self.active_users[userid] = {
 									"username": username,
-								  	"socketId": socketid, 
-								  	"gamesWon": 0,
+								  	"socketId": socketid,
+									"gamesWon": 0,
 									"gamesLost": 0,
 									"currentGameId": null
 								 };
@@ -101,7 +103,7 @@ var DataModel = function(){
 
 			self.active_users_compact[userid] = username;
 			self.socketid_map[socketid] = userid;
-			
+
 			// console.log("Chat Active Users (compact) CURRENT:");
 			// console.log(self.active_users_compact);
 
@@ -132,7 +134,7 @@ var DataModel = function(){
 	self.removeActiveUser = function(socketid){
 		var userid = self.socketid_map[socketid];
 		var usernameToRemove = '';
-		
+
 		// console.log("DISCONNECTING: " + self.socketid_map[socketid]);
 
 		// cache the data of the user that left
@@ -152,7 +154,7 @@ var DataModel = function(){
 
 	self.addUserToQueue = function(data, userid, socketid){
 		// self.addUserToActiveUsers(data.username, userid, socketid);
-		
+
 		// check if the player is already in the game queue
 		if (self.game_queue.indexOf(data.userid) === -1){
 			self.game_queue.push(data.userid);
@@ -198,7 +200,7 @@ var DataModel = function(){
 
 	self.createBasicGameObject = function(gameId, player1id, player2id){
 		// return {"gameId": gameId,
-		// 		"p1id": player1id, 
+		// 		"p1id": player1id,
 		// 		"p2id": player2id,
 		// 		"p1state": "place",
 		// 		"p2state": "place",
@@ -211,28 +213,33 @@ var DataModel = function(){
 		// 		"playerTurn": player1id,
 		// 		"gameState": "place"	// {place, move, fly}
 		// 	};
+		var numberOfPins = 9;	// for all pPlacePins and pPinsLeft
 		return {"gameId": gameId,
-				"p1Obj": 
+				"p1Obj":
 					{
 						"pid": player1id,
 						"pState": "place",
 						"pUserName": "",
-						"pPlacePins": 3,	// used only for gameState 'place'
-						"pPinsLeft": 9,
+						"pPlacePins": 4,	// used only for gameState 'place'
+						"pPinsLeft": 4,	
 						"pBoardName": "player1Pin"
 					},
-				"p2Obj": 
+				"p2Obj":
 					{
 						"pid": player2id,
 						"pState": "place",
 						"pUserName": "",
-						"pPlacePins": 3,	// used only for gameState 'place'
-						"pPinsLeft": 9,
+						"pPlacePins": 4,	// used only for gameState 'place'
+						"pPinsLeft": 4,
 						"pBoardName": "player2Pin"
 					},
 				"playerTurn": player1id,
 				"board": null
 			};
+	}
+
+	self.updatePlayerState = function(playerObj){
+		// ************* IN CONSTRUCTION.. get the code for this from gameController ( same function name )
 	}
 
 	self.getMyPlayerObject = function(gameid, userid){
@@ -372,7 +379,7 @@ var DataModel = function(){
 
 		var gameObj = self.createBasicGameObject(gameId, player1id, player2id);
 
-		gameObj.board = 
+		gameObj.board =
 			[
 				{"control": "pinFreePlace", "vNeighbours": [ 7 ], "hNeighbours": [ 1 ] },
 				{"control": "pinFreePlace", "vNeighbours": [ 9 ], "hNeighbours": [ 0, 2 ] },

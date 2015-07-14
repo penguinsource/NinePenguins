@@ -106,6 +106,8 @@ else if remove
 		- if i have > 0 pins left to place, set my gamestate to 'place'
 		- else if i have 0 pins left to place && > 3 pins overall, set my gamestate to 'move'
 		- else if i have 0 pins left to place && 3 pins overall, set my gamestate to 'fly'
+	gotta figure out the other players' current state now..
+		same thing as ^^^^
 	function check game winning conditions (removeAction = true)
 		if game won
 			send update to server
@@ -256,6 +258,8 @@ case remove
 		-if i have > 0 pins left to place, set my gamestate to 'place'
 		- else if i have 0 pins left to place && > 3 pins overall, set my gamestate to 'move'
 		- else if i have 0 pins left to place && 3 pins overall, set my gamestate to 'fly'
+	-gotta figure out the other players' current state now..
+		same thing as ^^^^
 	- function check game winning conditions (removeAction true)
 		- if a player won game
 			 - emit to both the game has ended and the winner.. then return
