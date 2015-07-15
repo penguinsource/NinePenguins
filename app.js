@@ -115,8 +115,8 @@ self.checkUser = function(gameId, userid, actionType){
 
 	// check my current state
 	if (myPlayerObj.pState != actionType){
-		var err = "ERROR ! Can't remove pin, my current state is not " +
-				  actionType;
+		var err = "ERROR ! Can't remove pin, my current state is "+
+				  myPlayerObj.pState+", NOT " + actionType;
 		return {"success": false, "message": err};
 	}
 
@@ -126,7 +126,7 @@ self.checkUser = function(gameId, userid, actionType){
 self.movePin = function(data, io){
 	var checkUser = self.checkUser(data.gameId, data.userid, "move");
 	if (!checkUser.success){
-		console.log(checkUser.message);
+		// console.log(checkUser.message);
 	}
 	// get game object
 	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
@@ -175,6 +175,94 @@ self.movePin = function(data, io){
 				};
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('movePin', returnObj);
+			}
+	} else {
+		// check game winning conditions
+		var gameCondition =
+			self.checkGameConditions(false, data.gameId, data.userid);
+		// game has been won
+		if (gameCondition){
+			// GAME WON **************
+			console.log("GAME WON !!!!!!!");
+		} else {	// game has NOT been won
+			// if the player has 0 pins left to place, change state to 'move'
+			if (myPlayerObj.pPlacePins == 0){
+				gameState = "move";
+			}
+
+			// change player's turn
+			gameObj.playerTurn = otherPlayerObj.pid;
+
+			var returnObj =
+				{
+					"gameId": gameObj.gameId,
+					"sourceIndex": data.sourceIndex,
+					"targetIndex": data.targetIndex,
+					"newMill": false,
+					"otherPlayerState": myPlayerObj.pState
+				};
+			if (io.sockets.connected[otherUserObj.socketId]) {
+				io.to(otherUserObj.socketId).emit('movePin', returnObj);
+			}
+		}
+	}
+}
+
+self.flyPin = function(data, io){
+	console.log("fly pin called");
+	console.log(data);
+	var checkUser = self.checkUser(data.gameId, data.userid, "fly");
+	if (!checkUser.success){
+		// console.log(checkUser.message);
+	}
+	// get game object
+	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
+	// my player object represents the player who placed this pin
+	var myPlayerObj = self.dataModel.getMyPlayerObject(data.gameId,
+													data.userid);
+	var otherPlayerObj = self.dataModel.getOtherPlayerObject(data.gameId,
+															data.userid);
+	var otherUserObj = self.dataModel.getUserWithId(otherPlayerObj.pid);
+
+	// check if the pin's source index belongs to me
+	if (gameObj.board[data.sourceIndex].control != myPlayerObj.pBoardName){
+		console.log("ERROR 3! Source pin Index '" + data.sourceIndex +
+			"' does not belong to me." +
+		 	" Control belongs to: " + gameObj.board[data.sourceIndex].control);
+		return;
+	}
+
+	// check if the pin's target index is actually available
+	if (gameObj.board[data.targetIndex].control != 'pinFreePlace'){
+		console.log("ERROR 3! Pin Index '" + data.targetIndex +
+					"' is not free. User id in that position: " +
+		 			gameObj.board[data.targetIndex].control);
+		return;
+	}
+
+	// fly (move) pin
+	gameObj.board[data.sourceIndex].control = "pinFreePlace";
+	gameObj.board[data.targetIndex].control = myPlayerObj.pBoardName;
+
+	var millCheck = self.dataModel.checkNewMill(data.gameId, data.targetIndex);
+	if ( data.newMill && (millCheck) ){
+			// mill occured
+			console.log("Mill Occured !");
+			// set the current player's state to 'remove'
+			myPlayerObj.pState = "remove";
+
+			// send update to the other player
+			// var otherUserObj = self.dataModel.getUserWithId(otherPlayerId);
+			var returnObj =
+				{
+					"gameId": gameObj.gameId,
+					"sourceIndex": data.sourceIndex,
+					"targetIndex": data.targetIndex,
+					"newMill": true,
+					"otherPlayerState": myPlayerObj.pState
+				};
+			if (io.sockets.connected[otherUserObj.socketId]) {
+				io.to(otherUserObj.socketId).emit('flyPin', returnObj);
 			}
 	} else {
 		// check game winning conditions
@@ -265,10 +353,10 @@ self.removePin = function(data, io){
 	if (gameConditions){
 		// game WON
 		console.log("I WON THE GAME !");
-		console.log(myPlayerObj);
+		// console.log(myPlayerObj);
 		gameWin = myPlayerObj.pid;
 	} else {
-		console.log("i didnt win the game !");
+		// console.log("i didnt win the game !");
 		// changing player turn
 		gameObj.playerTurn = otherPlayerObj.pid
 	}
@@ -289,16 +377,15 @@ self.removePin = function(data, io){
 
 self.canRemovePin = function(gameId, pinIndex){
 	var gameObj = self.dataModel.getGameObjectWithId(gameId);
-	console.log("server, can remove pin: " + pinIndex);
+	// console.log("server, can remove pin: " + pinIndex);
 
 	var newMill = self.dataModel.checkNewMill(gameId, pinIndex);
 
 	// if the pin is not in a mill, it can be removed
 	if (!newMill){
-		console.log("canRemovePin: pin is not in a mill, can be removed !");
+		// console.log("canRemovePin: pin is not in a mill, can be removed !");
 		return true;
 	} else {
-		// ************* to be continued when getting to this point..
 		// get the player board name of the pin at pinIndex
 		var tempBoardName = gameObj.board[pinIndex].control;
 		var pinsInMills = [];
@@ -309,14 +396,14 @@ self.canRemovePin = function(gameId, pinIndex){
 		for (var i = 0; i < gameObj.board.length; i++){
 			var tempPin = gameObj.board[i];
 			if ((i != pinIndex) && (tempPin.control == tempBoardName)){
-				console.log("checking pin index for mills: " + pinIndex);
+				// console.log("checking pin index for mills: " + pinIndex);
 				var millCheck = self.dataModel.checkNewMill(gameId, i);
 				// if there are any pins that are not in a mill, then pinIndex,
 				// which is in a mill, can't be removed
-				console.log("MILL check:");
-				console.log(millCheck);
+				// console.log("MILL check:");
+				// console.log(millCheck);
 				if (!millCheck){
-					console.log("NO NO NO NO NO =============================");
+					// console.log("NO NO NO NO NO =============================");
 					return false;
 				}
 			}
@@ -381,7 +468,6 @@ self.placePin = function(data, io){
 			myPlayerObj.pState = "remove";
 
 			// send update to the other player
-			// var otherUserObj = self.dataModel.getUserWithId(otherPlayerId);
 			var returnObj =
 				{
 					"gameId": gameObj.gameId,
@@ -393,9 +479,6 @@ self.placePin = function(data, io){
 				io.to(otherUserObj.socketId).emit('placePin', returnObj);
 			}
 	} else {
-		// gameObj.playerTurn = otherPlayerId;
-		console.log("how many place pins do i have left <<<<<<<<<<<<");
-		console.log(myPlayerObj);
 		// check game winning conditions
 		var gameCondition =
 			self.checkGameConditions(false, data.gameId, data.userid);
@@ -427,9 +510,6 @@ self.placePin = function(data, io){
 
 // if a pin has been removed, removeAction should be 'true'
 self.checkGameConditions = function(removeAction, gameId, userid){
-	// get game object
-	console.log("Checking game conditions:");
-	// var gameObj = self.dataModel.getGameObjectWithId(gameId);
 	var myPlayerObject = self.dataModel.getMyPlayerObject(gameId, userid);
 	var otherPlayerObj = self.dataModel.getOtherPlayerObject(gameId, userid);
 	var gameObj = self.dataModel.getGameObjectWithId(gameId);
@@ -454,26 +534,19 @@ self.checkGameConditions = function(removeAction, gameId, userid){
 		// then game has not been won, return false.
 		for (var i = 0; i < gameObj.board.length; i++){
 			var tempPin = gameObj.board[i];
-			console.log("temp pin: ");
-			console.log(tempPin);
-			// console.log(self.otherP);
 			if (tempPin.control == otherPlayerObj.pBoardName){
 				// now check if pin has any free neighbours
 				for (var k = 0; k < tempPin.vNeighbours.length; k++){
 					var t2Pin = gameObj.board[tempPin.vNeighbours[k]];
-					console.log("do i get here");
-					console.log(t2Pin);
-					console.log(self.freePinBoardName);
-
 					if (t2Pin.control == self.freePinBoardName){
-						console.log("_+_+_+_+_+_+_ hello 1");
+						// console.log("_+_+_+_+_+_+_ hello 1");
 						return false;	// game not won
 					}
 				}
 
 			}
 		}
-		console.log("_+_+_+_+_+_+_ hello 2 ");
+		// console.log("_+_+_+_+_+_+_ hello 2 ");
 		return true;	// game won
 	}
 }
@@ -503,10 +576,8 @@ self.handleSocketRequests = function(io){
 
 		socket.on('placePin', function(data){ self.placePin(data, io); });
 		socket.on('movePin', function(data){ self.movePin(data, io); });
-		// socket.on('removePin',
-			// function(data){ self.userRemovedPin(data, io); });
-
-		socket.on('removePin', function(data){ self.removePin(data, io); });
+		socket.on('flyPin', function(data){ self.movePin(data, io); });
+		socket.on('removePin', function(data){ self.removePin(data, io); });		
 	});
 }
 

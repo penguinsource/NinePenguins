@@ -185,7 +185,8 @@ var DataModel = function(){
 		if (self.active_users[userid]){
 			return self.active_users[userid];
 		} else {
-			console.log("ERROR ! User with id: " + userid + " doesn't exist !");
+			console.log("ERROR ! User with id: " + 
+						userid + " doesn't exist !");
 			return null;
 		}
 	}
@@ -238,8 +239,21 @@ var DataModel = function(){
 			};
 	}
 
-	self.updatePlayerState = function(playerObj){
+	self.updatePlayerState =  function(playerObj){
 		// ************* IN CONSTRUCTION.. get the code for this from gameController ( same function name )
+		if (playerObj.pPlacePins > 0){
+			// console.log("its place !!");
+			return "place";
+		} else if (playerObj.pPinsLeft > 3){
+			// console.log("its move !!");
+			return "move";
+		} else if (playerObj.pPinsLeft == 3){
+			// console.log("its fly !!");
+			return "fly";
+		} else {
+			// console.log("its same !! ! ! !");
+			return playerObj.pState;	// ********* add the case below
+		} 
 	}
 
 	self.getMyPlayerObject = function(gameid, userid){
@@ -283,10 +297,10 @@ var DataModel = function(){
 				}
 				// console.log("!! V 1 neighbour: " + gameObj.board[newPinIndex].vNeighbours.length);
 			}
-			console.log("1 v: " + newPinIndex + ", " + neighPinIndex1 + ", " + neighPinIndex2);
-			console.log(gameObj.board[newPinIndex].control);
-			console.log(gameObj.board[neighPinIndex1].control);
-			console.log(gameObj.board[neighPinIndex2].control);
+			// console.log("1 v: " + newPinIndex + ", " + neighPinIndex1 + ", " + neighPinIndex2);
+			// console.log(gameObj.board[newPinIndex].control);
+			// console.log(gameObj.board[neighPinIndex1].control);
+			// console.log(gameObj.board[neighPinIndex2].control);
 
 			if ( (gameObj.board[newPinIndex].control === gameObj.board[neighPinIndex1].control) &&
 				 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control)){
@@ -308,10 +322,10 @@ var DataModel = function(){
 				// console.log("!! H 1 neighbour: " + gameObj.board[newPinIndex].hNeighbours.length);
 			}
 
-			console.log("2 v: " + newPinIndex + ", " + neighPinIndex1 + ", " + neighPinIndex2);
-			console.log(gameObj.board[newPinIndex].control);
-			console.log(gameObj.board[neighPinIndex1].control);
-			console.log(gameObj.board[neighPinIndex2].control);
+			// console.log("2 v: " + newPinIndex + ", " + neighPinIndex1 + ", " + neighPinIndex2);
+			// console.log(gameObj.board[newPinIndex].control);
+			// console.log(gameObj.board[neighPinIndex1].control);
+			// console.log(gameObj.board[neighPinIndex2].control);
 
 			if ( (gameObj.board[newPinIndex].control === gameObj.board[neighPinIndex1].control) &&
 				 (gameObj.board[neighPinIndex1].control === gameObj.board[neighPinIndex2].control)){

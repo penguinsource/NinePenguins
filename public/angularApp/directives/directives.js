@@ -109,9 +109,19 @@ nineApp.directive('droppable', function() {
                     // scope.$apply('drop()');
                     var pinIndex = e.target.attributes["data-pinIndex"].value;
                     scope.setPinAction("dropppp", pinIndex);
-                    scope.gameCtrl.movePin(scope.gameCtrl.movingPinStartIndex,
-                                           pinIndex,
-                                           scope.gameCtrl.playerLink);
+
+                    var myPlayerObj = 
+                                scope.gameCtrl.NineCache.getMyPlayerObject();
+                    var startIndex = scope.gameCtrl.movingPinStartIndex;
+                    if (myPlayerObj.pState == "move"){
+                        scope.gameCtrl.movePin(startIndex,
+                                               pinIndex,
+                                               scope.gameCtrl.playerLink);
+                    } else if (myPlayerObj.pState == "fly"){
+                        scope.gameCtrl.flyPin(startIndex,
+                                               pinIndex);
+                    }
+
                     return false;
                 },
                 false

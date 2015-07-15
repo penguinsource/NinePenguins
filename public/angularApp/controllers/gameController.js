@@ -255,7 +255,7 @@ nineApp.controller('gameController',
 		return false;
 	}
 
-	self.movePin = function(sourceIndex, targetIndex, playerLink){
+	self.movePin = function(sourceIndex, targetIndex){
 		// check if it's my turn
 		if (!self.isMyTurn()){
 			console.log("ERROR! Not my turn");
@@ -265,10 +265,12 @@ nineApp.controller('gameController',
 		var myPlayerObj = NineCache.getMyPlayerObject();
 		var otherPlayerObj = NineCache.getOtherPlayerObject();
 
-		if (myPlayerObj.pState != "move"){
-			console.log("ERROR ! Your state is not move");
-			return;
-		}
+		// DEPRECATED **
+		// if (myPlayerObj.pState != "move"){
+		// 	console.log("ERROR ! Your state is not move");
+		// 	return;
+		// }
+
 		// check if target pin index is available
 		if (!(self.NineCache.gameObj.board[targetIndex].control == "pinFreePlace")){
 			console.log("ERROR! Target pin index" + targetIndex +
@@ -276,9 +278,8 @@ nineApp.controller('gameController',
 			return;
 		}
 
-
 		// check if the pin being dragged belongs to me and not the other player
-		if (!self.pinBelongsToPlayer(sourceIndex, playerLink)){
+		if (!self.pinBelongsToPlayer(sourceIndex, self.playerLink)){
 			console.log("ERROR! Pin dropped doesn't belong to you");
 			return;
 		}
@@ -294,7 +295,7 @@ nineApp.controller('gameController',
 		// move pin
 		$scope.$apply(function(){
 			self.NineCache.gameObj.board[sourceIndex].control = "pinFreePlace";
-			self.NineCache.gameObj.board[targetIndex].control = playerLink;
+			self.NineCache.gameObj.board[targetIndex].control = self.playerLink;
 		});
 
 		var millData = self.checkForMills(targetIndex);
@@ -320,6 +321,70 @@ nineApp.controller('gameController',
 
 				// send data to server
 				NineCache.mySocket.emit('movePin',
+					{ userid: NineCache.userData.id,
+					  gameId: NineCache.gameObj.gameId,
+				  	  sourceIndex: sourceIndex,
+				  	  targetIndex: targetIndex,
+					  newMill: null });
+				return;
+			}
+		}
+
+	}
+
+	self.flyPin = function(sourceIndex, targetIndex){
+		// check if it's my turn
+		if (!self.isMyTurn()){
+			console.log("ERROR! Not my turn");
+			return;
+		}
+
+		var myPlayerObj = NineCache.getMyPlayerObject();
+		var otherPlayerObj = NineCache.getOtherPlayerObject();
+		var gameObj = self.NineCache.gameObj;
+
+		// check if target pin index is available
+		if (!(gameObj.board[targetIndex].control == "pinFreePlace")){
+			console.log("ERROR! Target pin index" + targetIndex +
+						" is not available. It belongs to a player.");
+			return;
+		}
+
+		// check if the pin being dragged belongs to me and not the other player
+		if (!self.pinBelongsToPlayer(sourceIndex, self.playerLink)){
+			console.log("ERROR! Pin dropped doesn't belong to you");
+			return;
+		}
+
+		// fly(move) pin
+		$scope.$apply(function(){
+			self.NineCache.gameObj.board[sourceIndex].control = "pinFreePlace";
+			self.NineCache.gameObj.board[targetIndex].control = self.playerLink;
+		});
+
+		var millData = self.checkForMills(targetIndex);
+		if (millData){
+			// change my state, keep my turn
+			myPlayerObj.pState = "remove";
+			console.log("MILL FORMED !!!!!");
+			// send data to server
+			NineCache.mySocket.emit('flyPin',
+				{ userid: NineCache.userData.id,
+				  gameId: NineCache.gameObj.gameId,
+				  sourceIndex: sourceIndex,
+				  targetIndex: targetIndex,
+				  newMill: millData });
+			return;
+		} else {
+			var gameConditions = self.checkGameConditions();
+			if (gameConditions){
+				console.log("YOU WON !!!!!!!!!!!!!!!!!!");
+			} else {
+				// change player turn to the other player
+				NineCache.gameObj.playerTurn = otherPlayerObj.pid;
+
+				// send data to server
+				NineCache.mySocket.emit('flyPin',
 					{ userid: NineCache.userData.id,
 					  gameId: NineCache.gameObj.gameId,
 				  	  sourceIndex: sourceIndex,
@@ -718,7 +783,7 @@ nineApp.controller('gameController',
 	self.handleSocketRequests = function(){
 		NineCache.mySocket.on('placePin', function (data) {
 			if (NineCache.gameObj.gameId == data.gameId){
-				console.log("data received:");
+				console.log("place data received:");
 				console.log(data);
 				var otherPlayerObj = NineCache.getOtherPlayerObject();
 				// console.log("my userid: " + NineCache.userData.id);
@@ -742,8 +807,17 @@ nineApp.controller('gameController',
 
 				// console.log("my userid: " + NineCache.userData.id);
 				var otherPLink = 'player2Pin';
-				NineCache.gameObj.board[data.sourceIndex].control = self.freePinBoardName;
-				NineCache.gameObj.board[data.targetIndex].control = self.otherPlayerBoardName;
+				NineCache.gameObj.board[data.sourceIndex].control = 
+													self.freePinBoardName;
+				NineCache.gameObj.board[data.targetIndex].control = 
+													self.otherPlayerBoardName;
+
+				var myPlayerObj = NineCache.getMyPlayerObject();
+				var otherPlayerObj = NineCache.getMyPlayerObject();
+				myPlayerObj.pState = 
+								self.updatePlayerState(myPlayerObj);
+				otherPlayerObj.pState = 
+								self.updatePlayerState(otherPlayerObj);
 
 				if (!data.newMill){
 					$scope.$apply(function(){
@@ -758,10 +832,18 @@ nineApp.controller('gameController',
 		});
 
 		NineCache.mySocket.on("flyPin", function(data){
-			console.log("fly pin data received:");
+			console.log("+_+_+_+_+_+_+fly pin data received:");
 			console.log(data);
 			if (NineCache.gameObj.gameId == data.gameId){
-
+				NineCache.gameObj.board[data.sourceIndex].control = 
+													self.freePinBoardName;
+				NineCache.gameObj.board[data.targetIndex].control = 
+													self.otherPlayerBoardName;
+				if (!data.newMill){
+					$scope.$apply(function(){
+						NineCache.gameObj.playerTurn = NineCache.userData.id;
+					});
+				}
 			}
 		});
 
@@ -772,8 +854,16 @@ nineApp.controller('gameController',
 				// NineCache.gameObj.gameState = data.gameState;
 				var player = 'player2Pin';
 				NineCache.gameObj.board[data.pinIndex].control = "pinFreePlace";
-				// console.log("THIS GUYS TURN: " + data.playerTurn);
-				self.updateGameState();
+				var myPlayerObj = NineCache.getMyPlayerObject();
+				myPlayerObj.pPinsLeft--;
+
+				var otherPlayerObj = NineCache.getMyPlayerObject();
+				myPlayerObj.pState = 
+								self.updatePlayerState(myPlayerObj);
+				otherPlayerObj.pState = 
+								self.updatePlayerState(otherPlayerObj);
+
+				// self.updateGameState();
 				$scope.$apply(function(){
 					self.updatePlayerTurn(data.playerTurn);
 				});
