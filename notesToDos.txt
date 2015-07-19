@@ -1,0 +1,4 @@
+ok so the reason the UI is not updating properly might be because the game board object is held
+in the NineCache service instead of simply being stored in gameController.
+
+Try moving it and see if it works... better ?

@@ -43,11 +43,7 @@ nineApp.directive('droppable', function() {
 			el.addEventListener(
 			    'dragover',
 			    function(e) {
-			    	console.log("Drag Over");
-                    // console.log(e);
-                    // console.log(scope);
-
-			        // e.dataTransfer.dropEffect = 'move';
+			    	// console.log("Drag Over");
                     
 			        // allows us to drop
 			        if (e.preventDefault) e.preventDefault();
@@ -72,7 +68,7 @@ nineApp.directive('droppable', function() {
 			);
 
             el.addEventListener("dragleave", function(e){
-                console.log("Drag Leave");
+                // console.log("Drag Leave");
                 // var pinIndex = e.target.attributes["data-pinIndex"].value;
                 // if (scope.gameCtrl.isPinIndexFree(pinIndex)){
                 //     this.classList.add("pinFreePlace");
@@ -81,7 +77,7 @@ nineApp.directive('droppable', function() {
             })
 
             el.addEventListener("dragend", function(e){
-                console.log("Drag Stop!!");
+                // console.log("Drag Stop!!");
                 // if ( (this.classList.indexOf("player1Pin") == -1) ){
                     // this.classList.add("pinFreePlace");
                 // }
@@ -93,10 +89,10 @@ nineApp.directive('droppable', function() {
             el.addEventListener(
                 'drop',
                 function(e) {
-                	console.log("Drop");
+                	// console.log("Drop");
                     // console.log(e);
                     // console.log("----");
-                    console.log(e.target.attributes["data-pinIndex"].value);
+                    // console.log(e.target.attributes["data-pinIndex"].value);
                     // Stops some browsers from redirecting.
                     // if (e.stopPropagation) e.stopPropagation();
                     
@@ -140,7 +136,7 @@ nineApp.directive('draggable', function() {
         el.addEventListener(
             'dragstart',
             function(e) {
-            	console.log("dragstart");
+            	// console.log("dragstart");
             	var pinIndex = e.target.attributes["data-pinIndex"].value;
                 scope.gameCtrl.movingPinStartIndex = pinIndex;
                 // e.dataTransfer.effectAllowed = 'move';
@@ -155,7 +151,7 @@ nineApp.directive('draggable', function() {
         el.addEventListener(
             'dragend',
             function(e) {
-            	console.log("dragend");
+            	// console.log("dragend");
             	// console.log(e);
                 // console.log("value: ");
                 // console.log(e.target.attributes["data-pinIndex"].value);
