@@ -824,7 +824,7 @@ span.userMessageAuthor {
 }
 
 .grey {
-	background-color: grey;
+	background-color: gray;
 }
 
 pre strong {
@@ -834,4 +834,11 @@ pre strong {
 	cursor: -webkit-grabbing;
 	/*width: 100%;*/
 	/*height: 200px;*/
+}
+
+.debugGameObj {
+	position: absolute;
+	color: white;
+	right: 28%;
+	width: 91px;
 }

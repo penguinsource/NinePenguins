@@ -171,7 +171,8 @@ self.movePin = function(data, io){
 					"sourceIndex": data.sourceIndex,
 					"targetIndex": data.targetIndex,
 					"newMill": true,
-					"otherPlayerState": myPlayerObj.pState
+					"otherPlayerState": myPlayerObj.pState,
+					"testObj": data.testObj
 				};
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('movePin', returnObj);
@@ -199,7 +200,8 @@ self.movePin = function(data, io){
 					"sourceIndex": data.sourceIndex,
 					"targetIndex": data.targetIndex,
 					"newMill": false,
-					"otherPlayerState": myPlayerObj.pState
+					"otherPlayerState": myPlayerObj.pState,
+					"testObj": data.testObj
 				};
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('movePin', returnObj);
@@ -209,8 +211,8 @@ self.movePin = function(data, io){
 }
 
 self.flyPin = function(data, io){
-	console.log("fly pin called");
-	console.log(data);
+	// console.log("fly pin called");
+	// console.log(data);
 	var checkUser = self.checkUser(data.gameId, data.userid, "fly");
 	if (!checkUser.success){
 		// console.log(checkUser.message);
@@ -259,7 +261,8 @@ self.flyPin = function(data, io){
 					"sourceIndex": data.sourceIndex,
 					"targetIndex": data.targetIndex,
 					"newMill": true,
-					"otherPlayerState": myPlayerObj.pState
+					"otherPlayerState": myPlayerObj.pState,
+					"testObj": data.testObj
 				};
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('flyPin', returnObj);
@@ -287,7 +290,8 @@ self.flyPin = function(data, io){
 					"sourceIndex": data.sourceIndex,
 					"targetIndex": data.targetIndex,
 					"newMill": false,
-					"otherPlayerState": myPlayerObj.pState
+					"otherPlayerState": myPlayerObj.pState,
+					"testObj": data.testObj
 				};
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('movePin', returnObj);
@@ -368,7 +372,8 @@ self.removePin = function(data, io){
 			"pinIndex": data.pinIndex,
 			"playerTurn": gameObj.playerTurn,
 			"gameOver": gameWin,
-			"otherPlayerState": myPlayerObj.pState
+			"otherPlayerState": myPlayerObj.pState,
+			"testObj": data.testObj
 		};
 	if (io.sockets.connected[otherUserObj.socketId]) {
 		io.to(otherUserObj.socketId).emit('removePin', returnObj);
@@ -473,8 +478,11 @@ self.placePin = function(data, io){
 					"gameId": gameObj.gameId,
 					"pinIndex": data.pinIndex,
 					"playerTurn": gameObj.playerTurn,
-					"otherPlayerState": myPlayerObj.pState
+					"otherPlayerState": myPlayerObj.pState,
+					"testObj": data.testObj
 				};
+				console.log("+ sending place pin:");
+				console.log(returnObj);
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('placePin', returnObj);
 			}
@@ -499,8 +507,11 @@ self.placePin = function(data, io){
 					"gameId": gameObj.gameId,
 					"pinIndex": data.pinIndex,
 					"playerTurn": gameObj.playerTurn,
-					"otherPlayerState": myPlayerObj.pState
+					"otherPlayerState": myPlayerObj.pState,
+					"testObj": data.testObj
 				};
+				console.log("+ sending place pin to index: " + data.pinIndex);
+				// console.log(returnObj);
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('placePin', returnObj);
 			}
@@ -518,8 +529,8 @@ self.checkGameConditions = function(removeAction, gameId, userid){
 	if (removeAction){
 		if (otherPlayerObj.pPinsLeft < 3){
 			// myPlayerObject wins
-			console.log("player with id "+otherPlayerObj.pid +
-					    " has < 3 pins left. p2 wins");
+			// console.log("player with id "+otherPlayerObj.pid +
+					    // " has < 3 pins left. p2 wins");
 			return true;
 		}
 	}

@@ -1,7 +1,7 @@
 var nineApp = angular.module("nineApp");
 
-nineApp.controller('gameController',
-							function($scope, $http, $stateParams, NineCache){
+nineApp.controller('gameController', function($scope, $http, 
+											  $stateParams, NineCache){
 	var self = this;
 
 	// Helper Functions
@@ -149,24 +149,29 @@ nineApp.controller('gameController',
 		var myPlayerObj = NineCache.getMyPlayerObject();
 		switch(myPlayerObj.pState){
 			case "place":
-				self.placePin(pinIndex, self.playerLink);
+				self.placePin(pinIndex);
 				break;
 			case "remove":
-				self.removePin(pinIndex, self.playerLink);
+				self.removePin(pinIndex);
 				break;
 			// case "move": // ************* to be implemented in the future
 
 			default:
-				console.log("default code block called for some reason");
-				console.log(myPlayerObj.pState);
-				console.log(pinIndex);
+				// console.log("default code block called for some reason");
+				// console.log(myPlayerObj.pState);
+				// console.log(pinIndex);
 				break;
 		}
+		// if(!$scope.$$phase) {
+		//   $scope.$apply();
+		// }
+		
 	}
 
-	self.placePin = function(targetIndex, playerLink){
+	self.placePin = function(targetIndex){
 		var myPlayerObj = NineCache.getMyPlayerObject();
 		var otherPlayerObj = NineCache.getOtherPlayerObject();
+		var gameObj = self.NineCache.gameObj;
 		// check if it's my turn
 		if (!self.isMyTurn()){
 			console.log("ERROR! Not my turn");
@@ -174,7 +179,7 @@ nineApp.controller('gameController',
 		}
 
 		// check if target pin index is available
-		if (!(self.NineCache.gameObj.board[targetIndex].control == "pinFreePlace")){
+		if (!(NineCache.gameObj.board[targetIndex].control == "pinFreePlace")){
 			console.log("ERROR! Target pin index" + targetIndex +
 						" is not available. It belongs to a player.");
 			return;
@@ -186,13 +191,10 @@ nineApp.controller('gameController',
 		}
 
 		// place pin
-		self.board[targetIndex].control = playerLink;
+		self.board[targetIndex].control = self.playerLink;
 		myPlayerObj.pPlacePins--;
-		console.log("place pin player obj:");
-		console.log(myPlayerObj);
-		console.log(NineCache.gameObj);
-		// console.log("after:");
-		// console.log(NineCache.gameObj);
+
+		// otherPlayerObj.pState = self.updatePlayerState(otherPlayerObj);
 
 		// check for mill detection
 		var millData = self.checkForMills(targetIndex);
@@ -204,15 +206,27 @@ nineApp.controller('gameController',
 			// change my gameState to 'remove'
 			myPlayerObj.pState = "remove";
 			self.highlightRemovablePins();
+			self.forceScopeApply();
 			// console.log("new Mill ! game Obj:");
 			// console.log(NineCache.gameObj);
 			// if (self.playerLink == playerLink){	// DEPRECATED !
+
 				// send update to server ***
-				NineCache.mySocket.emit('placePin',
-					{ userid: NineCache.userData.id,
-					  gameId: NineCache.gameObj.gameId,
-					  pinIndex: targetIndex,
-					  newMill: millData });
+				// NineCache.mySocket.emit('placePin',
+				// 	{ userid: NineCache.userData.id,
+				// 	  gameId: NineCache.gameObj.gameId,
+				// 	  pinIndex: targetIndex,
+				// 	  newMill: millData });
+
+				var data = {
+					userid: NineCache.userData.id,
+					gameId: NineCache.gameObj.gameId,
+					pinIndex: targetIndex,
+					newMill: millData
+				};
+
+				self.emitToServer("placePin", data);
+				console.log("finished placing pin");
 				return;
 			// }
 		} else {
@@ -221,18 +235,29 @@ nineApp.controller('gameController',
 				console.log("YOU WON !!!!!!!!!!!!!!!!!!");
 			} else {
 				// if player has 0 pins left to place, set their state to 'move'
-				if (myPlayerObj.pPlacePins == 0){
-					myPlayerObj.pState = "move";
-				}
+				// if (myPlayerObj.pPlacePins == 0){
+				// 	myPlayerObj.pState = "move";
+				// }
+				myPlayerObj.pState = self.updatePlayerState(myPlayerObj);
 				// change player turn to the other player
 				NineCache.gameObj.playerTurn = otherPlayerObj.pid;
-
+				self.forceScopeApply();
 				// send data to server
-				NineCache.mySocket.emit('placePin',
-					{ userid: NineCache.userData.id,
-					  gameId: NineCache.gameObj.gameId,
-					  pinIndex: targetIndex,
-					  newMill: null });
+				// NineCache.mySocket.emit('placePin',
+				// 	{ userid: NineCache.userData.id,
+				// 	  gameId: NineCache.gameObj.gameId,
+				// 	  pinIndex: targetIndex,
+				// 	  newMill: null });
+
+				var data = {
+					userid: NineCache.userData.id,
+					gameId: NineCache.gameObj.gameId,
+					pinIndex: targetIndex,
+					newMill: null
+				};
+
+				self.emitToServer("placePin", data);
+				console.log("finished placing pin");
 				return;
 			}
 			// self.updatePlayerTurn(NineCache.gameObj.otherPlayerId);
@@ -272,7 +297,7 @@ nineApp.controller('gameController',
 		// }
 
 		// check if target pin index is available
-		if (!(self.NineCache.gameObj.board[targetIndex].control == "pinFreePlace")){
+		if (!(NineCache.gameObj.board[targetIndex].control == "pinFreePlace")){
 			console.log("ERROR! Target pin index" + targetIndex +
 						" is not available. It belongs to a player.");
 			return;
@@ -298,18 +323,35 @@ nineApp.controller('gameController',
 			self.NineCache.gameObj.board[targetIndex].control = self.playerLink;
 		});
 
+		// this is not necessary yet, but it's done in self.placePin 
+		// and self.removePin so I put it here just in case
+		// myPlayerObj.pState = self.updatePlayerState(myPlayerObj);
+		// otherPlayerObj.pState = self.updatePlayerState(otherPlayerObj);
+
 		var millData = self.checkForMills(targetIndex);
 		if (millData){
 			// change my state, keep my turn
 			myPlayerObj.pState = "remove";
-			console.log("MILL FORMED !!!!!");
+			// console.log("MILL FORMED !!!!!");
+
 			// send data to server
-			NineCache.mySocket.emit('movePin',
-				{ userid: NineCache.userData.id,
-				  gameId: NineCache.gameObj.gameId,
-				  sourceIndex: sourceIndex,
-				  targetIndex: targetIndex,
-				  newMill: millData });
+			// NineCache.mySocket.emit('movePin',
+			// 	{ userid: NineCache.userData.id,
+			// 	  gameId: NineCache.gameObj.gameId,
+			// 	  sourceIndex: sourceIndex,
+			// 	  targetIndex: targetIndex,
+			// 	  newMill: millData });
+
+			self.forceScopeApply();
+			var data = {
+				userid: NineCache.userData.id,
+				gameId: NineCache.gameObj.gameId,
+				sourceIndex: sourceIndex,
+				targetIndex: targetIndex,
+				newMill: millData
+			};
+
+			self.emitToServer("movePin", data);
 			return;
 		} else {
 			var gameConditions = self.checkGameConditions();
@@ -318,18 +360,40 @@ nineApp.controller('gameController',
 			} else {
 				// change player turn to the other player
 				NineCache.gameObj.playerTurn = otherPlayerObj.pid;
+				self.forceScopeApply();
 
-				// send data to server
-				NineCache.mySocket.emit('movePin',
-					{ userid: NineCache.userData.id,
-					  gameId: NineCache.gameObj.gameId,
-				  	  sourceIndex: sourceIndex,
-				  	  targetIndex: targetIndex,
-					  newMill: null });
+
+				// send data to serve
+				// NineCache.mySocket.emit('movePin',
+				// 	{ userid: NineCache.userData.id,
+				// 	  gameId: NineCache.gameObj.gameId,
+				//   	  sourceIndex: sourceIndex,
+				//   	  targetIndex: targetIndex,
+				// 	  newMill: null });
+
+				var data = {
+					userid: NineCache.userData.id,
+					gameId: NineCache.gameObj.gameId,
+				  	sourceIndex: sourceIndex,
+				  	targetIndex: targetIndex,
+					newMill: null
+				};
+
+				self.emitToServer("movePin", data);
 				return;
 			}
 		}
+	}
 
+	// force apply GUI, if it did not update !
+	// sometimes the GUI does not get updated as a 'watch' misses a variable
+	// update.. thus having to make this (painful) call. if a digest is not
+	// currently happening, .. trigger watches to check their watched and update
+	self.forceScopeApply = function(){
+		if(!$scope.$$phase) {
+			console.log("forcing $apply");
+		  $scope.$apply();
+		}
 	}
 
 	self.flyPin = function(sourceIndex, targetIndex){
@@ -366,14 +430,19 @@ nineApp.controller('gameController',
 		if (millData){
 			// change my state, keep my turn
 			myPlayerObj.pState = "remove";
-			console.log("MILL FORMED !!!!!");
+			// console.log("MILL FORMED !!!!!");
+			self.forceScopeApply();
+
 			// send data to server
-			NineCache.mySocket.emit('flyPin',
-				{ userid: NineCache.userData.id,
-				  gameId: NineCache.gameObj.gameId,
-				  sourceIndex: sourceIndex,
-				  targetIndex: targetIndex,
-				  newMill: millData });
+			var data = {
+				userid: NineCache.userData.id,
+				gameId: NineCache.gameObj.gameId,
+				sourceIndex: sourceIndex,
+				targetIndex: targetIndex,
+				newMill: millData
+			};
+
+			self.emitToServer("flyPin", data);
 			return;
 		} else {
 			var gameConditions = self.checkGameConditions();
@@ -382,14 +451,24 @@ nineApp.controller('gameController',
 			} else {
 				// change player turn to the other player
 				NineCache.gameObj.playerTurn = otherPlayerObj.pid;
-
+				self.forceScopeApply();
 				// send data to server
-				NineCache.mySocket.emit('flyPin',
-					{ userid: NineCache.userData.id,
-					  gameId: NineCache.gameObj.gameId,
-				  	  sourceIndex: sourceIndex,
-				  	  targetIndex: targetIndex,
-					  newMill: null });
+				// NineCache.mySocket.emit('flyPin',
+				// 	{ userid: NineCache.userData.id,
+				// 	  gameId: NineCache.gameObj.gameId,
+				//   	  sourceIndex: sourceIndex,
+				//   	  targetIndex: targetIndex,
+				// 	  newMill: null });
+
+				var data = {
+					userid: NineCache.userData.id,
+					gameId: NineCache.gameObj.gameId,
+				  	sourceIndex: sourceIndex,
+				  	targetIndex: targetIndex,
+					newMill: null
+				};
+
+				self.emitToServer("flyPin", data);
 				return;
 			}
 		}
@@ -399,7 +478,7 @@ nineApp.controller('gameController',
 	// removeAction is a boolean that is null by default
 	// this returns true if the game has been won by me (myPlayerObject)
 	self.checkGameConditions = function(removeAction){
-		console.log("Checking game conditions");
+		// console.log("Checking game conditions");
 		var otherPlayerObj = NineCache.getOtherPlayerObject();
 		if (removeAction){
 			// if the other player has less than 3 pins..
@@ -423,8 +502,8 @@ nineApp.controller('gameController',
 				if (tempPin.control == self.otherPlayerBoardName){
 					// now check if pin has any free neighbours
 					for (var k = 0; k < tempPin.vNeighbours.length; k++){
-						var t2Pin = tempPin.vNeighbours[k].control;
-						// console.log("do i get here");
+						var t2PinInd = tempPin.vNeighbours[k];
+						var t2Pin = NineCache.gameObj.board[t2PinInd];
 						if (t2Pin.control == self.freePinBoardName){
 							// console.log("_+_+_+_+_+_+_ hello 1");
 							return false;	// game not won
@@ -558,19 +637,19 @@ nineApp.controller('gameController',
 	}
 
 	self.updatePlayerState = function(playerObj){
-		console.log("player obj is");
-		console.log(playerObj);
+		// console.log("=====> player obj is");
+		// console.log(playerObj);
 		if (playerObj.pPlacePins > 0){
-			console.log("its place !!");
+			// console.log("its place !!");
 			return "place";
 		} else if (playerObj.pPinsLeft > 3){
-			console.log("its move !!");
+			// console.log("its move !!");
 			return "move";
 		} else if (playerObj.pPinsLeft == 3){
-			console.log("its fly !!");
+			// console.log("its fly !!");
 			return "fly";
 		} else {
-			console.log("its same !!");
+			// console.log("its same !!");
 			return playerObj.pState;	// ********* add the case below
 		} 
 		// ********** explore checking state here and reconsider using check game conditions removeAction boolean ***********
@@ -579,7 +658,7 @@ nineApp.controller('gameController',
 		  // }
 	}
 
-	self.removePin = function(pinIndex, player){
+	self.removePin = function(pinIndex){
 		var pinBtn = NineCache.gameObj.board[pinIndex];
 		// console.log("1: " + pinIndex);
 		// console.log(NineCache.gameObj.board);
@@ -607,8 +686,11 @@ nineApp.controller('gameController',
 		otherPlayerObj.pPinsLeft--;
 
 		var myPlayerObj = NineCache.getMyPlayerObject();
-		// myPlayerObj.pState = self.updatePlayerState(myPlayerObj);
+		myPlayerObj.pState = self.updatePlayerState(myPlayerObj);
 		otherPlayerObj.pState = self.updatePlayerState(otherPlayerObj);
+
+		//1) *** TRY MAKING A MILL IN STATE PLACE, you will keep staying in state remove even next turn
+		//2) i win game if the other place has 2 pins left on the board ? fix that !
 
 		var gameConditions = self.checkGameConditions();
 		if (gameConditions){
@@ -618,10 +700,30 @@ nineApp.controller('gameController',
 			// changing player turn
 			NineCache.gameObj.playerTurn = otherPlayerObj.pid;
 		}
-			NineCache.mySocket.emit('removePin',
-				{ gameId: NineCache.gameObj.gameId,
-				  userid: NineCache.userData.id,
-				  pinIndex: pinIndex });
+
+		var data = {
+			gameId: NineCache.gameObj.gameId,
+			userid: NineCache.userData.id,
+			pinIndex: pinIndex
+		};
+		self.forceScopeApply();
+		self.emitToServer("removePin", data);
+
+		// NineCache.mySocket.emit('removePin',
+		// 	{ gameId: NineCache.gameObj.gameId,
+		// 	  userid: NineCache.userData.id,
+		// 	  pinIndex: pinIndex });
+	}
+
+	self.emitToServer = function(requestType, data){
+		// console.log("Emitting to server:" + requestType);
+		// console.log(data);
+		if (self.testObj){
+			data.testObj = self.testObj;
+			NineCache.mySocket.emit(requestType, data);
+		} else {
+			NineCache.mySocket.emit(requestType, data);
+		}
 	}
 
 		// if (pinBtn.control === self.otherPlayerBoardName){
@@ -775,6 +877,9 @@ nineApp.controller('gameController',
 		self.freePinBoardName = "pinFreePlace";
 		// self.canRemoveMillPin = false;	//
 
+		// initiate testMode variable; if true, every emit to server will send
+		// a test object
+		self.testObj = null;
 		NineCache.gameObj.board = self.board;
 		// console.log("IS IT MY TURN ?");
 		// console.log(self.isMyTurn());
@@ -782,18 +887,37 @@ nineApp.controller('gameController',
 
 	self.handleSocketRequests = function(){
 		NineCache.mySocket.on('placePin', function (data) {
+			// console.log("====================");
+			// console.log(data);
 			if (NineCache.gameObj.gameId == data.gameId){
-				console.log("place data received:");
-				console.log(data);
+				// console.log("place data received:");
+				// console.log(data);
 				var otherPlayerObj = NineCache.getOtherPlayerObject();
 				// console.log("my userid: " + NineCache.userData.id);
 				var otherPLink = 'player2Pin';
-				NineCache.gameObj.board[data.pinIndex].control = 
-													self.otherPlayerBoardName;
-				otherPlayerObj.pPlacePins--;
 				$scope.$apply(function(){
+				self.NineCache.gameObj.board[data.pinIndex].control = 
+													self.otherPlayerBoardName;					
+				})
+
+				otherPlayerObj.pPlacePins--;
+
+				var otherPlayerObj = NineCache.getOtherPlayerObject();
+				// otherPlayerObj.pState = data.otherPlayerState;
+				var myPlayerObj = NineCache.getMyPlayerObject();
+				myPlayerObj.pState = 
+								self.updatePlayerState(myPlayerObj);	
+				otherPlayerObj.pState = 
+								self.updatePlayerState(otherPlayerObj);				
+				console.log("HELLOOO pin: " + data.pinIndex + " belogns to "+
+					NineCache.gameObj.board[data.pinIndex].control);
+				// $scope.$apply(function(){
 					self.updatePlayerTurn(data.playerTurn);
-				});
+				// });
+				// self.forceScopeApply();
+				if (data.testObj){
+					self.playTest(data.testObj);
+				}
 			} else {
 				console.log("ERROR ! Received data about wrong game obj"+
 							" from the server.");
@@ -820,11 +944,14 @@ nineApp.controller('gameController',
 								self.updatePlayerState(otherPlayerObj);
 
 				if (!data.newMill){
-					$scope.$apply(function(){
+					// $scope.$apply(function(){
 						NineCache.gameObj.playerTurn = NineCache.userData.id;
-					});
+					// });
 				}
-
+				self.forceScopeApply();
+				if (data.testObj){
+					self.playTest(data.testObj);
+				}
 			} else {
 				console.log("ERROR ! Received data about wrong game obj"+
 							" from the server.");
@@ -832,7 +959,7 @@ nineApp.controller('gameController',
 		});
 
 		NineCache.mySocket.on("flyPin", function(data){
-			console.log("+_+_+_+_+_+_+fly pin data received:");
+			console.log("fly pin data received:");
 			console.log(data);
 			if (NineCache.gameObj.gameId == data.gameId){
 				NineCache.gameObj.board[data.sourceIndex].control = 
@@ -840,9 +967,13 @@ nineApp.controller('gameController',
 				NineCache.gameObj.board[data.targetIndex].control = 
 													self.otherPlayerBoardName;
 				if (!data.newMill){
-					$scope.$apply(function(){
+					// $scope.$apply(function(){
 						NineCache.gameObj.playerTurn = NineCache.userData.id;
-					});
+					// });
+				}
+				self.forceScopeApply();
+				if (data.testObj){
+					self.playTest(data.testObj);
 				}
 			}
 		});
@@ -864,16 +995,104 @@ nineApp.controller('gameController',
 								self.updatePlayerState(otherPlayerObj);
 
 				// self.updateGameState();
-				$scope.$apply(function(){
+				// $scope.$apply(function(){
 					self.updatePlayerTurn(data.playerTurn);
-				});
+				// });
+				self.forceScopeApply();
+				if (data.testObj){
+					self.playTest(data.testObj);
+				}
 			}
 		});
+	}
+
+	self.startTest = function(testNo){
+		if (testNo == "1"){
+			self.testObj = {
+				testNumber: "1",
+				testStep: "1"
+			};
+			// waitSeconds(2000);
+			self.testObj.testStep++;
+			self.placePin(0);
+		}
+	}
+// 5:43, terminal 3
+	self.playTest = function(testObj){
+		self.testObj = testObj;
+		if (testObj.testNumber == 1){
+			// console.log("test obj");
+			// console.log(testObj);
+			switch(testObj.testStep){
+				case 2:
+					console.log("placing pin at 5");
+					waitSeconds(10000);
+					console.log("DONE waiting");
+					// console.log();
+					testObj.testStep++;
+					self.placePin(5);
+					// $scope.$apply();
+					break;
+				case 3:
+					console.log("placing pin at 1");
+					waitSeconds(10000);
+					console.log("DONE waiting");
+					testObj.testStep++;
+					self.placePin(1);
+					// $scope.$apply();
+					break;
+				case 4:
+					console.log("placing pin at 6");
+					waitSeconds(10000);
+					console.log("DONE waiting");
+					testObj.testStep++;
+					self.placePin(6);
+					// $scope.$apply();
+					break;
+				case 5:
+					console.log("waiting 2 seconds..");
+					waitSeconds(5000);
+					console.log("DONE waiting");
+					testObj.testStep++;
+					console.log("placing pin:");
+										self.placePin(2);
+					console.log("removing pin:");
+					// $scope.$apply();
+					waitSeconds(5000);
+					console.log("DONE waiting");
+					// console.log(NineCache.gameObj);
+					self.removePin(5);
+					break;
+				case 6:
+					waitSeconds(5000);
+					testObj.testStep++;
+					self.placePin(5);
+					break;
+			}
+		}
+	}
+	// function sleep(milliseconds) {
+	//   var start = new Date().getTime();
+	//   for (var i = 0; i < 1e7; i++) {
+	//     if ((new Date().getTime() - start) > milliseconds){
+	//       break;
+	//     }
+	//   }
+	// }
+	function waitSeconds(iMilliSeconds) {
+	    var counter= 0
+	        , start = new Date().getTime()
+	        , end = 0;
+	    while (counter < iMilliSeconds) {
+	        end = new Date().getTime();
+	        counter = end - start;
+	    }
 	}
 
 	self.init = function(){
 		// console.log("Game Controller !");
 		// NineCache.gameObj.gameState = "place";	// 'place' or 'move'
+		self.debug = true;
 		self.NineCache = NineCache;
 		// console.log("PARAM:");
 		// console.log($stateParams['game_id']);
@@ -882,8 +1101,8 @@ nineApp.controller('gameController',
 		self.updatePlayerTurn(NineCache.gameObj.playerTurn);
 		self.initDataStructures();
 		self.handleSocketRequests();
-		// console.log("my game obj:");
-		// console.log(NineCache.gameObj);
+		console.log("my game obj:");
+		console.log(NineCache.gameObj);
 	}
 
 	self.init();

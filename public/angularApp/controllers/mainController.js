@@ -128,7 +128,7 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 
 	self.init = function(){
 		// console.log("mainController !");
-		$scope.startGameBtnText = "Start a game";
+		$scope.startGameBtnText = "Start a Game";
 
 		// this should be run earlier than in this controller..*****
 		if (!NineCache.mySocket){
