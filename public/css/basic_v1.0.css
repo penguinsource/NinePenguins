@@ -839,6 +839,9 @@ pre strong {
 .debugGameObj {
 	position: absolute;
 	color: white;
-	right: 28%;
-	width: 91px;
+	right: 7%;
+	max-width: 350px;
+	overflow: visible;
+	word-wrap: break-word;
+	width: 209px;
 }

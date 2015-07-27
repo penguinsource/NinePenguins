@@ -493,7 +493,9 @@ self.placePin = function(data, io){
 		// game has been won
 		if (gameCondition){
 			// GAME WON **************
-		} else {	// game has NOT been won
+			console.log("Game Won by player: " + data.userid);
+		} 
+		// else {	// game has NOT been won
 			// if the player has 0 pins left to place, change state to 'move'
 			if (myPlayerObj.pPlacePins == 0){
 				myPlayerObj.pState = "move";
@@ -515,7 +517,7 @@ self.placePin = function(data, io){
 			if (io.sockets.connected[otherUserObj.socketId]) {
 				io.to(otherUserObj.socketId).emit('placePin', returnObj);
 			}
-		}
+		// }
 	}
 }
 
@@ -550,14 +552,17 @@ self.checkGameConditions = function(removeAction, gameId, userid){
 				for (var k = 0; k < tempPin.vNeighbours.length; k++){
 					var t2Pin = gameObj.board[tempPin.vNeighbours[k]];
 					if (t2Pin.control == self.freePinBoardName){
-						// console.log("_+_+_+_+_+_+_ hello 1");
 						return false;	// game not won
 					}
 				}
-
+				for (var k = 0; k < tempPin.hNeighbours.length; k++){
+					var t2Pin = gameObj.board[tempPin.hNeighbours[k]];
+					if (t2Pin.control == self.freePinBoardName){
+						return false;	// game not won
+					}
+				}
 			}
 		}
-		// console.log("_+_+_+_+_+_+_ hello 2 ");
 		return true;	// game won
 	}
 }
@@ -603,13 +608,15 @@ function init(){
 	var server = require('http').Server(app);
 	var io = require('socket.io')(server);
 	app.use(express.static(process.cwd() + '/public'));
-	// server.listen(SERVER_LISTEN_PORT, '2601:589:2:5fc0:f959:f5dd:5932:49be');
+	// server.listen(SERVER_LISTEN_PORT, '[2601:589:2:5fc0:cca0:d4b:84e0:5f72]:3000');
 	server.listen(SERVER_LISTEN_PORT);
+	
 	// Data Model object
 	var DataModel = require("./dataModel.js");
 	self.dataModel = new DataModel();
 	self.initVariables();
 	self.handleSocketRequests(io);
+	console.log("!server: " + SERVER_LISTEN_PORT);
 }
 
 init();

@@ -7,7 +7,7 @@ nineApp.controller('mainController', function($scope, $http, $state, $cookies, F
 		var serverAddr = 'http://50.65.103.143:3000/';
 		// serverAddr = 'http://142.244.5.95:3000/';
 		serverAddr = 'http://localhost:3000/';
-		// serverAddr = '[2601:589:2:5fc0:f959:f5dd:5932:49be]:3000/';
+		// serverAddr = '[2601:589:2:5fc0:cca0:d4b:84e0:5f72]:3000/';
 
 		var mySocket = io.connect(serverAddr);
 		NineCache.mySocket = mySocket;

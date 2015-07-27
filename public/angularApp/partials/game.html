@@ -1,22 +1,23 @@
 
 <section class="debugGameObj" ng-show="gameCtrl.debug">
-		{{gameCtrl.NineCache.gameObj.gameId}}<br>
+		{{gameCtrl.gameObj.gameId}}<br>
 		<br>
 		My Player Object:<br>
-		pid: <b>{{gameCtrl.NineCache.getMyPlayerObject().pid}}</b><br>
-		pState: <b>{{gameCtrl.NineCache.getMyPlayerObject().pState}}</b><br>
-		pUserName: <b>{{gameCtrl.NineCache.getMyPlayerObject().pUserName}}</b><br>
-		pPlacePins: <b>{{gameCtrl.NineCache.getMyPlayerObject().pPlacePins}}</b><br>
-		pBoardName: <b>{{gameCtrl.NineCache.getMyPlayerObject().pBoardName}}</b><br>
+		pid: <b>{{gameCtrl.getMyPlayerObject().pid}}</b><br>
+		pState: <b>{{gameCtrl.getMyPlayerObject().pState}}</b><br>
+		pUserName: <b>{{gameCtrl.getMyPlayerObject().pUserName}}</b><br>
+		pPlacePins: <b>{{gameCtrl.getMyPlayerObject().pPlacePins}}</b><br>
+		pBoardName: <b>{{gameCtrl.getMyPlayerObject().pBoardName}}</b><br>
 		<br>
 		Other Player Object:<br>
-		pid: <b>{{gameCtrl.NineCache.getOtherPlayerObject().pid}}</b><br>
-		pState: <b>{{gameCtrl.NineCache.getOtherPlayerObject().pState}}</b><br>
-		pUserName: <b>{{gameCtrl.NineCache.getOtherPlayerObject().pUserName}}</b><br>
-		pPlacePins: <b>{{gameCtrl.NineCache.getOtherPlayerObject().pPlacePins}}</b><br>
-		pBoardName: <b>{{gameCtrl.NineCache.getOtherPlayerObject().pBoardName}}</b><br>
+		pid: <b>{{gameCtrl.getOtherPlayerObject().pid}}</b><br>
+		pState: <b>{{gameCtrl.getOtherPlayerObject().pState}}</b><br>
+		pUserName: <b>{{gameCtrl.getOtherPlayerObject().pUserName}}</b><br>
+		pPlacePins: <b>{{gameCtrl.getOtherPlayerObject().pPlacePins}}</b><br>
+		pBoardName: <b>{{gameCtrl.getOtherPlayerObject().pBoardName}}</b><br>
 		<br>
 		Is it my turn ? <b>{{gameCtrl.isMyTurn()}}</b><br>
+		Is it my turn 2? <b>{{self.gameObj.playerTurn == NineCache.userData.id}}</b><br>
 
 </section>
 <section id='player1'>
@@ -35,7 +36,8 @@
 			ng-class="{white: displayAll == true, }"
 			data-pinIndex="{{$index}}"
 			ng-click='gameCtrl.clickEvent( pin, $index )'
-			ng-disabled="gameCtrl.NineCache.gameObj.playerTurn != gameCtrl.NineCache.userData.id">
+			ng-disabled="gameCtrl.gameObj.playerTurn != gameCtrl.NineCache.userData.id">
+			<!-- ng-disabled="gameCtrl.NineCache.gameObj.playerTurn != gameCtrl.NineCache.userData.id"> -->
 	</button>
 </section>
 

@@ -109,14 +109,22 @@ nineApp.directive('droppable', function() {
                     var myPlayerObj = 
                                 scope.gameCtrl.NineCache.getMyPlayerObject();
                     var startIndex = scope.gameCtrl.movingPinStartIndex;
-                    if (myPlayerObj.pState == "move"){
-                        scope.gameCtrl.movePin(startIndex,
-                                               pinIndex,
-                                               scope.gameCtrl.playerLink);
-                    } else if (myPlayerObj.pState == "fly"){
-                        scope.gameCtrl.flyPin(startIndex,
-                                               pinIndex);
+
+                    // always use scope apply if the call is going to make
+                    // changes to the view
+                    if(!scope.$$phase) {
+                        scope.$apply(function(){
+                            if (myPlayerObj.pState == "move"){
+                                scope.gameCtrl.movePin(startIndex,
+                                                       pinIndex,
+                                                       scope.gameCtrl.playerLink);
+                            } else if (myPlayerObj.pState == "fly"){
+                                scope.gameCtrl.flyPin(startIndex,
+                                                       pinIndex);
+                            }
+                        });
                     }
+
 
                     return false;
                 },
