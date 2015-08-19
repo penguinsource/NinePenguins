@@ -1,5 +1,5 @@
 
-<section class="debugGameObj" ng-show="gameCtrl.debug">
+<!-- <section class="debugGameObj" ng-show="gameCtrl.debug">
 		{{gameCtrl.gameObj.gameId}}<br>
 		<br>
 		My Player Object:<br>
@@ -19,36 +19,97 @@
 		Is it my turn ? <b>{{gameCtrl.isMyTurn()}}</b><br>
 		Is it my turn 2? <b>{{self.gameObj.playerTurn == NineCache.userData.id}}</b><br>
 
-</section>
-<section id='player1'>
-	<section class='playerInfoWrap'
-			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.userData.id) ? 'blueBackground' : ''">
-		<p class='playerName'>penguinsource {{gameCtrl.NineCache.userData.id}}, place pins: {{gameCtrl.NineCache.getMyPlayerObject().pPlacePins}}</p>
-		<p class='playerPoints'>1000 points</p>
+</section> -->
+<!-- ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.userData.id) ? 'blueBackground' : ''" -->
+<div class="marginTop20"></div>
+<section class="playerInfoSection" id='player1'>
+<image class='playerBtn' 
+	   title="{{(hiddenChat)?'Show Chat':'Hide Chat'}}" 
+	   ng-click="hiddenChat=!hiddenChat"
+	   src="images/chaticon.png"/>
+<image onClick="requestTie()" 
+	   title="Request a Tie" 
+	   class="playerBtn left52"
+	   ng-click="gameCtrl.requestTie()"  
+	   src="images/tieicon.png"/>
+<image ng-click="gameCtrl.quitGame()" 
+	   title="Quit Game" 
+	   class='playerBtn left104' 
+	   src="images/exiticon.png"/>
+	<section class='playerInfoWrap floatLeft'
+			 ng-class="{'blueBackground':gameCtrl.isMyTurn()}">
+		<img class='userProfilePic' src="images/profilePic.JPG">
+		<div class='userProfileInfo'>
+			<p class='playerName'>{{gameCtrl.getMyPlayerName()}}</p>
+			<p class='playerPoints'>1000 points</p>
+		</div>
+		<button class="pinsLeftPin" title>
+			{{gameCtrl.getMyPlayerObj().pPinsLeft}}
+		</button>
 	</section>
 </section>
+<p class='gameMessage'>{{gameCtrl.displayMsg}}</p>
 
-<section id='gameBoard'>
-	<button ng-repeat="pin in gameCtrl.board"
-			class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}}"
-			draggable='true'
-			draggable droppable
-			ng-class="{white: displayAll == true, }"
-			data-pinIndex="{{$index}}"
-			ng-click='gameCtrl.clickEvent( pin, $index )'
-			ng-disabled="gameCtrl.gameObj.playerTurn != gameCtrl.NineCache.userData.id">
-			<!-- ng-disabled="gameCtrl.NineCache.gameObj.playerTurn != gameCtrl.NineCache.userData.id"> -->
-	</button>
-</section>
-
-<section id='player2'>
-	<section class='playerInfoWrap' 
-			 ng-class="(gameCtrl.NineCache.gameObj.playerTurn == gameCtrl.NineCache.gameObj.otherPlayerId) ? 'blueBackground' : ''">
-		<p class='playerName'>jack castor {{gameCtrl.NineCache.gameObj.otherPlayerId}}</p>
-		<p class='playerPoints'>1000 points</p>
+<div id="centeredGameContainer">
+	<!-- <button class="chatBtn">Chat</button> -->
+	<section ng-init="hiddenChat=true"
+			 ng-class="{'visibleHidden':hiddenChat,'class-two':hiddenChat}" 
+			 class="playerChat">
+		<input type="text" 
+			   class="playerChatInput" 
+			   placeholder="Say hello..">
+		<button class="sendBtn">Send</button>
 	</section>
-</section>
+	<section id='gameBoard'>
+		<button ng-repeat="pin in gameCtrl.board"
+				class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}} {{gameCtrl.board[$index].pinClasses.join(' ')}}"
+				draggable='true'
+				draggable droppable
+				ng-class="{white: displayAll == true, }"
+				data-pinIndex="{{$index}}" 
+				ng-click='gameCtrl.clickEvent( pin, $index )'
+				ng-disabled="gameCtrl.gameObj.playerTurn != gameCtrl.NineCache.userData.id">
+		</button>
+	</section>
+	<!-- <div id='playesChatWrap'>
+		<section id='topChatArea'>
+			<div id='chatArea'>
+				<user-message ng-repeat="messageObj in chatMessagesList" 
+							  data-author-name='{{messageObj.username}}' 
+							  data-message='{{messageObj.message}}'>
+				</user-message>
+			</div>
 
+		</section>
+
+		<section id='chatInputArea'> 
+			<input  ng-keypress='lobbyCtrl.checkEnterKeyPress($event)' 
+					maxlength='90' 
+					id='chatGameInput' 
+					ng-model='messageGameText' 
+					placeholder="Write message..">
+			<send-game-messagebtn></send-game-messagebtn>
+		</section>
+	</div> -->
+</div>
+<!-- <div class="gameTimer"></div> -->
+<!-- <div id="playersChat">Hellooooo</div> -->
+<!-- <div class="notification">Hello World You cant place a pin there </div> -->
+<div class='floatRight'>
+	<section class="playerInfoSection" id='player2'>
+		<section class='playerInfoWrap' 
+				 ng-class="!gameCtrl.isMyTurn() ? 'blueBackground' : ''">
+			<img class='userProfilePic' src="images/profilePic.JPG">
+			<div class='userProfileInfo'>
+				<p class='playerName'>{{gameCtrl.getOtherPlayerName()}}</p>
+				<p class='playerPoints'>1000 points</p>
+			</div>
+			<button class="pinsLeftPin">
+				{{gameCtrl.getMyPlayerObj().pPinsLeft}}
+			</button>
+		</section>
+	</section>
+</div>
 <br><br><br>
 
 <button ng-click="gameCtrl.startTest('1')"> Test #1 </button>

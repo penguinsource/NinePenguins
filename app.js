@@ -608,7 +608,7 @@ function init(){
 	var server = require('http').Server(app);
 	var io = require('socket.io')(server);
 	app.use(express.static(process.cwd() + '/public'));
-	// server.listen(SERVER_LISTEN_PORT, '[2601:589:2:5fc0:cca0:d4b:84e0:5f72]:3000');
+	// server.listen(SERVER_LISTEN_PORT, '[2601:589:2:5fc0:b4cc:a879:81e8:5b2f]:3000');
 	server.listen(SERVER_LISTEN_PORT);
 	
 	// Data Model object

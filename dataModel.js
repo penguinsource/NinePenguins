@@ -221,8 +221,8 @@ var DataModel = function(){
 						"pid": player1id,
 						"pState": "place",
 						"pUserName": "",
-						"pPlacePins": 4,	// used only for gameState 'place'
-						"pPinsLeft": 4,	
+						"pPlacePins": 9,	// used only for gameState 'place'
+						"pPinsLeft": 9,	
 						"pBoardName": "player1Pin"
 					},
 				"p2Obj":
@@ -230,8 +230,8 @@ var DataModel = function(){
 						"pid": player2id,
 						"pState": "place",
 						"pUserName": "",
-						"pPlacePins": 4,	// used only for gameState 'place'
-						"pPinsLeft": 4,
+						"pPlacePins": 9,	// used only for gameState 'place'
+						"pPinsLeft": 9,
 						"pBoardName": "player2Pin"
 					},
 				"playerTurn": player1id,
@@ -421,6 +421,11 @@ var DataModel = function(){
 				{"control": "pinFreePlace", "vNeighbours": [ 16, 22 ], "hNeighbours": [ 15 ] }
 			];
 
+		for (var i=0; i< gameObj.board.length; i++){
+			gameObj.board[i].pinClasses = [];
+		}
+		console.log("GAME OBJEECT");
+		console.log(gameObj);
 		self.active_games[gameId] = gameObj;
 		var gameObjCompact = self.createBasicGameObject(gameId, player1id, player2id);
 

@@ -5,6 +5,16 @@ nineApp.controller('gameController', function($scope, $http,
 											  $timeout){
 	var self = this;
 
+	self.requestTie = function(){
+		console.log("requesting tie");
+		// ******
+	}
+
+	self.quitGame = function(){
+		console.log("quitting game");
+		// ******
+	}
+
 	// Helper Functions
 	self.isEven = function(n) {
 	  return n === parseFloat(n)? !(n%2) : void 0;
@@ -16,6 +26,29 @@ nineApp.controller('gameController', function($scope, $http,
 		} else {
 			return false;
 		}
+	}
+
+	self.highlightMill = function(index1, index2, index3){
+		console.log("updating message !");
+		self.updateDisplayMsg("You made a mill ! Remove an enemy pin");
+		console.log("highlighting mill");
+		var pinObj1 = self.gameObj.board[index1].pinClasses;
+		var pinObj2 = self.gameObj.board[index2].pinClasses;
+		var pinObj3 = self.gameObj.board[index3].pinClasses;
+		// console.log(self.gameObj);
+		pinObj1.push("millHighlight");
+		pinObj2.push("millHighlight");
+		pinObj3.push("millHighlight");
+		$timeout(function() {
+			pinObj1.splice(pinObj1.indexOf("millHighlight"), 1);
+			pinObj2.splice(pinObj2.indexOf("millHighlight"), 1);
+			pinObj3.splice(pinObj3.indexOf("millHighlight"), 1);
+		}, 3000);
+
+	}
+
+	self.updateDisplayMsg = function(message){
+		self.displayMsg = message;
 	}
 
 	self.checkForMills = function(pinIndex){
@@ -38,6 +71,7 @@ nineApp.controller('gameController', function($scope, $http,
 			if (self.areAllEqual(pinBtn.control,
 								 middlePin.control,
 								 otherPin.control)){
+				self.highlightMill(pinIndex, middlePinInd, otherPinInd);
 				return {"millType" : 'horizontal',
 						"millIndices": [pinIndex, middlePinInd, otherPinInd]};
 			}
@@ -58,6 +92,7 @@ nineApp.controller('gameController', function($scope, $http,
 				var retData =
 					{"millType" : 'vertical',
 					 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
+				self.highlightMill(pinIndex, middlePinInd, otherPinInd);
 				return retData;
 			}
 		} else {
@@ -85,6 +120,7 @@ nineApp.controller('gameController', function($scope, $http,
 					var retData =
 						{"millType" : 'horizontal',
 						 "millIndices": [pinIndex, middlePinInd, otherPinInd] };
+					self.highlightMill(pinIndex, middlePinInd, otherPinInd);
 					return retData;
 				}
 			} else { // case 2, pinBtn has 2 horizontal neighbours
@@ -97,6 +133,7 @@ nineApp.controller('gameController', function($scope, $http,
 					var retData =
 						{"millType" : 'horizontal',
 						 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
+					self.highlightMill(pinIndex, middlePinInd, otherPinInd);
 					return retData;
 				}
 			}
@@ -120,6 +157,7 @@ nineApp.controller('gameController', function($scope, $http,
 					var retData =
 						{"millType" : 'vertical',
 						 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
+					self.highlightMill(pinIndex, middlePinInd, otherPinInd);
 					return retData;
 				}
 			} else { // case 2, pinBtn has 2 vertical neighbours
@@ -132,7 +170,7 @@ nineApp.controller('gameController', function($scope, $http,
 					var retData =
 						{"millType" : 'vertical',
 						 "millIndices": [pinIndex, middlePinInd, otherPinInd]};
-
+					self.highlightMill(pinIndex, middlePinInd, otherPinInd);
 					return retData;
 				}
 			}
@@ -1066,103 +1104,61 @@ nineApp.controller('gameController', function($scope, $http,
 
 		self.board =
 			[
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 7 ], 
-			   "hNeighbours": [ 1 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 9 ], 
-			   "hNeighbours": [ 0, 2 ],
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 3 ], 
-			   "hNeighbours": [ 1 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 2, 4 ], 
-			   "hNeighbours": [ 11 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 3 ], 
-			   "hNeighbours": [ 5 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 13 ], 
-			   "hNeighbours": [ 4, 6 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 7 ], 
-			   "hNeighbours": [ 5 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 0, 6 ], 
-			   "hNeighbours": [ 15 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 15 ], 
-			   "hNeighbours": [ 9 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 1, 17 ], 
-			   "hNeighbours": [ 8, 10 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 11 ], 
-			   "hNeighbours": [ 9 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 10, 12 ], 
-			   "hNeighbours": [ 3, 19 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 11 ], 
-			    "hNeighbours": [ 13 ], 
-			    'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 5, 21 ], 
-			   "hNeighbours": [ 12, 14 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 15 ], 
-			   "hNeighbours": [ 13 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 8, 14 ], 
-			   "hNeighbours": [ 7, 23 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 23 ], 
-			   "hNeighbours": [ 17 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 9 ], 
-			   "hNeighbours": [ 16, 18 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 19 ], 
-			   "hNeighbours": [ 17 ],
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 18, 20 ], 
-			   "hNeighbours": [ 11 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 19 ], 
-			   "hNeighbours": [ 21 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 13 ], 
-			   "hNeighbours": [ 20, 22 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 23 ], 
-			   "hNeighbours": [ 21 ], 
-			   'isMill': false },
-			  {"control": "pinFreePlace", 
-			   "vNeighbours": [ 16, 22 ], 
-			   "hNeighbours": [ 15 ], 
-			   'isMill': false }
+			  {"vNeighbours": [ 7 ], 
+			   "hNeighbours": [ 1 ]},
+			  {"vNeighbours": [ 9 ], 
+			   "hNeighbours": [ 0, 2 ]},
+			  {"vNeighbours": [ 3 ], 
+			   "hNeighbours": [ 1 ]},
+			  {"vNeighbours": [ 2, 4 ], 
+			   "hNeighbours": [ 11 ]},
+			  {"vNeighbours": [ 3 ], 
+			   "hNeighbours": [ 5 ]},
+			  {"vNeighbours": [ 13 ], 
+			   "hNeighbours": [ 4, 6 ]},
+			  {"vNeighbours": [ 7 ], 
+			   "hNeighbours": [ 5 ]},
+			  {"vNeighbours": [ 0, 6 ], 
+			   "hNeighbours": [ 15 ]},
+			  {"vNeighbours": [ 15 ], 
+			   "hNeighbours": [ 9 ]},
+			  {"vNeighbours": [ 1, 17 ], 
+			   "hNeighbours": [ 8, 10 ]},
+			  {"vNeighbours": [ 11 ], 
+			   "hNeighbours": [ 9 ]},
+			  {"vNeighbours": [ 10, 12 ], 
+			   "hNeighbours": [ 3, 19 ]},
+			  {"vNeighbours": [ 11 ], 
+			   "hNeighbours": [ 13 ]},
+			  {"vNeighbours": [ 5, 21 ], 
+			   "hNeighbours": [ 12, 14 ]},
+			  {"vNeighbours": [ 15 ], 
+			   "hNeighbours": [ 13 ]},
+			  {"vNeighbours": [ 8, 14 ], 
+			   "hNeighbours": [ 7, 23 ]},
+			  {"vNeighbours": [ 23 ], 
+			   "hNeighbours": [ 17 ]},
+			  {"vNeighbours": [ 9 ], 
+			   "hNeighbours": [ 16, 18 ]},
+			  {"vNeighbours": [ 19 ], 
+			   "hNeighbours": [ 17 ]},
+			  {"vNeighbours": [ 18, 20 ], 
+			   "hNeighbours": [ 11 ]},
+			  {"vNeighbours": [ 19 ], 
+			   "hNeighbours": [ 21 ]},
+			  {"vNeighbours": [ 13 ], 
+			   "hNeighbours": [ 20, 22 ]},
+			  {"vNeighbours": [ 23 ], 
+			   "hNeighbours": [ 21 ]},
+			  {"vNeighbours": [ 16, 22 ], 
+			   "hNeighbours": [ 15 ]}
 			];
+
+		for (var i=0; i< self.board.length; i++){
+			self.board[i].pinClasses = [];
+			self.board[i].control = "pinFreePlace";
+			self.board[i].isMill = false;
+		}
 
 		// self.playerColor = 'player1Pin';
 		self.playerLink = "player1Pin";
@@ -1177,6 +1173,31 @@ nineApp.controller('gameController', function($scope, $http,
 
 		self.gameObj = NineCache.gameObj;	// new ..
 		self.gameObj.board = self.board;
+
+		if (self.isMyTurn()){ 
+			self.updateDisplayMsg("Please place a pin!");
+		} else {
+			self.updateDisplayMsg("Waiting for the other player..");
+		}
+	}
+
+	self.getMyPlayerName = function(){
+		var myPlayerObj = (NineCache.userData.id === self.gameObj.p1Obj.pid)?
+							self.gameObj.p1Obj : self.gameObj.p2Obj;
+		return (myPlayerObj.pUserName != "") ?
+					myPlayerObj.pUserName : myPlayerObj.pid;
+	}
+
+	self.getOtherPlayerName = function(){
+		var myPlayerObj = (NineCache.userData.id === self.gameObj.p1Obj.pid)?
+							self.gameObj.p2Obj : self.gameObj.p1Obj;
+		return (myPlayerObj.pUserName != "") ?
+					myPlayerObj.pUserName : myPlayerObj.pid;
+	}
+
+	self.getMyPlayerObj = function(){
+		return (NineCache.userData.id === self.gameObj.p1Obj.pid)?
+					self.gameObj.p1Obj : self.gameObj.p2Obj;
 	}
 
 	self.init = function(){
@@ -1184,6 +1205,10 @@ nineApp.controller('gameController', function($scope, $http,
 
 		self.debug = true;
 		self.NineCache = NineCache;
+		NineCache.logoClass = "logoMin";
+		NineCache.setVisibleTopGameBtns(false);
+
+		self.updateDisplayMsg("You made a mill ! Remove an enemy pin");
 		// console.log("PARAM:");
 		// console.log($stateParams['game_id']);
 		$scope.displayAll = true;

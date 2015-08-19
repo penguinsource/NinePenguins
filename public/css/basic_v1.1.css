@@ -233,10 +233,114 @@ a:visited{
 	border-radius: 37px;
 	font-size: 25px;
 	padding: 21px 24px;
-	outline: #2A2943 solid 2px;
-	position: absolute;
 	color: #FFF;
 	cursor: pointer;
+	position: absolute;
+	outline: #2A2943 solid 2px;
+}
+
+.pinsLeftPin {
+	text-decoration: none;
+	margin: 0px 10px 7px 0px;
+	border-style: none;
+	color: #FFF;
+	background-color: rgb(62, 61, 96);
+	border-radius: 37px;
+	padding: 6px 16px;
+	font-size: 20px;
+	margin-right: 0;
+	vertical-align: text-bottom;
+	left: 40px;
+	position: relative;
+	padding-top: 7px;
+	margin-top: 6px;
+	border-bottom: 5px solid rgb(44, 43, 73);
+}
+
+.gameMessage {
+	color: white;
+	display: inline-block;
+	vertical-align: top;
+	padding: 12px;
+	border-left: -4px solid #202033;
+	border-bottom: 2px solid #202033;
+	background-color: #3E3D60;
+	margin: 12px 178px;
+}
+
+.visibleHidden {
+	visibility: hidden;
+}
+
+.playerChat {
+	vertical-align: top;
+	margin-top: 69px;
+	margin-right: -220px;
+	color: white;
+	width: 26%;
+	float: left;
+	/*visibility: hidden;*/
+}
+
+.playerChatInput {
+	background-color: #343251;
+	border: none;
+	width: 80%;
+	border-radius: 4px;
+	height: 30px;
+	padding-left: 15px;
+}
+
+.sendBtn {
+	display: inline-block;
+	width: 15%;
+	background-color: #343251;
+	border: none;
+	height: 30px;
+	border-radius: 5px;
+
+	/* padding: 0px 12px; */;
+
+}
+
+.sendBtn:hover{
+	background-color: #4E4B7A;
+}
+
+.chatBtn {
+	background-image: url("/images/chaticon.png");
+	display: inline-block;
+	vertical-align: top;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	float: left;
+	border: none;
+	width: 32px;
+	height: 32px;
+}
+
+.playerBtn {
+	position: absolute;
+	padding: 5px;
+	top: 77px;
+}
+
+.playerBtn:hover {
+	background-color: #3E3D60;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.left52 {
+	left: 52px;
+}
+
+.left104 {
+	left: 104px;
+}
+
+.playerInfoSection {
+	position: relative;
 }
 
 .blue
@@ -335,7 +439,9 @@ a:visited{
 }
 
 .player2Pin {
-
+	border-bottom: 5px solid #2980B9;
+	text-shadow: 0px -2px #2980B9;
+	background-color: #3498DB;
 }
 
 .disablePins {
@@ -473,7 +579,7 @@ a:visited{
 
 #topSection {
 	background-color: #202033;
-	padding-bottom: 19px;
+	padding-bottom: 20px;
 }
 
 #bottomSection {
@@ -482,7 +588,7 @@ a:visited{
 
 #bodySectionWrap {
 	margin: 0 auto;
-	width: 1024px;
+	width: 1100px;
 }
 
 #fullHeader {
@@ -501,7 +607,8 @@ nav {
 	/*font-family: Arial;*/
 	font-family: "andika_basicregular";
 	font-size: 20px;
-	padding-top: 50px;
+	/*padding-top: 50px;*/
+	display: inline-block;
 }
 
 nav .menuItem {
@@ -525,36 +632,48 @@ nav a {
 .rightHeader {
 	display: inline-block;
 	vertical-align: top;
-	margin-left: 110px;
+	float: right;
+	margin-top: 28px;
 }
 
 .logo {
-	margin-top: 15px;
 	display: inline-block;
-	width: 37%;
+	margin-top: 10px;
+	width: 26%;
+	margin-left: 15px;
+}
+
+.logoMin {
+	display: inline-block;
+	margin-top: 10px;
+	width: 15%;
+	margin-left: 15px;
 }
 
 .loginSection {
-	height: 70px;
+	/*height: 70px;*/
+	margin-left: 40px;
+	display: inline-block;
+	vertical-align: top;
 	/*background-color: red;*/
 }
 
-#gameButtons {
+#topGameButtons {
 	border: none;
-	margin-top: 53px;
+	margin-top: 45px;
+	text-align: left;
 }
 
-#gameButtons #searchingForGame {
+#topGameButtons #searchingForGame {
 	margin-left: 13px;
 	background-color: white;
-
 }
 
 .loginFBbtn {
 	background-color: #2A2943;
 	border-color: #2A2943;
 	color: white;
-	float: right;;
+	/*float: right;*/
 }
 
 .loginFBbtn:hover {
@@ -612,14 +731,16 @@ nav a {
 #chatWrap {
 	border-radius: 6px;
 	margin-top: 15px;
-	height: 339px;
 	background-color: rgb(255, 255, 255);
 	box-shadow: -9px 11px 2px #1E1C3C;
+	height: 339px;
 }
 
 #centeredGameContainer {
-	margin: 0 auto;
+	display: inline-block;
 	text-align: center;
+	width: 100%;
+	margin: 5px auto;
 }
 
 #playesChatWrap {
@@ -653,10 +774,10 @@ nav a {
 
 #topChatArea {
 	/*background-color: red;*/
-	height: 88%;
 	padding: 16px;
 	padding-right: 0px;
 	padding-bottom: 9px;
+	height: 88%;
 }
 
 #chatArea {
@@ -687,17 +808,16 @@ nav a {
 #chatUserList {
 	display: inline-block;
 	vertical-align: top;
-	width: 19%;
-	height: 100%;
 	border-left: 1px solid rgb(234, 234, 234);
+	height: 100%;
 	padding-left: 13px;
 }
 
 .userWrap {
 	width: 157px;
+    overflow-y: hidden;
     margin-bottom: 2px;
     height: 21px;
-    overflow-y: hidden;
     border-bottom: 1px dotted rgb(213, 209, 209);
 }
 
@@ -742,7 +862,7 @@ nav a {
 	color: white;
 	padding: 4px 15px;
 	border-radius: 5px;
-	margin-left: 34px;;
+	float: right;;
 }
 
 #sendMessageBtn:hover {
@@ -799,23 +919,46 @@ span.userMessageAuthor {
 /* game page */
 
 .playerInfoWrap {
-	width: 255px;
-	height: 69px;
 	border-radius: 3px;
 	padding-top: 7px;
-	margin-top: 25px;
 	display: inline-block;
+	padding-right: 20px;
+}
+
+.floatLeft {
+	float: left;
+}
+
+.marginTop20 {
+	margin-top: 20px;
+}
+
+.floatRight {
+	float: right;
+}
+
+.userProfilePic {
+	display: inline-block;
+	width: 51px;
+	border-radius: 34px;
+	vertical-align: baseline;
+	margin-left: 15px;;;
 }
 
 .blueBackground {
 	background-color: #343351;
 }
 
+.userProfileInfo {
+	display: inline-block;
+	vertical-align: top;
+}
+
 .playerName {
 	color: white;
 	font-family: Arial;
 	font-size: 20px;
-	padding-left: 15px;
+	padding-left: 14px;
 	padding-top: 0px;
 	margin: 0;
 }
@@ -825,7 +968,8 @@ span.userMessageAuthor {
 	font-size: 15px;
 	font-weight: bold;
 	padding-left: 15px;
-	padding-top: 5px
+	padding-top: 5px;
+	/*font-family: Helvetica;*/
 }
 
 #gameTimer {
@@ -833,8 +977,6 @@ span.userMessageAuthor {
 }
 
 #gameBoard {
-	width: 577px;
-	height: 573px;
 	background-repeat: no-repeat;
 	margin: 0 auto;
 	/*margin-top: 10px;*/
@@ -842,6 +984,8 @@ span.userMessageAuthor {
 	/*background-color: red;*/
 	display: inline-block;
 	position: relative;
+	width: 577px;
+	height: 573px;
 }
 
 #playersChat {
@@ -923,7 +1067,7 @@ span.userMessageAuthor {
 	color: white;
 }
 
-.mill {
+.millHighlight {
 	border-bottom: 5px solid #C9E6FA;
 }
 
@@ -948,4 +1092,17 @@ pre strong {
 	overflow: visible;
 	word-wrap: break-word;
 	width: 209px;
+}
+
+/* equivalent to 
+<link rel='stylesheet' 
+	  type='text/css' href='http://fonts.googleapis.com/css?family=Pacifico'>
+*/
+/* latin */
+@font-face {
+  font-family: 'Pacifico';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Pacifico Regular'), local('Pacifico-Regular'), url(http://fonts.gstatic.com/s/pacifico/v7/Q_Z9mv4hySLTMoMjnk_rCfesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }

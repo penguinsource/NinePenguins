@@ -19,11 +19,47 @@ nineApp.directive('sendMessagebtn', function() {
 	};
 });
 
+nineApp.directive('sendGameMessagebtn', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        template: '<button id="sendGameMessageBtn">Send',
+        link: function(scope, elem, attrs) {
+            elem.bind('click', function() {
+                if (scope.messageText != ''){
+                    scope.$apply(function(){
+                        scope.postMessageToChat(scope.username, 
+                                                    scope.messageText, true);
+                    });
+                    
+                }
+            });
+        }
+    };
+});
+
+nineApp.directive('confirmClick', function() {
+    return {
+        link: function (scope, element, attrs) {
+            // setup a confirmation action on the scope
+            scope.confirmClick = function(msg) {
+                // msg can be passed directly to confirmClick('are you sure?') in ng-click
+                // or through the confirm-click attribute on the <a confirm-click="Are you sure?"></a>
+                msg = msg || attrs.confirmClick || 'Are you sure?';
+                // return true/false to continue/stop the ng-click
+                return confirm(msg);
+            }
+        }
+    }
+})
+
 nineApp.directive('userMessage', function() {
 	return {
 		restrict: 'E',
 		// replace: true,
-		template: "<p class='userMessageWrap'><span class='userMessageAuthor'>{{author}}</span class='userMessage'>{{messageText}}<span></span></p>",
+		template: "<p class='userMessageWrap'><span class='userMessageAuthor'>"+
+                  "{{author}}</span class='userMessage'>{{messageText}}<span>"+
+                  "</span></p>",
 		scope: {
 			author: '@authorName',
 			messageText: '@message'

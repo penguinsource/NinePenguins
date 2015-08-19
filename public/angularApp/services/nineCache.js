@@ -10,6 +10,9 @@ pokeApp.service('NineCache', function(){
 	self.username = '';
 	self.mySocket = null;
 	self.gameObj = {};
+	
+	self.logoClass = "logo";
+	self.showTopGameButtons = true;
 		// "gameId": game_id,
 		// "p1id": player1id, 
 		// "p2id": player2id,
@@ -18,6 +21,24 @@ pokeApp.service('NineCache', function(){
 		// "playerTurn": player1id,
 		// "gameState": "place"	// {place, move, fly}
 		// "otherPlayerId": other_player_id
+
+	// level 0 - original
+	// level 1 - minimized
+	self.scalePage = function(level){
+		if (level == 0){
+			self.logoClass = "logo";
+		} else if (level == 1){
+			self.logoClass = "logoMin";
+		}
+	}
+
+	self.isVisibleTopGameBtns = function(){
+		return self.showTopGameButtons;
+	}
+
+	self.setVisibleTopGameBtns = function(booleanVal){
+		self.showTopGameButtons = booleanVal;	// true or false
+	}
 
 	self.initGameObj = function(data){
 		self.gameObj = data;
@@ -72,7 +93,7 @@ pokeApp.service('NineCache', function(){
 		// serverAddr = 'http://142.244.5.95:3000/';
 		serverAddr = "http://localhost:3000/";
 		// serverAddr = '65.34.248.251:3000/';
-		// serverAddr = '[2601:589:2:5fc0:cca0:d4b:84e0:5f72]:3000/';
+		// serverAddr = '[2601:589:2:5fc0:b4cc:a879:81e8:5b2f]:3000/';
 		self.mySocket = io.connect(serverAddr);
 	}
 

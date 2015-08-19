@@ -10,12 +10,11 @@
 <title>Nine Men's Morris</title>
 <!-- <LINK REL="SHORTCUT ICON" HREF="http://pokemonpacific.com/images/pikachuTop.png" /> -->
 
-<!-- <link rel="stylesheet" type='text/css' 
-	  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"> -->
-<!-- <link rel='stylesheet' 
-	  type='text/css' href='http://fonts.googleapis.com/css?family=Pacifico'> -->
-<link rel='stylesheet' href="/css/bootstrap3.3.1/bootstrap.min.css" type="text/CSS">
-<link rel='stylesheet' href="/css/basic_v1.1.css" type="text/CSS">
+<link rel="stylesheet" type='text/css' 
+	  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<link rel='stylesheet' 
+	  type='text/css' href='http://fonts.googleapis.com/css?family=Pacifico'>
+<link rel='stylesheet' href="/css/basic_v1.0.css" type="text/CSS">
 
 <script src="/config/setup.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -38,23 +37,15 @@
 	<section id='topSection'>
 		<section id='bodySectionWrap'>
 			<header id='fullHeader'>
-				<img ng-class="mainCtrl.NineCache.logoClass" 
-					 src='/images/logo.png'/>
+				<img class='logo' src='/images/logo.png'/>
 				<header class='rightHeader'>
-					<nav>
-						<a class='menuItem'>Lobby</a>
-						<a class='menuItem' ui-sref='other'>Rankings</a>
-						<a class='menuItem'>FAQ</a>
-						<a class='menuItem'>Contact Us</a>
-					</nav>
 					<section class='loginSection'>
 						
 						<button type="button" 
 								class="btn btn-primary btn-large loginFBbtn" 
 								data-ng-show="mainCtrl.NineCache.userType=='guest'" 
 								data-ng-disabled="!facebookReady" 
-								data-ng-click="IntentLogin()"
-								disabled>
+								data-ng-click="IntentLogin()">
 							Login with Facebook
 						</button>
 						<button type="button" 
@@ -65,11 +56,17 @@
 							Logout
 						</button>
 					</section>
+
+					<nav>
+						<a class='menuItem'>Lobby</a>
+						<a class='menuItem' ui-sref='other'>Rankings</a>
+						<a class='menuItem'>FAQ</a>
+						<a class='menuItem'>Contact Us</a>
+					</nav>
 				</header>
 			</header>
 			
-			<section id='topGameButtons' 
-					 ng-show="mainCtrl.NineCache.isVisibleTopGameBtns()">
+			<section id='gameButtons'>
 				<button class='gameBtnRegular' 
 						ng-click='mainCtrl.startAGame()'>
 					{{startGameBtnText}}
