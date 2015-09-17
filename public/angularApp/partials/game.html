@@ -43,12 +43,14 @@
 			<p class='playerName'>{{gameCtrl.getMyPlayerName()}}</p>
 			<p class='playerPoints'>1000 points</p>
 		</div>
-		<button class="pinsLeftPin" title>
-			{{gameCtrl.getMyPlayerObj().pPinsLeft}}
+		<button title="Pins Left to place" class="pinsLeftPin" title>
+			<span>{{gameCtrl.myPinsDisplay}}</span>
 		</button>
 	</section>
 </section>
-<p class='gameMessage'>{{gameCtrl.displayMsg}}</p>
+<p class='gameMessage' ng-class="gameCtrl.displayMsgBg">
+	{{gameCtrl.displayMsg}}
+</p>
 
 <div id="centeredGameContainer">
 	<!-- <button class="chatBtn">Chat</button> -->
@@ -104,8 +106,8 @@
 				<p class='playerName'>{{gameCtrl.getOtherPlayerName()}}</p>
 				<p class='playerPoints'>1000 points</p>
 			</div>
-			<button class="pinsLeftPin">
-				{{gameCtrl.getMyPlayerObj().pPinsLeft}}
+			<button title="Pins Left to place" class="pinsLeftPin">
+				<span>{{gameCtrl.otherPinsDisplay}}</span>
 			</button>
 		</section>
 	</section>
@@ -114,6 +116,7 @@
 
 <button ng-click="gameCtrl.startTest('1')"> Test #1 </button>
 
+<span style="color: white;">{{gameCtrl.gameObj.board}}</span>
 <!-- 
 	one of the buttons' attribute was ......:
 	ondragstart="gameCtrl.onDragStart(event)" 

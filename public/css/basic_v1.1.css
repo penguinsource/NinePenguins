@@ -10,22 +10,17 @@ body {
 	border-bottom: 5px solid rgb(62, 61, 92);
 }
 
-.board {
+/*.board {
 	background-image: url('/images/board.png');
 	width: 595px;
 	height: 592px;
-
-	/*background-image: url('/images/board2.png');*/
-	/*width: 595px;*/
-	/*height: 594px;*/
-
 	margin: 20px;
 	padding: 20px;
 	background-repeat: no-repeat;
 	background-position: 35px 35px;
 	position: relative;
 	margin: 0 auto;
-}
+}*/
 
 .gameBoard {
 	margin-left: 50px;
@@ -293,7 +288,7 @@ a:visited{
 
 .sendBtn {
 	display: inline-block;
-	width: 15%;
+	width: 16%;
 	background-color: #343251;
 	border: none;
 	height: 30px;

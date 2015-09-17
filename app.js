@@ -601,7 +601,28 @@ self.initVariables = function(){
 	self.freePinBoardName = "pinFreePlace";
 }
 
+self.initSCSS = function(){
+	var fs = require("fs");
+	var sass = require("node-sass");
+	sass.render({
+		file: "public/scss/board.scss",
+		outFile: "public/css/board.css"
+	}, function(err, result){
+
+		if (err){
+			console.log("ERROR compiling SCSS file !");
+			console.log(err);
+			// console.log(result);
+		} else {
+			fs.writeFile("public/css/board.css", result.css, function(error){
+				if (!error){console.log("Done !!");}
+			})
+		}
+	});
+}
+
 function init(){
+	self.initSCSS();
 	// setup server
 	var express = require('express');
 	var app = express();

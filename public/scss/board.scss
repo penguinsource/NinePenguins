@@ -1,0 +1,54 @@
+.board{
+    margin-left: auto;
+    margin-right: auto;
+    
+    width: 50%;
+    height: 50%;
+
+    margin-top: 10%;
+    
+    .row{
+        height: 1px;
+        
+        &:not(:last-of-type){
+            margin-bottom: calc(16.66% - 1px);
+        }
+        
+        .pin{
+            position:relative;
+            top: -10px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            float: left;
+            
+            &:not(:last-of-type){
+                margin-right: calc(16.66% - 24px);
+            }
+            
+            &.hide{ width: 0px; margin-right: calc(16.66% - 4px); }
+            &:last-of-type{ margin-right: 0px }
+            
+            &:not(:last-of-type):not(.hide-line-horizontal):before{ 
+                content: ""; 
+                background-color:white;
+                height: 2px;
+                position: absolute;
+                top: 10px;
+                left: 10px;
+            }
+        }
+        
+        &:not(:last-of-type){
+            .pin:not(.hide-line-vertical):after{ 
+                content: ""; 
+                background-color:white;
+                width: 2px;
+                position: absolute;
+                left: 10px;
+                top: 10px;
+            }
+        }
+    }
+}

@@ -1,10 +1,72 @@
 var nineApp = angular.module("nineApp");
 
+nineApp.directive('resize', function ($window) {
+    return function (scope, element) {
+        var w = angular.element($window);
+        // console.log("heighttt:", w);
+        // console.log("heighttt:", w[0]["outerHeight"]);
+        scope.getWindowDimensions = function () {
+            return {
+                // 'h': w.height(),
+                // 'w': w.width()
+                'h': w[0].outerHeight,
+                'w': w[0].outerWidth
+            };
+        };
+        scope.$watch(scope.getWindowDimensions, function (newValue, oldValue) {
+            scope.windowHeight = newValue.h;
+            scope.windowWidth = newValue.w;
+            // console.log("w: ", scope.windowWidth);
+            // console.log("h: ", scope.windowHeight);
+
+            // var board = angular.element(document.querySelector('.board'));
+            // console.log("board width is", board, board[0].offsetWidth);
+            // var width = board[0].offsetWidth / 6;
+            // console.log("width issss", width);
+            // var ps = angular.element(document.querySelector('#pseudo-styler'));
+            // ps.html(".pin:before{width: "+width+"px;}"+
+            //         ".pin:after{height: "+width+"px;}");
+
+            // var width = $(".board").width() / 6;
+            // $('#pseudo-styler').html(".pin:before{width: "+width+"px;}"+
+            //                          ".pin:after{height: "+width+"px;}");
+
+            // scope.style = function () {
+            //     return {
+            //         'height': (newValue.h - 100) + 'px',
+            //         'width': (newValue.w - 100) + 'px'
+            //     };
+            // };
+
+        }, true);
+
+
+// $(document).ready(function(){
+//     adjustLineLength();
+// });
+
+// $(window).on("resize", function(){
+//     adjustLineLength();
+// });
+
+// function adjustLineLength(){
+//     var width = $(".board").width() / 6;
+    
+//     $('#pseudo-styler').html(".pin:before{width: "+width+"px;}"+
+//                              ".pin:after{height: "+width+"px;}");
+// }
+    
+        w.bind('resize', function () {
+            scope.$apply();
+        });
+    }
+})
+
 nineApp.directive('sendMessagebtn', function() {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<button id="sendMessageBtn">Send Message',
+		template: '<button id="sendMessageBtn">Send</button>',
 		link: function(scope, elem, attrs) {
 			elem.bind('click', function() {
 				if (scope.messageText != ''){
