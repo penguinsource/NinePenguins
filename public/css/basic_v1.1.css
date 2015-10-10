@@ -209,18 +209,17 @@ a:link {
 
 }
 
-a:hover{
+a:hover {
 	text-decoration: none;
 	/*color: white;*/
 }
 
-a:visited{
+a:visited {
 	text-decoration: none;
 	color: white;
 }
 
-.action-button
-{
+.action-button {
 	text-decoration: none;
 	font-family: 'Pacifico', cursive;
 	border-style: none;
@@ -460,6 +459,8 @@ a:visited{
 .pinFreePlace:hover:disabled {
 	opacity: 0;
 }
+
+
 
 .pinAvailablePlaceHover {
 	background-color: rgb(134, 234, 134);

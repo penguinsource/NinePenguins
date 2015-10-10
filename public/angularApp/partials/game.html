@@ -62,9 +62,11 @@
 			   placeholder="Say hello..">
 		<button class="sendBtn">Send</button>
 	</section>
+	<!-- class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}} {{gameCtrl.board[$index].pinClasses.join(' ')}}" -->
 	<section id='gameBoard'>
 		<button ng-repeat="pin in gameCtrl.board"
-				class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}} {{gameCtrl.board[$index].pinClasses.join(' ')}}"
+				class="animate p{{$index}}pos {{gameCtrl.board[$index].pinClasses.join(' ')}}"
+				ng-class="gameCtrl.getPinIndexClass($index)" 
 				draggable='true'
 				draggable droppable
 				ng-class="{white: displayAll == true, }"
@@ -115,8 +117,8 @@
 <br><br><br>
 
 <button ng-click="gameCtrl.startTest('1')"> Test #1 </button>
-
-<span style="color: white;">{{gameCtrl.gameObj.board}}</span>
+<button ng-click="gameCtrl.logGameObj()"> Log Game Object </button>
+<!-- <span style="color: white;">{{gameCtrl.gameObj.board}}</span> -->
 <!-- 
 	one of the buttons' attribute was ......:
 	ondragstart="gameCtrl.onDragStart(event)" 

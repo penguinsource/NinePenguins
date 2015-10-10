@@ -181,31 +181,38 @@ self.movePin = function(data, io){
 		// check game winning conditions
 		var gameCondition =
 			self.checkGameConditions(false, data.gameId, data.userid);
+		var winnerUid = null;
 		// game has been won
 		if (gameCondition){
 			// GAME WON **************
-			console.log("GAME WON !!!!!!!");
-		} else {	// game has NOT been won
-			// if the player has 0 pins left to place, change state to 'move'
-			if (myPlayerObj.pPlacePins == 0){
-				gameState = "move";
-			}
+			console.log("GAME WON 1!!!!!!!");
+			winnerUid = data.userid;
+		} 
+		// if the player has 0 pins left to place, change state to 'move'
+		if (myPlayerObj.pPlacePins == 0){
+			gameState = "move";
+		}
 
-			// change player's turn
-			gameObj.playerTurn = otherPlayerObj.pid;
-
-			var returnObj =
-				{
-					"gameId": gameObj.gameId,
-					"sourceIndex": data.sourceIndex,
-					"targetIndex": data.targetIndex,
-					"newMill": false,
-					"otherPlayerState": myPlayerObj.pState,
-					"testObj": data.testObj
-				};
-			if (io.sockets.connected[otherUserObj.socketId]) {
-				io.to(otherUserObj.socketId).emit('movePin', returnObj);
-			}
+		// change player's turn
+		gameObj.playerTurn = otherPlayerObj.pid;
+		
+		var returnObj =
+			{
+				"gameId": gameObj.gameId,
+				"winnerUid": winnerUid,
+				"sourceIndex": data.sourceIndex,
+				"targetIndex": data.targetIndex,
+				"newMill": false,
+				"otherPlayerState": myPlayerObj.pState,
+				"testObj": data.testObj
+			};
+		console.log("sending data", returnObj);
+		if (io.sockets.connected[otherUserObj.socketId]) {
+			io.to(otherUserObj.socketId).emit('movePin', returnObj);
+		}
+		if (winnerUid){
+			var myUserObj = self.dataModel.getUserWithId(myPlayerObj.pid);
+			io.to(myUserObj.socketId).emit("movePin", returnObj);
 		}
 	}
 }
@@ -271,31 +278,38 @@ self.flyPin = function(data, io){
 		// check game winning conditions
 		var gameCondition =
 			self.checkGameConditions(false, data.gameId, data.userid);
+		var winnerUid = null;
 		// game has been won
 		if (gameCondition){
 			// GAME WON **************
-			console.log("GAME WON !!!!!!!");
-		} else {	// game has NOT been won
-			// if the player has 0 pins left to place, change state to 'move'
-			if (myPlayerObj.pPlacePins == 0){
-				gameState = "move";
-			}
+			console.log("GAME WON 2!!!!!!!");
+			winnerUid = data.userid;
+		} 
+		// if the player has 0 pins left to place, change state to 'move'
+		if (myPlayerObj.pPlacePins == 0){
+			gameState = "move";
+		}
 
-			// change player's turn
-			gameObj.playerTurn = otherPlayerObj.pid;
-
-			var returnObj =
-				{
-					"gameId": gameObj.gameId,
-					"sourceIndex": data.sourceIndex,
-					"targetIndex": data.targetIndex,
-					"newMill": false,
-					"otherPlayerState": myPlayerObj.pState,
-					"testObj": data.testObj
-				};
-			if (io.sockets.connected[otherUserObj.socketId]) {
-				io.to(otherUserObj.socketId).emit('movePin', returnObj);
-			}
+		// change player's turn
+		gameObj.playerTurn = otherPlayerObj.pid;
+		
+		var returnObj =
+			{
+				"gameId": gameObj.gameId,
+				"winnerUid": winnerUid,
+				"sourceIndex": data.sourceIndex,
+				"targetIndex": data.targetIndex,
+				"newMill": false,
+				"otherPlayerState": myPlayerObj.pState,
+				"testObj": data.testObj
+			};
+		console.log("sending data", returnObj);
+		if (io.sockets.connected[otherUserObj.socketId]) {
+			io.to(otherUserObj.socketId).emit('movePin', returnObj);
+		}
+		if (winnerUid){
+			var myUserObj = self.dataModel.getUserWithId(myPlayerObj.pid);
+			io.to(myUserObj.socketId).emit("movePin", returnObj);
 		}
 	}
 
@@ -353,30 +367,36 @@ self.removePin = function(data, io){
 	var gameConditions = self.checkGameConditions(true,
 												  data.gameId,
 												  data.userid);
-	var gameWin = null;
+	var winnerUid = null;
 	if (gameConditions){
 		// game WON
 		console.log("I WON THE GAME !");
 		// console.log(myPlayerObj);
-		gameWin = myPlayerObj.pid;
+		winnerUid = myPlayerObj.pid;
 	} else {
 		// console.log("i didnt win the game !");
 		// changing player turn
 		gameObj.playerTurn = otherPlayerObj.pid
 	}
-
+	
 	// send update to the other player
 	var returnObj =
 		{
 			"gameId": gameObj.gameId,
+			"winnerUid": winnerUid,
 			"pinIndex": data.pinIndex,
 			"playerTurn": gameObj.playerTurn,
-			"gameOver": gameWin,
 			"otherPlayerState": myPlayerObj.pState,
 			"testObj": data.testObj
 		};
+	console.log("sending data", returnObj);
+
 	if (io.sockets.connected[otherUserObj.socketId]) {
 		io.to(otherUserObj.socketId).emit('removePin', returnObj);
+	}
+	if (winnerUid){
+		var myUserObj = self.dataModel.getUserWithId(myPlayerObj.pid);
+		io.to(myUserObj.socketId).emit("removePin", returnObj);
 	}
 }
 
@@ -490,34 +510,39 @@ self.placePin = function(data, io){
 		// check game winning conditions
 		var gameCondition =
 			self.checkGameConditions(false, data.gameId, data.userid);
+		var winnerUid = null;
 		// game has been won
 		if (gameCondition){
 			// GAME WON **************
 			console.log("Game Won by player: " + data.userid);
+			winnerUid = data.userid;
 		} 
-		// else {	// game has NOT been won
-			// if the player has 0 pins left to place, change state to 'move'
-			if (myPlayerObj.pPlacePins == 0){
-				myPlayerObj.pState = "move";
-			}
+		// if the player has 0 pins left to place, change state to 'move'
+		if (myPlayerObj.pPlacePins == 0){
+			myPlayerObj.pState = "move";
+		}
 
-			// change player's turn
-			gameObj.playerTurn = otherPlayerObj.pid;
+		// change player's turn
+		gameObj.playerTurn = otherPlayerObj.pid;
 
-			var returnObj =
-				{
-					"gameId": gameObj.gameId,
-					"pinIndex": data.pinIndex,
-					"playerTurn": gameObj.playerTurn,
-					"otherPlayerState": myPlayerObj.pState,
-					"testObj": data.testObj
-				};
-				console.log("+ sending place pin to index: " + data.pinIndex);
-				// console.log(returnObj);
-			if (io.sockets.connected[otherUserObj.socketId]) {
-				io.to(otherUserObj.socketId).emit('placePin', returnObj);
-			}
-		// }
+		var returnObj =
+			{
+				"gameId": gameObj.gameId,
+				"winnerUid": winnerUid,
+				"pinIndex": data.pinIndex,
+				"playerTurn": gameObj.playerTurn,
+				"otherPlayerState": myPlayerObj.pState,
+				"testObj": data.testObj
+			};
+			console.log("+ sending place pin to index: " + data.pinIndex);
+			// console.log(returnObj);
+		if (io.sockets.connected[otherUserObj.socketId]) {
+			io.to(otherUserObj.socketId).emit('placePin', returnObj);
+		}
+		if (winnerUid){
+			var myUserObj = self.dataModel.getUserWithId(myPlayerObj.pid);
+			io.to(myUserObj.socketId).emit("placePin", returnObj);
+		}
 	}
 }
 
