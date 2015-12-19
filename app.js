@@ -440,6 +440,17 @@ self.canRemovePin = function(gameId, pinIndex){
 
 // data = {userid, gameId, pinIndex}
 self.placePin = function(data, io){
+	console.log("setting timeout");
+	setTimeout(function() {
+		console.log("hello world !!!!!!!!!!!");
+	  // Clear the local timer variable, indicating the timeout has been triggered.
+	  timeoutProtect = null;
+
+	  // Execute the callback with an error argument.
+	  callback({error:'async timed out'});
+
+	}, 10000);
+
 	// get game object
 	var gameObj = self.dataModel.getGameObjectWithId(data.gameId);
 	if (!gameObj){

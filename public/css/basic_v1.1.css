@@ -446,6 +446,28 @@ a:visited{
 	display: none;
 }
 
+.timer {
+    position: relative;
+    top: 259px;
+    height: 0;
+    left: 34px;
+}
+
+.timer .time {
+    background-color: #464470;
+    font-size: 35px;
+    color: white;
+    width: 59px;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+.pinFreePlaceHidden {
+	background-color: rgb(97, 93, 168);
+	opacity: 0;
+	border-bottom: 5px solid rgb(62, 61, 92);
+}
+
 .pinFreePlace {
 	background-color: rgb(97, 93, 168);
 	opacity: 0;

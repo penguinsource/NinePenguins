@@ -1118,9 +1118,29 @@ nineApp.controller('gameController', function($scope, $http,
 		} 
 	}
 
+	self.startTimer = function(){
+		self.timer = 35;
+		self.timerObj = setInterval(function(){
+			self.timer = self.timer - 1;
+			$scope.$apply();
+			if (self.timer < 10){
+				// if its current player's turn, warn player !
+				// *******************************************
+			}
+			if (self.timer==0){
+				clearInterval(self.timerObj);
+			}
+		}, 1000);
+	}
+
+	self.stopTimer = function(){
+		clearInterval(self.timerObj);
+	}
+
 	self.initDataStructures = function(){
 		// self.myPinsDisplay = (self.getMyPlayerObject().pPlacePins > 0)
-
+		
+		self.startTimer();
 
 		// init possible display messages
 		self.displayMsgList = 
@@ -1257,19 +1277,22 @@ nineApp.controller('gameController', function($scope, $http,
 	self.getPinIndexClass = function(pinInd){
 		var myPlayerObj = self.getMyPlayerObj();
 		var pinControl = self.gameObj.board[pinInd].control;
-		// console.log("ind", pinInd, "control", pinControl, "state", myPlayerObj.pState, 
-					// "[;ayer ;oml", self.playerLink);
-		if (self.playerLink === pinControl){
-			// console.log("XXXXXXXXXXXXXXXX");
-		}
-		// if in state place and it's a free place
-		if ((myPlayerObj.pState === "place")||
-			(self.playerLink===pinControl)){
-			console.log("pin ", pinInd);
-			var retClasses = "action-button blue " + 
-							 self.gameObj.board[pinInd].control;
+		
+		console.log("pin" + pinInd + " myState: "+ myPlayerObj.pState+" pin control "+ pinControl+" aand "+self.otherPlayerBoardName + " blah " + self.playerLink);
+
+		var retClasses = "action-button blue ";
+
+		if ((pinControl==self.playerLink)||
+			(pinControl==self.otherPlayerBoardName)){
+			retClasses+=self.gameObj.board[pinInd].control;
 			return retClasses;
+		} else if (myPlayerObj.pPlacePins>0){
+			retClasses+=self.gameObj.board[pinInd].control;
+			return retClasses;
+		} else {
+			retClasses+="pinFreePlaceHidden";
 		}
+		return retClasses;
 	}
 
 	// $(document).ready(function(){

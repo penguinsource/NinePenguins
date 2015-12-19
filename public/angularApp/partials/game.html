@@ -63,10 +63,21 @@
 		<button class="sendBtn">Send</button>
 	</section>
 	<!-- class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}} {{gameCtrl.board[$index].pinClasses.join(' ')}}" -->
+	<!-- class="animate p{{$index}}pos {{gameCtrl.board[$index].pinClasses.join(' ')}}" -->
+
+<!-- class="animate p{{$index}}pos {{gameCtrl.board[$index].pinClasses.join(' ')}}"
+				ng-class="gameCtrl.getPinIndexClass($index)" -->
+
+
+	<!-- class="action-button shadow animate blue p{{$index}}pos {{gameCtrl.board[$index].control}} {{gameCtrl.board[$index].pinClasses.join(' ')}}"  -->
+	<div class="timer">
+		<div class="time">{{gameCtrl.timer}}</div>
+	</div>
 	<section id='gameBoard'>
 		<button ng-repeat="pin in gameCtrl.board"
+				
 				class="animate p{{$index}}pos {{gameCtrl.board[$index].pinClasses.join(' ')}}"
-				ng-class="gameCtrl.getPinIndexClass($index)" 
+				ng-class="gameCtrl.getPinIndexClass($index)"
 				draggable='true'
 				draggable droppable
 				ng-class="{white: displayAll == true, }"
